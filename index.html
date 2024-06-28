@@ -32,9 +32,8 @@
             font-weight: bold;
             border: 1px solid #ccc;
             border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-            position: relative; /* Posición relativa para permitir la superposición */
-            z-index: 1; /* Asegura que el texto esté sobre la imagen de fondo */
+            position: relative; /* Posición relativa para permitir superposición */
+            overflow: hidden; /* Oculta cualquier desbordamiento */
         }
         .menu a::before {
             content: '';
@@ -45,14 +44,13 @@
             height: 100%;
             background-image: url('Senyera.svg'); /* Fondo con la imagen */
             background-repeat: no-repeat; /* Evita repetir la imagen */
-            background-size: cover; /* Ajusta el tamaño de la imagen para cubrir el contenedor */
-            background-position: center; /* Alineación de la imagen */
-            opacity: 0.2; /* Opacidad para que no oculte completamente el texto */
+            background-position: left center; /* Alineación de la imagen */
+            background-size: 50px; /* Tamaño de la imagen de fondo */
+            opacity: 0.1; /* Opacidad para que no oculte completamente el texto */
             z-index: -1; /* Sitúa la imagen detrás del texto */
-            border-radius: 5px; /* Ajusta el borde redondeado para que coincida con el enlace */
         }
         .menu a:hover::before {
-            opacity: 0.5; /* Opacidad al pasar el ratón para resaltar la imagen */
+            opacity: 0.2; /* Opacidad al pasar el ratón para resaltar la imagen */
         }
     </style>
 </head>
@@ -60,7 +58,7 @@
     <div class="menu">
         <a href="Elecciones Municipales 2023.html">Elecciones Municipales 2023</a>
         <a href="Untitled-1.html" class="parlament-link">Eleccions Parlament 2024</a>
-        <a href="Elecciones Generals 2023.html">Elecciones Generales 2023</a>
+        <a href="Eleccions Generals 2023.html">Elecciones Generales 2023</a>
         <a href="Untitled-2.html">Elecciones Europeas 2024</a>
     </div>
 </body>
