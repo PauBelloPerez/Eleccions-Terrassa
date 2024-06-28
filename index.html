@@ -18,21 +18,24 @@
             display: flex;
             flex-direction: column; /* Organiza los elementos en columna */
             align-items: center; /* Centra horizontalmente los elementos */
+            max-width: 600px; /* Ancho máximo para controlar el ancho total */
+            margin-top: 20px; /* Margen superior para separar del borde superior */
         }
         .election-title {
             font-size: 24px;
             font-weight: bold;
-            margin: 20px 0; /* Margen arriba y abajo */
             text-align: center; /* Centrado del texto */
+            margin-bottom: 20px; /* Margen inferior para separar del contenido */
         }
         .election-box {
             display: flex;
             align-items: center; /* Centra verticalmente los elementos */
             margin-bottom: 20px; /* Espacio entre las cajas de elecciones */
-            max-width: 600px; /* Ancho máximo para controlar el ancho total */
             border: 1px solid #ccc; /* Borde fino */
             border-radius: 10px; /* Esquinas curvadas */
             overflow: hidden; /* Para asegurar que el contenido no sobresalga de las esquinas curvadas */
+            width: 100%; /* Ancho al 100% para ocupar todo el espacio disponible */
+            box-sizing: border-box; /* Incluye el borde en el tamaño total */
         }
         .flag-container {
             width: 100px; /* Ancho de la caja izquierda para las banderas */
@@ -77,7 +80,7 @@
         <div class="election-box">
             <div class="flag-container" style="background-image: url('BanderaEspaña.webp');"></div>
             <div class="election-info">
-                <a href="Eleccions Generals 2023.html" class="election-link">Eleccions Generals 2023</a>
+                <a href="Elecciones Generals 2023.html" class="election-link">Eleccions Generals 2023</a>
             </div>
         </div>
         <div class="election-box">
