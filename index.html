@@ -13,6 +13,24 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            position: relative; /* Necesario para posicionar el botón de vuelta */
+        }
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
         }
         .election-container {
             display: flex;
@@ -63,6 +81,7 @@
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-button">Volver al inicio</a>
     <div class="election-container">
         <div class="election-title">Eleccions a Terrassa 2023 i 2024</div>
         <div class="election-box">
@@ -92,5 +111,6 @@
     </div>
 </body>
 </html>
+
 
 
