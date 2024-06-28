@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Principal</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        .navigation { position: absolute; top: 10px; left: 10px; background: white; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="navigation">
+        <a href="Elecciones Municipales 2023.html">Ir a Eleccions Municipals 2023</a><br>
+        <a href="Untitled-1.html">Ir a Eleccions Parlament 2024</a>
+        <a href="Eleccions Generals 2023.html">Ir a Eleccions Generals 2023</a>
+        <a href="Untitled-2.html">Ir a Elecciones Europees 2024</a>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw'; // Reemplaza 'TU_MAPBOX_ACCESS_TOKEN' con tu token de acceso de Mapbox
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [2.0, 41.5632], // Coordenadas iniciales [longitud, latitud]
+            zoom: 12 // Nivel de zoom inicial
+        });
+    </script>
+</body>
+</html>
