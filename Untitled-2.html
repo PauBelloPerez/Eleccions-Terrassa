@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Ejemplo</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        #popup-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1;
+            width: 350px;
+        }
+        .popup-header {
+            background-color: #374547;
+            color: #fff;
+            padding: 5px 10px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .color-circle {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .psc { background-color: #FF0000; }
+        .erc { background-color: yellow; }
+        .cat-junts { background-color: #00C3B2; }
+        .vox { background-color: #63BE21; }
+        .cup { background-color: #FFEF01; }
+        .comuns { background-color: #6e236e; }
+        .cs { background-color: orange; }
+        .pp { background-color: #0198CB; }
+        .pacma { background-color: #00FF7F; }
+        .aliança { background-color: #064a81;}
+        .popup-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .popup-table th, .popup-table td {
+            text-align: left;
+            padding: 5px;
+        }
+        .popup-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .popup-table td {
+            border-bottom: 1px solid #ddd;
+        }
+        .legend {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+        .legend .legend-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .legend .legend-scale {
+            display: flex;
+            align-items: center;
+        }
+        .legend .legend-scale div {
+            height: 20px;
+            border-right: 1px solid #fff;
+        }
+        .legend .legend-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        .legend .legend-labels span {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="popup-container" style="display: none;"></div>
+    <div class="legend">
+        <div class="legend-title">Distribución de los votos</div>
+        <div class="legend-scale">
+            <div style="background: #ffc2c2; width: 70px;"></div>
+            <div style="background: #ff9999; width: 70px"></div>
+            <div style="background: #ff6666; width: 70px"></div>
+            <div style="background: #ff3333; width: 70px"></div>
+            <div style="background: #ff0000; width: 70px"></div>
+        </div>
+        <div class="legend-labels">
+            <span>15%</span>
+            <span>25%</span>
+            <span>35%</span>
+            <span>45%</span>
+            <span>50%</span>
+        </div>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
+
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [2.0, 41.5632],
+            zoom: 12
+        });
+
+        var nav = new mapboxgl.NavigationControl();
+        map.addControl(nav, 'top-right');
+
+        var fullscreen = new mapboxgl.FullscreenControl();
+        map.addControl(fullscreen, 'top-right');
+
+        // Función para convertir hex a RGB
+        function hexToRgb(hex) {
+            var bigint = parseInt(hex.slice(1), 16);
+            return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+        }
+
+        // Función para interpolar colores RGB
+        function interpolateRgb(startRgb, endRgb, factor) {
+            return startRgb.map((start, i) => Math.round(start + factor * (endRgb[i] - start)));
+        }
+
+        // Función para convertir RGB a hex
+        function rgbToHex(rgb) {
+            return '#' + rgb.map(x => x.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Función para obtener color basado en porcentaje
+        function getColorForPercentage(party, percentage) {
+            const colors = {
+                'PSC': { start: '#ffe3e3', end: '#FF0000' },
+                'CAT-JUNTS+': { start: '#a5bebc', end: '#00C3B2' },
+                'VOX': { start: '#d5f5d1', end: '#63BE21' },
+                'ERC': { start: '#ffffb2', end: '#FFD700' },
+                'PP': { start: '#d1ecf9', end: '#0198CB' },
+                'CUP - DT': { start: '#ffffc2', end: '#FFEF01' },
+                'COMUNS SUMAR': { start: '#ebc2eb', end: '#6e236e' },
+                'Cs': { start: '#ffdbb2', end: '#FFA500' },
+                'PACMA': { start: '#b2ffda', end: '#00FF7F' }
+            };
+
+            const { start, end } = colors[party];
+            const startRgb = hexToRgb(start);
+            const endRgb = hexToRgb(end);
+            
+            const factor = percentage / 51;
+            const interpolatedColor = interpolateRgb(startRgb, endRgb, factor);
+            
+            return rgbToHex(interpolatedColor);
+        }
+        function determineColorByParty(properties) {
+    var partyColors = {
+        'PSC': '#FF0000',
+        'CAT-JUNTS+': '#00C3B2'
+        // Puedes añadir más partidos y colores aquí
+    }};
+
+        // Función para determinar el color basado en las propiedades
+        function determineColor(properties) {
+            const parties = ['% PSC', '% CAT-JUNTS+', '% VOX', '% ERC', '% PP', '% CUP - DT', '% COMUNS SUMAR', '% Cs', '% PACMA', '% Aliança'];
+            let winningParty = '';
+            let maxPercentage = 0;
+
+            parties.forEach(party => {
+                const percentage = parseFloat(properties[party]);
+                if (percentage > maxPercentage) {
+                    maxPercentage = percentage;
+                    winningParty = party;
+                }
+            });
+
+            const partyName = winningParty.split(' ').slice(1).join(' ');
+            return getColorForPercentage(partyName, maxPercentage);
+        }
+
+        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clxg099qe1dbc1ms4wqlvursx/features?access_token=' + mapboxgl.accessToken)
+            .then(response => response.json())  
+            .then(data => {
+                data.features.forEach((feature, index) => {
+                    feature.id = index;
+                    feature.properties.color = determineColor(feature.properties);
+                });
+
+                map.on('load', function() {
+                    map.addSource('secciones-censales', {
+                        type: 'geojson',
+                        data: data
+                    });
+
+                    map.addLayer({
+                        id: 'secciones-censales-layer',
+                        type: 'fill',
+                        source: 'secciones-censales',
+                        paint: {
+                            'fill-color': ['get', 'color'],
+                            'fill-opacity': 0.7
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'secciones-censales-lines',
+                        type: 'line',
+                        source: 'secciones-censales',
+                        paint: {
+                            'line-color': '#000',
+                            'line-width': 0.5
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'highlight-layer',
+                        type: 'line',
+                        source: 'secciones-censales',
+                        paint: {
+                            'line-color': '#FFD700',
+                            'line-width': 4
+                        },
+                        filter: ['==', 'id', -1]
+                    });
+                });
+
+                var popupContainer = document.getElementById('popup-container');
+                var popupVisible = false;
+                var highlightedFeatureId = null;
+
+                map.on('mousemove', 'secciones-censales-layer', function (e) {
+                    var properties = e.features[0].properties;
+                    var id = e.features[0].id;
+                    var content = `
+                        <div class="popup-header" style="background-color: ${determineColor(properties)};">
+                            <strong>Districte: ${properties.CDIS}</strong><br>
+                            <strong style="float: right;">Participació: ${(properties['Participació'] * 100).toFixed(2)}%</strong>
+                            <strong>Secció censal: ${properties.CSEC}</strong><br>
+                        </div>
+                        <table class="popup-table">
+                            <tr><th>Partit</th><th>Percentatge</th><th>Vots</th></tr>
+<tr>
+    <td><span class="color-circle psc"></span>PSC</td>
+    <td><strong>${properties['% PSC']}</strong></td>
+    <td>${properties['Vots PSC']}</td> <!-- Añadir valor de Vots PSC -->
+</tr>
+<tr>
+    <td><span class="color-circle cat-junts"></span>Junts+</td>
+    <td><strong>${properties['% CAT-JUNTS+']}</strong></td>
+    <td>${properties['Vots CAT-JUNTS+']}</td> <!-- Añadir valor de Vots CAT-JUNTS+ -->
+</tr>
+<tr>
+    <td><span class="color-circle vox"></span>VOX</td>
+    <td><strong>${properties['% VOX']}</strong></td>
+    <td>${properties['Vots VOX']}</td> <!-- Añadir valor de Vots VOX -->
+</tr>
+<tr>
+    <td><span class="color-circle erc"></span>ERC</td>
+    <td><strong>${properties['% ERC']}</strong></td>
+    <td>${properties['Vots ERC']}</td> <!-- Añadir valor de Vots ERC -->
+</tr>
+<tr>
+    <td><span class="color-circle cup"></span>CUP</td>
+    <td><strong>${properties['% CUP - DT']}</strong></td>
+    <td>${properties['Vots CUP - DT']}</td> <!-- Añadir valor de Vots CUP - DT -->
+</tr>
+<tr>
+    <td><span class="color-circle comuns"></span>Comuns</td>
+    <td><strong>${properties['% COMUNS SUMAR']}</strong></td>
+    <td>${properties['Vots COMUNS SUMAR']}</td> <!-- Añadir valor de Vots COMUNS SUMAR -->
+</tr>
+<tr>
+    <td><span class="color-circle cs"></span>Cs</td>
+    <td><strong>${properties['% Cs']}</strong></td>
+    <td>${properties['Vots Cs']}</td> <!-- Añadir valor de Vots Cs -->
+</tr>
+<tr>
+    <td><span class="color-circle pp"></span>PP</td>
+    <td><strong>${properties['% PP']}</strong></td>
+    <td>${properties['Vots PP']}</td> <!-- Añadir valor de Vots PP -->
+</tr>
+<tr>
+    <td><span class="color-circle pacma"></span>PACMA</td>
+    <td><strong>${properties['% PACMA']}</strong></td>
+    <td>${properties['Vots PACMA']}</td> <!-- Añadir valor de Vots PACMA -->
+</tr>
+<tr> 
+    <td><span class="color-circle aliança"></span>Aliança</td>
+    <td><strong>${properties['% Aliança']}</strong></td>
+    <td>${properties['Vots Aliança']}</td> <!-- Añadir valor de Vots Aliança -->
+</tr>
+</table>
+                    `;
+                    map.setFilter('highlight-layer', ['==', 'id', id]);
+
+// Cambiar el estado del hover de la característica
+                    map.setFeatureState({ source: 'secciones-censales', id: id }, { hover: true });
+
+// Cambiar el ancho de línea de la sección censal a 2.5
+                    map.setPaintProperty('secciones-censales-lines', 'line-width', [
+                     'case',
+                     ['==', ['get', 'id'], id],
+                      2.5,
+                    0.5
+                      ]);                    
+                    popupContainer.innerHTML = content;
+                    popupContainer.style.display = 'block';
+
+                    // Resaltar la sección censal
+                    map.setFilter('highlight-layer', ['==', 'id', e.features[0].id]);
+                    
+                    // Cambiar el estado del popup a visible y fijo
+                    popupVisible = true;
+                });
+
+                // Añadir evento para evitar que el popup se oculte al hacer clic dentro de él
+                popupContainer.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Evitar que el evento de clic se propague al mapa
+                });
+
+                // Añadir evento para ocultar el popup al hacer clic en el mapa si no está fijo
+                map.on('click', function() {
+                    if (!popupVisible) {
+                        popupContainer.style.display = 'none';
+                    }
+                });
+
+                // Añadir evento para ocultar el popup al hacer clic en el mapa si está fijo
+                map.on('click', function() {
+                    if (popupVisible) {
+                        popupVisible = false; // Desactivar el estado fijo
+                    }
+                });
+
+                // Ocultar el contenedor del popup al salir de una sección censal
+                map.on('mouseleave', 'secciones-censales-layer', function () {
+                    restorePreviousHighlight();
+                });
+
+                // Variable global para almacenar la capa resaltada actualmente
+                var highlightedFeatureId = null;
+
+                // Restaurar el line width de la capa previamente resaltada
+                function restorePreviousHighlight() {
+                    if (highlightedFeatureId !== null) {
+                        map.setFeatureState({ source: 'secciones-censales', id: highlightedFeatureId }, { hover: false });
+                        highlightedFeatureId = null;
+                    }
+                }
+
+            })
+            .catch(error => console.error('Error cargando datos GeoJSON:', error));
+    </script>
+</body>
+</html>
