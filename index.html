@@ -3,34 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Principal</title>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+    <title>Menú de Mapas</title>
     <style>
-        body { margin: 0; padding: 0; position: relative; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-        .button-panel { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; }
-        .button-panel a { display: block; margin-bottom: 5px; text-decoration: none; color: #333; font-weight: bold; }
-        .button-panel a:hover { color: #007bff; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .menu {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .menu a {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .menu a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div class="button-panel">
-        <a href="Elecciones Municipales 2023.html">Ir a Elecciones Municipales 2023</a>
-        <a href="Untitled-1.html">Ir a Elecciones Parlament 2024</a>
-        <a href="Elecciones Generals 2023.html">Ir a Elecciones Generales 2023</a>
-        <a href="Untitled-2.html">Ir a Elecciones Europeas 2024</a>
+    <div class="menu">
+        <h1>Selecciona un Mapa:</h1>
+        <a href="Elecciones Municipales 2023.html">Elecciones Municipales 2023</a>
+        <a href="Untitled-1.html">Elecciones Parlament 2024</a>
+        <a href="Elecciones Generals 2023.html">Elecciones Generales 2023</a>
+        <a href="Untitled-2.html">Elecciones Europeas 2024</a>
     </div>
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw'; // Reemplaza 'TU_MAPBOX_ACCESS_TOKEN' con tu token de acceso de Mapbox
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [2.0, 41.5632], // Coordenadas iniciales [longitud, latitud]
-            zoom: 12 // Nivel de zoom inicial
-        });
-    </script>
 </body>
 </html>
 
