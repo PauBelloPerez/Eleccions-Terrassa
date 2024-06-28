@@ -7,18 +7,20 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
     <style>
-        body { margin: 0; padding: 0; }
+        body { margin: 0; padding: 0; position: relative; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-        .navigation { position: absolute; top: 10px; left: 10px; background: white; padding: 10px; }
+        .button-panel { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; }
+        .button-panel a { display: block; margin-bottom: 5px; text-decoration: none; color: #333; font-weight: bold; }
+        .button-panel a:hover { color: #007bff; }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div class="navigation">
-        <a href="Elecciones Municipales 2023.html">Ir a Eleccions Municipals 2023</a><br>
-        <a href="Untitled-1.html">Ir a Eleccions Parlament 2024</a>
-        <a href="Eleccions Generals 2023.html">Ir a Eleccions Generals 2023</a>
-        <a href="Untitled-2.html">Ir a Elecciones Europees 2024</a>
+    <div class="button-panel">
+        <a href="Elecciones Municipales 2023.html">Ir a Elecciones Municipales 2023</a>
+        <a href="Untitled-1.html">Ir a Elecciones Parlament 2024</a>
+        <a href="Elecciones Generals 2023.html">Ir a Elecciones Generales 2023</a>
+        <a href="Untitled-2.html">Ir a Elecciones Europeas 2024</a>
     </div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw'; // Reemplaza 'TU_MAPBOX_ACCESS_TOKEN' con tu token de acceso de Mapbox
@@ -31,3 +33,4 @@
     </script>
 </body>
 </html>
+
