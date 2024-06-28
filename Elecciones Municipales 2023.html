@@ -90,6 +90,23 @@
         .legend .legend-labels span {
             font-size: 12px;
         }
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 60px; /* Un poco más abajo */
+            padding: 10px 20px;
+            background-color: #d3d3d3; /* Color gris claro */
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #a9a9a9; /* Gris más oscuro al pasar el ratón */
+        }
     </style>
 </head>
 <body>
@@ -111,6 +128,11 @@
             <span>45%</span>
             <span>50%</span>
         </div>
+    </div>
+    <a href="index.html" class="back-button">Volver al inicio</a>
+    <div class="election-container">
+        <div class="election-title">Eleccions Municipals 2023</div>
+        <!-- Contenido de la página específica -->
     </div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
