@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú de Mapas</title>
+    <title>Menú de Elecciones</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,53 +14,62 @@
             margin: 0;
             background-color: #f0f0f0;
         }
-        .menu {
-            text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .election-box {
             display: flex;
-            align-items: center; /* Centra verticalmente los elementos */
+            margin-bottom: 20px; /* Espacio entre las cajas de elecciones */
         }
-        .menu a {
-            display: inline-block; /* Para que los enlaces se comporten como bloques */
-            margin-bottom: 10px;
-            padding: 10px 20px;
+        .flag-container {
+            width: 100px; /* Ancho de la caja izquierda para las banderas */
+            height: 100px; /* Igual altura que el contenedor de texto */
+            margin-right: 20px; /* Espacio entre la bandera y el texto */
+            background-size: contain; /* Ajusta el tamaño de la imagen para que quepa */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            background-position: center; /* Alinea la imagen al centro */
+        }
+        .election-info {
+            display: flex;
+            flex-direction: column; /* Apila los elementos verticalmente */
+            justify-content: center; /* Centra verticalmente */
+        }
+        .election-link {
+            display: block; /* Hace que los enlaces se comporten como bloques */
+            padding: 10px; /* Espaciado interior */
             text-decoration: none;
             color: #333;
-            font-weight: bold;
             border: 1px solid #ccc;
             border-radius: 5px;
-            position: relative; /* Posición relativa para permitir superposición */
-            overflow: hidden; /* Oculta cualquier desbordamiento */
+            transition: background-color 0.3s, color 0.3s;
         }
-        .menu a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('Senyera.svg'); /* Fondo con la imagen */
-            background-repeat: no-repeat; /* Evita repetir la imagen */
-            background-position: left center; /* Alineación de la imagen */
-            background-size: 50px; /* Tamaño de la imagen de fondo */
-            opacity: 0.1; /* Opacidad para que no oculte completamente el texto */
-            z-index: -1; /* Sitúa la imagen detrás del texto */
-        }
-        .menu a:hover::before {
-            opacity: 0.2; /* Opacidad al pasar el ratón para resaltar la imagen */
+        .election-link:hover {
+            background-color: #007bff;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <a href="Elecciones Municipales 2023.html">Elecciones Municipales 2023</a>
-        <a href="Untitled-1.html" class="parlament-link">Eleccions Parlament 2024</a>
-        <a href="Eleccions Generals 2023.html">Elecciones Generales 2023</a>
-        <a href="Untitled-2.html">Elecciones Europeas 2024</a>
+    <div class="election-box">
+        <div class="flag-container" style="background-image: url('TerrassaBandera.png');"></div>
+        <div class="election-info">
+            <a href="Elecciones Municipales 2023.html" class="election-link">Elecciones Municipales 2023</a>
+        </div>
+    </div>
+    <div class="election-box">
+        <div class="flag-container" style="background-image: url('Senyera.svg');"></div>
+        <div class="election-info">
+            <a href="Untitled-2.html" class="election-link">Eleccions Parlament 2024</a>
+        </div>
+    </div>
+    <div class="election-box">
+        <div class="flag-container" style="background-image: url('BanderaEspaña.webp');"></div>
+        <div class="election-info">
+            <a href="Elecciones Generals 2023.html" class="election-link">Elecciones Generales 2023</a>
+        </div>
+    </div>
+    <div class="election-box">
+        <div class="flag-container" style="background-image: url('Europa.svg');"></div>
+        <div class="election-info">
+            <a href="Untitled-1.html" class="election-link">Elecciones Europeas 2024</a>
+        </div>
     </div>
 </body>
 </html>
-
