@@ -112,6 +112,7 @@
             <span>50%</span>
         </div>
     </div>
+    <button onclick="goBack()">Volver a Index</button>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -365,6 +366,9 @@
 
             })
             .catch(error => console.error('Error cargando datos GeoJSON:', error));
+        function goBack() {
+        window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
+    }
     </script>
 </body>
 </html>
