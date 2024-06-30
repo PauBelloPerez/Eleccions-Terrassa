@@ -90,6 +90,19 @@
         .legend .legend-labels span {
             font-size: 12px;
         }
+        .back-button {
+            position: fixed;
+            top: 20px; /* Ajusta esta cantidad según tu preferencia */
+            left: 20px; /* Ajusta esta cantidad según tu preferencia */
+            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
+            padding: 10px 20px;
+            background-color: #007bff; /* Color de fondo del botón */
+            color: white; /* Color del texto del botón */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -112,7 +125,7 @@
             <span>50%</span>
         </div>
     </div>
-    <button onclick="goBack()">Volver a Index</button>
+    <button class="back-button" onclick="goBack()">Volver a Index</button>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -128,6 +141,7 @@
 
         var fullscreen = new mapboxgl.FullscreenControl();
         map.addControl(fullscreen, 'top-right');
+        
 
         // Función para convertir hex a RGB
         function hexToRgb(hex) {
@@ -175,6 +189,9 @@
         'CAT-JUNTS+': '#00C3B2'
         // Puedes añadir más partidos y colores aquí
     }};
+        function goBack() {
+        window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
+    }
 
         // Función para determinar el color basado en las propiedades
         function determineColor(properties) {
@@ -366,9 +383,6 @@
 
             })
             .catch(error => console.error('Error cargando datos GeoJSON:', error));
-        function goBack() {
-        window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
-    }
     </script>
 </body>
 </html>
