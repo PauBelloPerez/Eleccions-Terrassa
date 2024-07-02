@@ -54,6 +54,7 @@
             overflow: hidden; /* Para asegurar que el contenido no sobresalga de las esquinas curvadas */
             width: 100%; /* Ancho al 100% para ocupar todo el espacio disponible */
             box-sizing: border-box; /* Incluye el borde en el tamaño total */
+            cursor: pointer; /* Cambia el cursor al pasar por encima */
         }
         .flag-container {
             width: 100px; /* Ancho de la caja izquierda para las banderas */
@@ -79,11 +80,28 @@
             color: #fff; /* Cambia el color del texto al pasar el ratón */
         }
         .sub-menu {
-            padding-left: 20px;
+            display: none; /* Oculta el submenú por defecto */
+            flex-direction: column; /* Apila los elementos verticalmente */
+            background-color: #f9f9f9; /* Color de fondo del submenú */
+            border: 1px solid #ccc; /* Borde del submenú */
+            border-radius: 5px; /* Esquinas curvadas */
+            position: absolute; /* Posicionamiento absoluto */
+            top: 100%; /* Sitúa el submenú debajo de la caja principal */
+            left: 0; /* Alinea el submenú con el borde izquierdo de la caja principal */
+            z-index: 1; /* Asegura que esté por encima de otros elementos */
+        }
+        .election-box.active .sub-menu {
+            display: flex; /* Muestra el submenú cuando la caja está activa */
         }
         .sub-menu-link {
-            display: block;
-            padding: 5px 0;
+            text-decoration: none;
+            color: #333;
+            padding: 8px 15px; /* Espaciado interno */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .sub-menu-link:hover {
+            background-color: #007bff; /* Cambia el color de fondo al pasar el ratón */
+            color: #fff; /* Cambia el color del texto al pasar el ratón */
         }
     </style>
 </head>
@@ -119,7 +137,7 @@
             </div>
         </div>
         
-        <div class="election-box">
+        <div class="election-box" onclick="toggleSubMenu(this)">
             <div class="flag-container" style="background-image: url('imagen_estadística.png');"></div>
             <div class="election-info">
                 <div class="election-link">Anàlisi</div>
@@ -131,5 +149,15 @@
         </div>
         
     </div>
+
+    <script>
+        function toggleSubMenu(element) {
+            // Obtener el elemento .sub-menu dentro del elemento clicado
+            var subMenu = element.querySelector('.sub-menu');
+            // Alternar la clase 'active' en el elemento clicado para mostrar/ocultar el submenú
+            element.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
+
