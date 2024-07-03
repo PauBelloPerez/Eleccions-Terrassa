@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de Mapas de Elecciones</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .map-container.active {
+            display: block;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .botones-panel {
+            position: absolute;
+            top: 10px;
+            right: 60px;
+            z-index: 1000;
+            display: flex;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .botones-panel button {
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-color: white;
+            color: black;
+        }
+        .botones-panel button.active {
+            background-color: #333;
+            color: white;
+        }
+        .botones-panel button:not(:first-child) {
+            border-left: 1px solid #ddd;
+        }
+        .botones-panel button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="mapa2019" class="map-container active">
+        <iframe id="iframe2019" src="Municipals.html"></iframe>
+        <div class="botones-panel">
+            <button class="btn-mapa active" data-mapa="2019">2019</button>
+            <button class="btn-mapa" data-mapa="2023">2023</button>
+        </div>
+    </div>
+
+    <div id="mapa2023" class="map-container">
+        <iframe id="iframe2023" src="Elecciones Municipales 2023.html"></iframe>
+        <div class="botones-panel">
+            <button class="btn-mapa" data-mapa="2019">2019</button>
+            <button class="btn-mapa active" data-mapa="2023">2023</button>
+        </div>
+    </div>
+
+    <script>
+        let lastCenter = null;
+        let lastZoom = null;
+
+        function setMapView(iframeId, center, zoom) {
+            const iframe = document.getElementById(iframeId);
+            iframe.contentWindow.postMessage({ action: 'setView', center, zoom }, '*');
+        }
+
+        function getMapView(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            iframe.contentWindow.postMessage({ action: 'getView' }, '*');
+        }
+
+        function mostrarMapa(mapa) {
+            // Obtener centro y zoom del mapa activo
+            if (lastCenter === null || lastZoom === null) {
+                const activeMapId = document.querySelector('.map-container.active').id.replace('mapa', '');
+                getMapView('iframe' + activeMapId);
+            }
+
+            // Ocultar todos los mapas
+            document.querySelectorAll('.map-container').forEach(function (map) {
+                map.classList.remove('active');
+            });
+
+            // Mostrar el mapa seleccionado
+            document.getElementById('mapa' + mapa).classList.add('active');
+
+            // Establecer centro y zoom en el mapa seleccionado si ya se han obtenido
+            if (lastCenter && lastZoom) {
+                setMapView('iframe' + mapa, lastCenter, lastZoom);
+            }
+
+            // Actualizar los botones
+            document.querySelectorAll('.btn-mapa').forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+
+            document.querySelectorAll('.btn-mapa[data-mapa="' + mapa + '"]').forEach(function (btn) {
+                btn.classList.add('active');
+            });
+        }
+
+        // Añadir eventos de clic a los botones
+        document.querySelectorAll('.btn-mapa').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const mapa = btn.getAttribute('data-mapa');
+                mostrarMapa(mapa);
+            });
+        });
+
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'viewChanged') {
+                lastCenter = event.data.center;
+                lastZoom = event.data.zoom;
+            }
+        });
+    </script>
+</body>
+</html>
