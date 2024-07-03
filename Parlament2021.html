@@ -135,6 +135,23 @@
             zoom: 12
         });
 
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'setView') {
+                map.setCenter(event.data.center);
+                map.setZoom(event.data.zoom);
+            } else if (event.data.action === 'getView') {
+                const center = map.getCenter();
+                const zoom = map.getZoom();
+                event.source.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, event.origin);
+            }
+        });
+
+        map.on('moveend', function () {
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            window.parent.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, '*');
+        });
+
         var nav = new mapboxgl.NavigationControl();
         map.addControl(nav, 'top-right');
 
