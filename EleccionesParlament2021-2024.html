@@ -9,8 +9,8 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Para que la página no tenga scroll */
-            font-family: Arial, sans-serif; /* Fuente base */
+            overflow: hidden;
+            font-family: Arial, sans-serif;
         }
         .map-container {
             position: absolute;
@@ -18,25 +18,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Ocultar todos los mapas por defecto */
+            display: none;
         }
         .map-container.active {
-            display: block; /* Mostrar el mapa activo */
+            display: block;
         }
         .map-container iframe {
             width: 100%;
             height: 100%;
-            border: none; /* Eliminar bordes del iframe */
+            border: none;
         }
         .botones-panel {
             position: absolute;
             top: 10px;
             right: 60px;
-            z-index: 1000; /* Asegura que los botones estén encima del mapa */
-            display: flex; /* Alinear los botones en fila */
+            z-index: 1000;
+            display: flex;
             border-radius: 5px;
-            overflow: hidden; /* Bordes redondeados en el contenedor */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Añadir sombra al panel */
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         .botones-panel button {
             border: none;
@@ -46,69 +46,96 @@
             display: inline-block;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s; /* Animación suave */
-            background-color: white; /* Fondo por defecto */
-            color: black; /* Texto por defecto */
+            transition: background-color 0.3s;
+            background-color: white;
+            color: black;
         }
         .botones-panel button.active {
-            background-color: #333; /* Fondo del botón activo */
-            color: white; /* Texto del botón activo */
+            background-color: #333;
+            color: white;
         }
         .botones-panel button:not(:first-child) {
-            border-left: 1px solid #ddd; /* Separación entre botones */
+            border-left: 1px solid #ddd;
         }
         .botones-panel button:focus {
-            outline: none; /* Quitar el borde de enfoque */
+            outline: none;
         }
     </style>
 </head>
 <body>
-    <!-- Mapa para elecciones 2021 -->
     <div id="mapa2021" class="map-container active">
-        <iframe src="Parlament2021.html"></iframe>
+        <iframe id="iframe2021" src="Parlament2021.html"></iframe>
         <div class="botones-panel">
             <button class="btn-mapa active" data-mapa="2021">2021</button>
             <button class="btn-mapa" data-mapa="2024">2024</button>
         </div>
     </div>
 
-    <!-- Mapa para elecciones 2024 -->
     <div id="mapa2024" class="map-container">
-        <iframe src="Untitled-2.html"></iframe>
+        <iframe id="iframe2024" src="Untitled-2.html"></iframe>
         <div class="botones-panel">
-            <button class="btn-mapa active" data-mapa="2021">2021</button>
-            <button class="btn-mapa" data-mapa="2024">2024</button>
+            <button class="btn-mapa" data-mapa="2021">2021</button>
+            <button class="btn-mapa active" data-mapa="2024">2024</button>
         </div>
     </div>
 
     <script>
-        // Función para mostrar el mapa seleccionado
+        let lastCenter = null;
+        let lastZoom = null;
+
+        function setMapView(iframeId, center, zoom) {
+            const iframe = document.getElementById(iframeId);
+            iframe.contentWindow.postMessage({ action: 'setView', center, zoom }, '*');
+        }
+
+        function getMapView(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            iframe.contentWindow.postMessage({ action: 'getView' }, '*');
+        }
+
         function mostrarMapa(mapa) {
+            // Obtener centro y zoom del mapa activo
+            if (lastCenter === null || lastZoom === null) {
+                const activeMapId = document.querySelector('.map-container.active').id.replace('mapa', '');
+                getMapView('iframe' + activeMapId);
+            }
+
             // Ocultar todos los mapas
-            document.querySelectorAll('.map-container').forEach(function(map) {
+            document.querySelectorAll('.map-container').forEach(function (map) {
                 map.classList.remove('active');
             });
 
             // Mostrar el mapa seleccionado
             document.getElementById('mapa' + mapa).classList.add('active');
 
+            // Establecer centro y zoom en el mapa seleccionado si ya se han obtenido
+            if (lastCenter && lastZoom) {
+                setMapView('iframe' + mapa, lastCenter, lastZoom);
+            }
+
             // Actualizar los botones
-            document.querySelectorAll('.btn-mapa').forEach(function(btn) {
+            document.querySelectorAll('.btn-mapa').forEach(function (btn) {
                 btn.classList.remove('active');
             });
 
-            // Activar el botón seleccionado
-            document.querySelectorAll('.btn-mapa[data-mapa="' + mapa + '"]').forEach(function(btn) {
+            document.querySelectorAll('.btn-mapa[data-mapa="' + mapa + '"]').forEach(function (btn) {
                 btn.classList.add('active');
             });
         }
 
         // Añadir eventos de clic a los botones
-        document.querySelectorAll('.btn-mapa').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var mapa = btn.getAttribute('data-mapa');
+        document.querySelectorAll('.btn-mapa').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const mapa = btn.getAttribute('data-mapa');
                 mostrarMapa(mapa);
             });
+        });
+
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'viewChanged') {
+                lastCenter = event.data.center;
+                lastZoom = event.data.zoom;
+            }
         });
     </script>
 </body>
