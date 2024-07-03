@@ -103,6 +103,19 @@
             font-size: 16px;
             border-radius: 5px;
         }
+        .back-button {
+            position: fixed;
+            top: 100px; /* Ajusta esta cantidad según tu preferencia */
+            left: 10px; /* Ajusta esta cantidad según tu preferencia */
+            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
+            padding: 10px 50px;
+            background-color: #B5B5B5; /* Color de fondo del botón */
+            color: #000000; /* Color del texto del botón */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -134,6 +147,23 @@
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [2.0, 41.5632],
             zoom: 12
+        });
+
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'setView') {
+                map.setCenter(event.data.center);
+                map.setZoom(event.data.zoom);
+            } else if (event.data.action === 'getView') {
+                const center = map.getCenter();
+                const zoom = map.getZoom();
+                event.source.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, event.origin);
+            }
+        });
+
+        map.on('moveend', function () {
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            window.parent.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, '*');
         });
 
         var nav = new mapboxgl.NavigationControl();
