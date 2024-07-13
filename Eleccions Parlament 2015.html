@@ -36,8 +36,8 @@
         }
         .psc { background-color: #FF0000; }
         .erc { background-color: yellow; }
-        .jxsi { background-color: #01DFD7; }
-        .unio { background-color: #00008B; }
+        .jxsí { background-color: #01DFD7; }
+        .unió { background-color: #00008B; }
         .cup { background-color: #FFEF01; }
         .csqp { background-color: #8904B1; }
         .cs { background-color: #EB6109; }
@@ -102,6 +102,58 @@
             font-size: 16px;
             border-radius: 5px;
         }
+        .summary-button {
+        position: fixed;
+        top: 150px;
+        left: 10px;
+        z-index: 999;
+        padding: 10px 30px;
+        background-color: #B5B5B5;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    #summary-popup {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        width: 350px;
+    }
+    .bar-color-container {
+            height: 10px; /* Altura de la barra */
+            background-color: #f2f2f2; /* Color de fondo de la barra base */
+            width: 100%; /* Ancho total */
+            position: relative; /* Posición relativa para alinear las barras de colores */
+            border: 1px solid #ccc; /* Borde opcional para la barra base */
+            box-sizing: border-box; /* Incluir el borde en el cálculo del tamaño total */
+            margin-bottom: 10px;
+        }
+
+        .bar-color {
+            height: 100%; /* Altura completa de la barra */
+            position: absolute; /* Posición absoluta para superponer las barras de colores */
+            top: 0; /* Alinear en la parte superior */
+            left: 0; /* Alinear desde la izquierda */
+            background-color: #01DFD7; /* Color base de la barra */
+            transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
+        }
+
+        /* Estilos específicos para cada partido */
+        .psc-bar { background-color: #FF0000; }
+        .jxsi-bar { background-color: #01DFD7; }
+        .unio-bar { background-color: #00008B; }
+        .cup-bar { background-color: #FFEF01; }
+        .cs-bar { background-color: #EB6109; }
+        .pp-bar { background-color: #0198CB; }
+        .csqp-bar { background-color: #8904B1; }
+        .pacma-bar { background-color: #00FF7F; }
     </style>
 </head>
 <body>
@@ -125,6 +177,69 @@
         </div>
     </div>
     <button class="back-button" onclick="goBack()">Inici</button>
+    <button class="summary-button" onclick="toggleSummaryPopup()">Resultats</button>
+<div id="summary-popup" style="display: none;">
+    <div class="popup-header">Resultats</div>
+    <table class="popup-table">
+        <thead>
+            <tr>
+                <th>Partit</th>
+                <th>Vots</th>
+                <th>%</th>
+                <th>Percentatge</th>
+            </tr>
+        </thead>
+        <tbody id="summary-body">
+            <tr>
+                <td><span class="color-circle psc"></span>PSC</td>
+                <td id="sum-psc"></td>
+                <td id="pct-psc"></td>
+                <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle jxsí"></span>JxSí</td>
+                <td id="sum-jxsi"></td>
+                <td id="pct-jxsi"></td>
+                <td><div class="bar-color-container"><div class="bar-color jxsi-bar" id="bar-jxsi"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle unió"></span>Unió</td>
+                <td id="sum-unio"></td>
+                <td id="pct-unio"></td>
+                <td><div class="bar-color-container"><div class="bar-color unio-bar" id="bar-unio"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cs"></span>Cs</td>
+                <td id="sum-cs"></td>
+                <td id="pct-cs"></td>
+                <td><div class="bar-color-container"><div class="bar-color cs-bar" id="bar-cs"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pp"></span>PP</td>
+                <td id="sum-pp"></td>
+                <td id="pct-pp"></td>
+                <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pacma"></span>PACMA</td>
+                <td id="sum-pacma"></td>
+                <td id="pct-pacma"></td>
+                <td><div class="bar-color-container"><div class="bar-color pacma-bar" id="bar-pacma"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle csqp"></span>PxC</td>
+                <td id="sum-csqp"></td>
+                <td id="pct-csqp"></td>
+                <td><div class="bar-color-container"><div class="bar-color csqp-bar" id="bar-csqp"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cup"></span>CUP</td>
+                <td id="sum-cup"></td>
+                <td id="pct-cup"></td>
+                <td><div class="bar-color-container"><div class="bar-color cup-bar" id="bar-cup"></div></div></td>
+            </tr>
+        </tbody>
+    </table>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -203,7 +318,7 @@
         'JxSí': '#00C3B2'
         // Puedes añadir más partidos y colores aquí
     }};
-        function goBack() {
+    function goBack() {
         window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
     }
 
@@ -292,7 +407,7 @@
     <td>${properties['PSC']}</td> <!-- Añadir valor de Vots PSC -->
 </tr>
 <tr>
-    <td><span class="color-circle jxsi"></span>JxSí</td>
+    <td><span class="color-circle jxsí"></span>JxSí</td>
     <td><strong>${properties['% JxSí']}</strong></td>
     <td>${properties['JxSí']}</td> <!-- Añadir valor de Vots JxSí -->
 </tr>
@@ -322,7 +437,7 @@
     <td>${properties['PACMA']}</td> <!-- Añadir valor de Vots PACMA -->
 </tr>
 <tr>
-    <td><span class="color-circle unio"></span>Unió</td>
+    <td><span class="color-circle unió"></span>Unió</td>
     <td><strong>${properties['% UNIO.CAT']}</strong></td>
     <td>${properties['UNIO.CAT']}</td> <!-- Añadir valor de Vots Unió -->
 </tr>
@@ -386,7 +501,72 @@
                 }
 
             })
-            .catch(error => console.error('Error cargando datos GeoJSON:', error));
+            function toggleSummaryPopup() {
+            const popup = document.getElementById('summary-popup');
+            if (popup.style.display === 'none') {
+                popup.style.display = 'block';
+                calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function calculateSummaries() {
+    fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clyiyifzz0rx51unuo8t9uuu7/features?access_token=' + mapboxgl.accessToken)
+        .then(response => response.json())
+        .then(data => {
+            const sums = {
+                PSC: 0, JxSí: 0, 'UNIO.CAT': 0, Cs: 0, PP: 0, PACMA: 0, CSQP: 0, CUP: 0
+            };
+
+            let totalVotants = 0;
+
+            data.features.forEach(feature => {
+                sums.PSC += parseInt(feature.properties.PSC) || 0;
+                sums.JxSí += parseInt(feature.properties.JxSí) || 0;
+                sums['UNIO.CAT'] += parseInt(feature.properties['UNIO.CAT']) || 0;
+                sums.Cs += parseInt(feature.properties.Cs) || 0;
+                sums.PP += parseInt(feature.properties.PP) || 0;
+                sums.PACMA += parseInt(feature.properties.PACMA) || 0;
+                sums.CSQP += parseInt(feature.properties.CSQP) || 0;
+                sums.CUP += parseInt(feature.properties.CUP) || 0;
+                
+
+                // Sumar el total de votantes sumando votantes y votos en blanco
+                totalVotants += (parseInt(feature.properties.NUM_VOTANTS) || 0) + (parseInt(feature.properties.VOTS_BLANCS) || 0);
+            });
+
+            const parties = [
+                { party: 'PSC', votes: sums.PSC },
+                { party: 'JxSí', votes: sums.JxSí },
+                { party: 'Unió', votes: sums['UNIO.CAT'] },
+                { party: 'Cs', votes: sums.Cs },
+                { party: 'PP', votes: sums.PP },
+                { party: 'PACMA', votes: sums.PACMA },
+                { party: 'CSQP', votes: sums.CSQP },
+                { party: 'CUP', votes: sums.CUP }
+            ];
+
+            // Ordenar el array de partidos por votos descendentes
+            parties.sort((a, b) => b.votes - a.votes);
+
+            // Limpiar y actualizar la tabla en el popup
+            const summaryBody = document.getElementById('summary-body');
+            summaryBody.innerHTML = '';
+            parties.forEach(({ party, votes }) => {
+                const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                    <td>${votes.toLocaleString()}</td>
+                    <td>${percentage}%</td>
+                    <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                `;
+                summaryBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error cargando datos GeoJSON:', error));
+}
     </script>
 </body>
 </html>
