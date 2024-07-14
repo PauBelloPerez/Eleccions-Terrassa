@@ -36,7 +36,7 @@
         }
         .psc { background-color: #FF0000; }
         .erc { background-color: yellow; }
-        .juntscat { background-color: #ED5975; }
+        .juntsxcat { background-color: #ED5975; }
         .vox { background-color: #63BE21; }
         .cup { background-color: #FFEF01; }
         .cecp { background-color: #6e236e; }
@@ -141,19 +141,20 @@
             position: absolute; /* Posición absoluta para superponer las barras de colores */
             top: 0; /* Alinear en la parte superior */
             left: 0; /* Alinear desde la izquierda */
-            background-color: #01DFD7; /* Color base de la barra */
+            background-color: #ED5975; /* Color base de la barra */
             transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
         }
 
         /* Estilos específicos para cada partido */
         .psc-bar { background-color: #FF0000; }
-        .junts-bar { background-color: #ED5975; }
+        .juntsx-bar { background-color: #ED5975; }
         .erc-bar { background-color: yellow; }
         .cup-bar { background-color: #FFEF01; }
         .cs-bar { background-color: #EB6109; }
         .pp-bar { background-color: #0198CB; }
         .cecp-bar { background-color: #6e236e; }
         .pacma-bar { background-color: #00FF7F; }
+        .vox-bar { background-color: #63BE21; }
     </style>
 </head>
 <body>
@@ -200,10 +201,10 @@
                 <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
             </tr>
             <tr>
-                <td><span class="color-circle juntscat"></span>JUNTSxCAT</td>
+                <td><span class="color-circle juntsx"></span>JUNTSxCAT</td>
                 <td id="sum-junts"></td>
                 <td id="pct-junts"></td>
-                <td><div class="bar-color-container"><div class="bar-color junts-bar" id="bar-junts"></div></div></td>
+                <td><div class="bar-color-container"><div class="bar-color juntsxcat-bar" id="bar-juntsxcat"></div></div></td>
             </tr>
             <tr>
                 <td><span class="color-circle erc"></span>ERC</td>
@@ -318,7 +319,7 @@
         function determineColorByParty(properties) {
     var partyColors = {
         'PSC': '#FF0000',
-        'Junts': '#00C3B2'
+        'JUNTSxCAT': '#ED5975'
         // Puedes añadir más partidos y colores aquí
     }};
     function goBack() {
@@ -410,7 +411,7 @@
     <td>${properties['PSC']}</td> <!-- Añadir valor de Vots PSC -->
 </tr>
 <tr>
-    <td><span class="color-circle juntscat"></span>JUNTSxCAT</td>
+    <td><span class="color-circle juntsxcat"></span>JUNTSxCAT</td>
     <td><strong>${properties['% JUNTSxCAT']}</strong></td>
     <td>${properties['JUNTSxCAT']}</td> <!-- Añadir valor de Vots JUNTSxCAT -->
 </tr>
