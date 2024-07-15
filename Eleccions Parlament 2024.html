@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eleccions Parlament 2024 Terrassa</title>
+    <title>Mapa de Ejemplo</title>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
     <style>
@@ -33,14 +33,16 @@
             height: 10px;
             border-radius: 50%;
             margin-right: 5px;
+            background-color: #01DFD7;
         }
         .psc { background-color: #FF0000; }
         .erc { background-color: yellow; }
-        .cat-junts { background-color: #00C3B2; }
+        .cat { background-color: #00C3B2; }
+        .juntsx { background-color: #00C3B2; }
         .vox { background-color: #63BE21; }
         .cup { background-color: #FFEF01; }
         .comuns { background-color: #6e236e; }
-        .cs { background-color: orange; }
+        .cs { background-color: orangered; }
         .pp { background-color: #0198CB; }
         .pacma { background-color: #00FF7F; }
         .aliança { background-color: #064a81;}
@@ -103,6 +105,65 @@
             font-size: 16px;
             border-radius: 5px;
         }
+        .summary-button {
+        position: fixed;
+        top: 150px;
+        left: 10px;
+        z-index: 999;
+        padding: 10px 30px;
+        background-color: #B5B5B5;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    #summary-popup {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        width: 350px;
+    }
+    .bar-color-container {
+            height: 10px; /* Altura de la barra */
+            background-color: #f2f2f2; /* Color de fondo de la barra base */
+            width: 100%; /* Ancho total */
+            position: relative; /* Posición relativa para alinear las barras de colores */
+            border: 1px solid #ccc; /* Borde opcional para la barra base */
+            box-sizing: border-box; /* Incluir el borde en el cálculo del tamaño total */
+            margin-bottom: 10px;
+        }
+
+        .bar-color {
+            height: 100%; /* Altura completa de la barra */
+            position: absolute; /* Posición absoluta para superponer las barras de colores */
+            top: 0; /* Alinear en la parte superior */
+            left: 0; /* Alinear desde la izquierda */
+            background-color: #01DFD7; /* Color base de la barra */
+            transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
+        }
+
+        /* Estilos específicos para cada partido */
+        .psc-bar { background-color: #FF0000; }
+        .cat-bar { background-color: #00C3B2; }
+        .erc-bar { background-color: yellow; }
+        .cup-bar { background-color: #FFEF01; }
+        .cs-bar { background-color: orangered; }
+        .pp-bar { background-color: #0198CB; }
+        .comuns-bar { background-color: #8904B1; }
+        .vox-bar { background-color: #63BE21; }
+        .pacma-bar { background-color: #00FF7F; }
+        .aliança-bar { background-color: #064a81;}
+        .participation {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -126,6 +187,85 @@
         </div>
     </div>
     <button class="back-button" onclick="goBack()">Inici</button>
+    <button class="summary-button" onclick="toggleSummaryPopup()">Resultats</button>
+<div id="summary-popup" style="display: none;">
+    <div class="popup-header" style="display: flex; justify-content: space-between;">
+        <span>Resultats</span>
+        <span id="participation-percentage">Participació: 57.71%</span>
+    </div>
+    <table class="popup-table">
+        <thead>
+            <tr>
+                <th>Partit</th>
+                <th>Vots</th>
+                <th>%</th>
+                <th>Percentatge</th>
+            </tr>
+        </thead>
+        <tbody id="summary-body">
+            <tr>
+                <td><span class="color-circle psc"></span>PSC</td>
+                <td id="sum-psc"></td>
+                <td id="pct-psc"></td>
+                <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle" style="background-color: #01DFD7;"class="color-circle junts"></span>Junts+</td>
+                <td id="sum-junts"></td>
+                <td id="pct-junts"></td>
+                <td><div class="bar-color-container"><div class="bar-color cat-bar" id="bar-cat"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle erc"></span>ERC</td>
+                <td id="sum-erc"></td>
+                <td id="pct-erc"></td>
+                <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cs"></span>Cs</td>
+                <td id="sum-cs"></td>
+                <td id="pct-cs"></td>
+                <td><div class="bar-color-container"><div class="bar-color cs-bar" id="bar-cs"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pp"></span>PP</td>
+                <td id="sum-pp"></td>
+                <td id="pct-pp"></td>
+                <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pacma"></span>PACMA</td>
+                <td id="sum-pacma"></td>
+                <td id="pct-pacma"></td>
+                <td><div class="bar-color-container"><div class="bar-color pacma-bar" id="bar-pacma"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle comuns"></span>CECP</td>
+                <td id="sum-comuns"></td>
+                <td id="pct-comuns"></td>
+                <td><div class="bar-color-container"><div class="bar-color comuns-bar" id="bar-comuns"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cup"></span>CUP</td>
+                <td id="sum-cup"></td>
+                <td id="pct-cup"></td>
+                <td><div class="bar-color-container"><div class="bar-color cup-bar" id="bar-cup"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle aliança"></span>CUP</td>
+                <td id="sum-aliança"></td>
+                <td id="pct-aliança"></td>
+                <td><div class="bar-color-container"><div class="bar-color aliança-bar" id="bar-aliança"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle vox"></span>Cs</td>
+                <td id="sum-vox"></td>
+                <td id="pct-vox"></td>
+                <td><div class="bar-color-container"><div class="bar-color vox-bar" id="bar-vox"></div></div></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -204,7 +344,7 @@
         'CAT-JUNTS+': '#00C3B2'
         // Puedes añadir más partidos y colores aquí
     }};
-        function goBack() {
+    function goBack() {
         window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
     }
 
@@ -293,7 +433,7 @@
     <td>${properties['Vots PSC']}</td> <!-- Añadir valor de Vots PSC -->
 </tr>
 <tr>
-    <td><span class="color-circle cat-junts"></span>Junts+</td>
+    <td><span class="color-circle cat"></span>Junts+</td>
     <td><strong>${properties['% CAT-JUNTS+']}</strong></td>
     <td>${properties['Vots CAT-JUNTS+']}</td> <!-- Añadir valor de Vots CAT-JUNTS+ -->
 </tr>
@@ -397,7 +537,86 @@
                 }
 
             })
-            .catch(error => console.error('Error cargando datos GeoJSON:', error));
+            function toggleSummaryPopup() {
+            const popup = document.getElementById('summary-popup');
+            if (popup.style.display === 'none') {
+                popup.style.display = 'block';
+                calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function calculateSummaries() {
+            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clxg099qe1dbc1ms4wqlvursx/features?access_token=' + mapboxgl.accessToken)
+                .then(response => response.json())
+                .then(data => {
+                    const sums = {
+                        'Vots PSC': 0, 'Vots CAT-JUNTS+': 0, 'Vots ERC': 0, 'Vots Cs': 0, 'Vots PP': 0, 'Vots PACMA': 0, 'Vots COMUNS SUMAR': 0, 'Vots CUP - DT': 0, 'Vots Aliança': 0, 'Vots VOX': 0
+                    };
+
+                    let totalVotants = 0;
+                    let totalElectors = 0;
+                    let totalVotsBlancs = 0;
+
+                    data.features.forEach(feature => {
+                        sums['Vots PSC'] += parseInt(feature.properties['Vots PSC']) || 0;
+                        sums['Vots ERC'] += parseInt(feature.properties['Vots ERC']) || 0;
+                        sums['Vots CAT-JUNTS+'] += parseInt(feature.properties['Vots CAT-JUNTS+']) || 0;
+                        sums['Vots Cs'] += parseInt(feature.properties['Vots Cs']) || 0;
+                        sums['Vots PP'] += parseInt(feature.properties['Vots PP']) || 0;
+                        sums['Vots PACMA'] += parseInt(feature.properties['Vots PACMA']) || 0;
+                        sums['Vots COMUNS SUMAR'] += parseInt(feature.properties['Vots COMUNS SUMAR']) || 0;
+                        sums['Vots CUP - DT'] += parseInt(feature.properties['Vots CUP - DT']) || 0;
+                        sums['Vots VOX'] += parseInt(feature.properties['Vots VOX']) || 0;
+                        sums['Vots Aliança'] += parseInt(feature.properties['Vots Aliança']) || 0;
+
+                        // Sumar el total de votantes y votos en blanco
+                        totalVotants += parseInt(feature.properties.Votants) || 0;
+                        totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
+                        totalElectors += parseInt(feature.properties['Cens electoral']) || 0;
+                    });
+
+                    const parties = [
+                        { party: 'PSC', votes: sums['Vots PSC'] },
+                        { party: 'ERC', votes: sums['Vots ERC'] },
+                        { party: 'Comuns', votes: sums['Vots COMUNS SUMAR'] },
+                        { party: 'Cs', votes: sums['Vots Cs'] },
+                        { party: 'PP', votes: sums['Vots PP'] },
+                        { party: 'PACMA', votes: sums['Vots PACMA'] },
+                        { party: 'Aliança', votes: sums['Vots Aliança'] },
+                        { party: 'CUP - DT', votes: sums['Vots CUP - DT'] },
+                        { party: 'VOX', votes: sums['Vots VOX'] },
+                        { party: 'Junts+', votes: sums['Vots CAT-JUNTS+'] }
+                    ];
+
+                    // Ordenar el array de partidos por votos descendentes
+                    parties.sort((a, b) => b.votes - a.votes);
+
+                    // Limpiar y actualizar la tabla en el popup
+                    const summaryBody = document.getElementById('summary-body');
+                    summaryBody.innerHTML = '';
+                    parties.forEach(({ party, votes }) => {
+                        const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                            <td>${votes.toLocaleString()}</td>
+                            <td>${percentage}%</td>
+                            <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                        `;
+                        summaryBody.appendChild(row);
+                    });
+
+                    const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
+                    document.getElementById('participation').textContent = `Participació: ${participationPercentage}%`;
+                })
+                .catch(error => console.error('Error cargando datos GeoJSON:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSummaries();
+        });
     </script>
 </body>
 </html>
