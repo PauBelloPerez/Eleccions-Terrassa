@@ -37,12 +37,13 @@
         .psc { background-color: #FF0000; }
         .erc { background-color: yellow; }
         .ciu { background-color: #18307B; }
-        .cup { background-color: #FFEF01; }
         .icv { background-color: #67AF23; }
+        .cup { background-color: #FFEF01; }
         .cs { background-color: orangered; }
         .pp { background-color: #0198CB; }
         .pxc { background-color: #045FB4; }
         .enblanco { background-color: #000000; }
+        .blanco { background-color: #000000; }
         .popup-table {
             width: 100%;
             border-collapse: collapse;
@@ -102,6 +103,64 @@
             font-size: 16px;
             border-radius: 5px;
         }
+        .summary-button {
+        position: fixed;
+        top: 150px;
+        left: 10px;
+        z-index: 999;
+        padding: 10px 30px;
+        background-color: #B5B5B5;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    #summary-popup {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        width: 350px;
+    }
+    .bar-color-container {
+            height: 10px; /* Altura de la barra */
+            background-color: #f2f2f2; /* Color de fondo de la barra base */
+            width: 100%; /* Ancho total */
+            position: relative; /* Posición relativa para alinear las barras de colores */
+            border: 1px solid #ccc; /* Borde opcional para la barra base */
+            box-sizing: border-box; /* Incluir el borde en el cálculo del tamaño total */
+            margin-bottom: 10px;
+        }
+
+        .bar-color {
+            height: 100%; /* Altura completa de la barra */
+            position: absolute; /* Posición absoluta para superponer las barras de colores */
+            top: 0; /* Alinear en la parte superior */
+            left: 0; /* Alinear desde la izquierda */
+            background-color: #000000; /* Color base de la barra */
+            transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
+        }
+
+        /* Estilos específicos para cada partido */
+        .psc-bar { background-color: #FF0000; }
+        .erc-bar { background-color: yellow; }
+        .ciu-bar { background-color: #18307B; }
+        .icv-bar { background-color: #67AF23; }
+        .cup-bar { background-color: #FFEF01; }
+        .pp-bar { background-color: #0198CB; }
+        .cs-bar { background-color: orangered;}
+        .pxc-bar { background-color: #045FB4;}
+        .enblanco-bar { background-color: #000000; }
+        .participation {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -125,6 +184,80 @@
         </div>
     </div>
     <button class="back-button" onclick="goBack()">Inici</button>
+    <button class="summary-button" onclick="toggleSummaryPopup()">Resultats</button>
+<div id="summary-popup" style="display: none;">
+    <div class="popup-header" style="display: flex; justify-content: space-between;">
+        <span>Resultats</span>
+        <span id="participation-percentage">Participació: 50.89%</span>
+    </div>
+    <table class="popup-table">
+        <thead>
+            <tr>
+                <th>Partit</th>
+                <th>Vots</th>
+                <th>%</th>
+                <th>Percentatge</th>
+            </tr>
+        </thead>
+        <tbody id="summary-body">
+            <tr>
+                <td><span class="color-circle psc"></span>PSC</td>
+                <td id="sum-psc"></td>
+                <td id="pct-psc"></td>
+                <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle ciu"></span>CiU</td>
+                <td id="sum-ciu"></td>
+                <td id="pct-ciu"></td>
+                <td><div class="bar-color-container"><div class="bar-color ciu-bar" id="bar-ciu"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle erc"></span>ERC</td>
+                <td id="sum-erc"></td>
+                <td id="pct-erc"></td>
+                <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cs"></span>Cs</td>
+                <td id="sum-cs"></td>
+                <td id="pct-cs"></td>
+                <td><div class="bar-color-container"><div class="bar-color cs-bar" id="bar-cs"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pp"></span>PP</td>
+                <td id="sum-pp"></td>
+                <td id="pct-pp"></td>
+                <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cup"></span>CUP</td>
+                <td id="sum-cup"></td>
+                <td id="pct-cup"></td>
+                <td><div class="bar-color-container"><div class="bar-color cup-bar" id="bar-cup"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle icv"></span>ICV</td>
+                <td id="sum-icv"></td>
+                <td id="pct-icv"></td>
+                <td><div class="bar-color-container"><div class="bar-color icv-bar" id="bar-icv"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pxc"></span>PxC</td>
+                <td id="sum-pxc"></td>
+                <td id="pct-pxc"></td>
+                <td><div class="bar-color-container"><div class="bar-color pxc-bar" id="bar-pxc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle blanco"></span>En Blanco</td>
+                <td id="sum-enblanco"></td>
+                <td id="pct-enblanco"></td>
+                <td><div class="bar-color-container"><div class="bar-color enblanco-bar" id="bar-enblanco"></div></div></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -392,7 +525,85 @@
                 }
 
             })
-            .catch(error => console.error('Error cargando datos GeoJSON:', error));
+            function toggleSummaryPopup() {
+            const popup = document.getElementById('summary-popup');
+            if (popup.style.display === 'none') {
+                popup.style.display = 'block';
+                calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function calculateSummaries() {
+            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/cly75xfvg0tgg1mpbabbx0bmg/features?access_token=' + mapboxgl.accessToken)
+                .then(response => response.json()) 
+                .then(data => {
+                    const sums = {
+                        PSC: 0, CiU: 0, ERC: 0, PP: 0, 'En Blanco': 0, PxC: 0, Cs: 0, CUP: 0, ICV: 0
+                    };
+
+                    let totalVotants = 0;
+                    let totalElectors = 0;
+                    let totalVotsBlancs = 0;
+
+                    data.features.forEach(feature => {
+                        sums.PSC += parseInt(feature.properties.PSC) || 0;
+                        sums.CiU += parseInt(feature.properties.CiU) || 0;
+                        sums.ERC += parseInt(feature.properties.ERC) || 0;
+                        sums.PxC += parseInt(feature.properties.PxC) || 0;
+                        sums.PP += parseInt(feature.properties.PP) || 0;
+                        sums.Cs += parseInt(feature.properties.Cs) || 0;
+                        sums.CUP += parseInt(feature.properties.CUP) || 0;
+                        sums.ICV += parseInt(feature.properties.ICV) || 0;
+                        sums['En Blanco'] += parseInt(feature.properties['En Blanco']) || 0;
+
+                        // Sumar el total de votantes y votos en blanco
+                        totalVotants += parseInt(feature.properties.NUM_VOTANTS) || 0;
+                        totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
+                        totalElectors += parseInt(feature.properties.NUM_ELECTORS) || 0;
+                    });
+
+                    const parties = [
+                        { party: 'PSC', votes: sums.PSC },
+                        { party: 'CiU', votes: sums.CiU },
+                        { party: 'ERC', votes: sums.ERC },
+                        { party: 'PxC', votes: sums.PxC },
+                        { party: 'PP', votes: sums.PP },
+                        { party: 'Cs', votes: sums.Cs },
+                        { party: 'ICV', votes: sums.ICV },
+                        { party: 'CUP', votes: sums.CUP },
+                        { party: 'En Blanco', votes: sums['En Blanco'] }
+                    ];
+
+                    // Ordenar el array de partidos por votos descendentes
+                    parties.sort((a, b) => b.votes - a.votes);
+
+                    // Limpiar y actualizar la tabla en el popup
+                    const summaryBody = document.getElementById('summary-body');
+                    summaryBody.innerHTML = '';
+                    parties.forEach(({ party, votes }) => {
+                        const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                            <td>${votes.toLocaleString()}</td>
+                            <td>${percentage}%</td>
+                            <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                        `;
+                        summaryBody.appendChild(row);
+                    });
+
+                    const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
+                    document.getElementById('participation').textContent = `Participació: ${participationPercentage}%`;
+                })
+                .catch(error => console.error('Error cargando datos GeoJSON:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSummaries();
+        });
+            
     </script>
 </body>
 </html>
