@@ -125,7 +125,8 @@
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         z-index: 1000;
-        width: 350px;
+        width: 370px;
+        display: none;
     }
     .bar-color-container {
             height: 10px; /* Altura de la barra */
@@ -197,6 +198,7 @@
                 <th>Vots</th>
                 <th>%</th>
                 <th>Percentatge</th>
+                <th class="regidors-header">Regidors</th>
             </tr>
         </thead>
         <tbody id="summary-body">
@@ -205,56 +207,64 @@
                 <td id="sum-psc"></td>
                 <td id="pct-psc"></td>
                 <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+                <td id="regidors-psc"></td>
             </tr>
             <tr>
                 <td><span class="color-circle ciu"></span>CiU</td>
                 <td id="sum-ciu"></td>
                 <td id="pct-ciu"></td>
                 <td><div class="bar-color-container"><div class="bar-color ciu-bar" id="bar-ciu"></div></div></td>
+                <td id="regidors-ciu"></td>
             </tr>
             <tr>
                 <td><span class="color-circle erc"></span>ERC</td>
                 <td id="sum-erc"></td>
                 <td id="pct-erc"></td>
                 <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
+                <td id="regidors-erc"></td>
             </tr>
             <tr>
                 <td><span class="color-circle cs"></span>Cs</td>
                 <td id="sum-cs"></td>
                 <td id="pct-cs"></td>
                 <td><div class="bar-color-container"><div class="bar-color cs-bar" id="bar-cs"></div></div></td>
+                <td id="regidors-cs"></td>
             </tr>
             <tr>
                 <td><span class="color-circle pp"></span>PP</td>
                 <td id="sum-pp"></td>
                 <td id="pct-pp"></td>
                 <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+                <td id="regidors-pp"></td>
             </tr>
             <tr>
                 <td><span class="color-circle cup"></span>CUP</td>
                 <td id="sum-cup"></td>
                 <td id="pct-cup"></td>
                 <td><div class="bar-color-container"><div class="bar-color cup-bar" id="bar-cup"></div></div></td>
+                <td id="regidors-cup"></td>
             </tr>
             <tr>
                 <td><span class="color-circle icv"></span>ICV</td>
                 <td id="sum-icv"></td>
                 <td id="pct-icv"></td>
                 <td><div class="bar-color-container"><div class="bar-color icv-bar" id="bar-icv"></div></div></td>
+                <td id="regidors-icv"></td>
             </tr>
             <tr>
                 <td><span class="color-circle pxc"></span>PxC</td>
                 <td id="sum-pxc"></td>
                 <td id="pct-pxc"></td>
                 <td><div class="bar-color-container"><div class="bar-color pxc-bar" id="bar-pxc"></div></div></td>
+                <td id="regidors-pxc"></td>
             </tr>
             <tr>
                 <td><span class="color-circle blanco"></span>En Blanco</td>
                 <td id="sum-enblanco"></td>
                 <td id="pct-enblanco"></td>
                 <td><div class="bar-color-container"><div class="bar-color enblanco-bar" id="bar-enblanco"></div></div></td>
+                <td id="regidors-enblanco"></td>
             </tr>
-
         </tbody>
     </table>
 </div>
@@ -337,7 +347,7 @@
         'CiU': '#00C3B2'
         // Puedes añadir más partidos y colores aquí
     }};
-        function goBack() {
+    function goBack() {
         window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
     }
 
@@ -565,15 +575,15 @@
                     });
 
                     const parties = [
-                        { party: 'PSC', votes: sums.PSC },
-                        { party: 'CiU', votes: sums.CiU },
-                        { party: 'ERC', votes: sums.ERC },
-                        { party: 'PxC', votes: sums.PxC },
-                        { party: 'PP', votes: sums.PP },
-                        { party: 'Cs', votes: sums.Cs },
-                        { party: 'ICV', votes: sums.ICV },
-                        { party: 'CUP', votes: sums.CUP },
-                        { party: 'En Blanco', votes: sums['En Blanco'] }
+                        { party: 'PSC', votes: sums.PSC, regidors: "11 (-2)" },
+                        { party: 'CiU', votes: sums.CiU, regidors: "9 (+3)"},
+                        { party: 'ERC', votes: sums.ERC, regidors: "0 (-2)"},
+                        { party: 'PxC', votes: sums.PxC, regidors: "0 (=)" },
+                        { party: 'PP', votes: sums.PP, regidors: "4 (+1)"},
+                        { party: 'Cs', votes: sums.Cs, regidors: "0 (=)"},
+                        { party: 'ICV', votes: sums.ICV, regidors: "3 (=)"},
+                        { party: 'CUP', votes: sums.CUP, regidors: "0 (=)"},
+                        { party: 'En Blanco', votes: sums['En Blanco'], regidors: "0 (=)" },
                     ];
 
                     // Ordenar el array de partidos por votos descendentes
@@ -582,7 +592,7 @@
                     // Limpiar y actualizar la tabla en el popup
                     const summaryBody = document.getElementById('summary-body');
                     summaryBody.innerHTML = '';
-                    parties.forEach(({ party, votes }) => {
+                    parties.forEach(({ party, votes, regidors }) => {
                         const percentage = ((votes / totalVotants) * 100).toFixed(2);
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -590,6 +600,7 @@
                             <td>${votes.toLocaleString()}</td>
                             <td>${percentage}%</td>
                             <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                            <td>${regidors}</td>
                         `;
                         summaryBody.appendChild(row);
                     });
