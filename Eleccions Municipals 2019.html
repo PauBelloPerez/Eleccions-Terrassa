@@ -126,7 +126,8 @@
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         z-index: 1000;
-        width: 350px;
+        width: 370px;
+        display: none;
     }
     .bar-color-container {
             height: 10px; /* Altura de la barra */
@@ -200,6 +201,7 @@
                 <th>Vots</th>
                 <th>%</th>
                 <th>Percentatge</th>
+                <th class="regidors-header">Regidors</th>
             </tr>
         </thead>
         <tbody id="summary-body">
@@ -208,60 +210,70 @@
                 <td id="sum-psc"></td>
                 <td id="pct-psc"></td>
                 <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+                <td id="regidors-psc"></td>
             </tr>
             <tr>
                 <td><span class="color-circle junts"></span>Junts</td>
                 <td id="sum-junts"></td>
                 <td id="pct-junts"></td>
                 <td><div class="bar-color-container"><div class="bar-color junts-bar" id="bar-junts"></div></div></td>
+                <td id="regidors-junts"></td>
             </tr>
             <tr>
                 <td><span class="color-circle erc"></span>ERC</td>
                 <td id="sum-erc"></td>
                 <td id="pct-erc"></td>
                 <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
+                <td id="regidors-erc"></td>
             </tr>
             <tr>
                 <td><span class="color-circle cs"></span>Cs</td>
                 <td id="sum-cs"></td>
                 <td id="pct-cs"></td>
                 <td><div class="bar-color-container"><div class="bar-color cs-bar" id="bar-cs"></div></div></td>
+                <td id="regidors-cs"></td>
             </tr>
             <tr>
                 <td><span class="color-circle pp"></span>PP</td>
                 <td id="sum-pp"></td>
                 <td id="pct-pp"></td>
                 <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+                <td id="regidors-pp"></td>
             </tr>
             <tr>
                 <td><span class="color-circle primaries"></span>Primàries</td>
                 <td id="sum-primaries"></td>
                 <td id="pct-primaries"></td>
                 <td><div class="bar-color-container"><div class="bar-color primaries-bar" id="bar-primaries"></div></div></td>
+                <td id="regidors-primaries"></td>
             </tr>
             <tr>
                 <td><span class="color-circle ecp"></span>Comuns</td>
                 <td id="sum-comuns"></td>
                 <td id="pct-comuns"></td>
                 <td><div class="bar-color-container"><div class="bar-color encomu-bar" id="bar-encomu"></div></div></td>
+                <td id="regidors-ecp"></td>
             </tr>
             <tr>
                 <td><span class="color-circle cup"></span>CUP</td>
                 <td id="sum-cup"></td>
                 <td id="pct-cup"></td>
                 <td><div class="bar-color-container"><div class="bar-color cup-bar" id="bar-cup"></div></div></td>
+                <td id="regidors-cup"></td>
             </tr>
             <tr>
                 <td><span class="color-circle txt"></span>TxT</td>
                 <td id="sum-txt"></td>
                 <td id="pct-txt"></td>
                 <td><div class="bar-color-container"><div class="bar-color txt-bar" id="bar-txt"></div></div></td>
+                <td id="regidors-txt"></td>
             </tr>
             <tr>
-                <td><span class="color-circle vox"></span>Cs</td>
+                <td><span class="color-circle vox"></span>Vox</td>
                 <td id="sum-vox"></td>
                 <td id="pct-vox"></td>
                 <td><div class="bar-color-container"><div class="bar-color vox-bar" id="bar-vox"></div></div></td>
+                <td id="regidors-vox"></td>
             </tr>
         </tbody>
     </table>
@@ -579,16 +591,16 @@
                     });
 
                     const parties = [
-                        { party: 'PSC', votes: sums.PSC },
-                        { party: 'Junts', votes: sums.Junts },
-                        { party: 'ERC', votes: sums.ERC },
-                        { party: 'VOX', votes: sums.VOX },
-                        { party: 'PP', votes: sums.PP },
-                        { party: 'TxT', votes: sums.TxT },
-                        { party: 'ECP', votes: sums.ECP },
-                        { party: 'Cs', votes: sums.Cs },
-                        { party: 'CUP', votes: sums.CUP },
-                        { party: 'Primaries', votes: sums.PRIMARIES }
+                        { party: 'PSC', votes: sums.PSC, regidors: "7 (-2)" },
+                        { party: 'Junts', votes: sums.Junts, regidors:"2 (-1)" },
+                        { party: 'ERC', votes: sums.ERC, regidors:"5 (+1)" },
+                        { party: 'VOX', votes: sums.VOX, regidors:"0 (=)" },
+                        { party: 'PP', votes: sums.PP, regidors: "0 (-1)" },
+                        { party: 'TxT', votes: sums.TxT, regidors:"10 (+10)" },
+                        { party: 'ECP', votes: sums.ECP, regidors:"0 (-6)" },
+                        { party: 'Cs', votes: sums.Cs, regidors: "3 (=)"},
+                        { party: 'CUP', votes: sums.CUP, regidors:"0 (-1)" },
+                        { party: 'Primaries', votes: sums.PRIMARIES, regidors:"0 (=)"},
                     ];
 
                     // Ordenar el array de partidos por votos descendentes
@@ -597,7 +609,7 @@
                     // Limpiar y actualizar la tabla en el popup
                     const summaryBody = document.getElementById('summary-body');
                     summaryBody.innerHTML = '';
-                    parties.forEach(({ party, votes }) => {
+                    parties.forEach(({ party, votes, regidors }) => {
                         const percentage = ((votes / totalVotants) * 100).toFixed(2);
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -605,6 +617,7 @@
                             <td>${votes.toLocaleString()}</td>
                             <td>${percentage}%</td>
                             <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                            <td>${regidors}</td>
                         `;
                         summaryBody.appendChild(row);
                     });
