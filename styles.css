@@ -1,0 +1,129 @@
+body {
+    font-family: 'Sabon', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+.filters {
+    margin-bottom: 10px; /* Reducido para compactar el espacio */
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 1200px; /* Reducir el ancho máximo */
+    margin: 0 auto;
+}
+
+table {
+    width: 250px; /* Ancho fijo */
+    height: 150px; /* Alto fijo */
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 4px; /* Reducido para más compacidad */
+    text-align: left;
+    font-size: 14px; /* Reducido para que se ajuste mejor */
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.chart-container {
+    width: 20%;
+    max-width: 100px; /* Limitar el tamaño máximo de los gráficos */
+}
+
+#chartContainer {
+    display: flex;
+    flex-direction: column; /* Coloca los gráficos uno debajo del otro */
+    align-items: center; /* Centra los gráficos horizontalmente */
+}
+
+#resultsChart {
+    width: 80vw; /* Ajusta el ancho del gráfico de barras */
+    height: 400px; /* Ajusta la altura del gráfico de barras */
+}
+
+#resultsPieChart {
+    width: 80vw; /* Ajusta el ancho del gráfico circular */
+    height: 400px; /* Ajusta la altura del gráfico circular */
+}
+
+
+canvas {
+    max-width: 100%;
+    height: 180px; /* Reducir la altura de los gráficos */
+    display: block; /* Asegurar que el canvas ocupe todo el ancho disponible */
+
+}
+
+
+/* CSS para 2023 */
+.psc { background-color: #FF0000; }
+.erc { background-color: yellow; }
+.junts { background-color: #00C3B2; }
+.vox { background-color: #63BE21; }
+.cup { background-color: #FFEF01; }
+.comuns { background-color: #6e236e; }
+.cs { background-color: orangered; }
+.pp { background-color: #0198CB; }
+.pacma { background-color: #00FF7F; }
+.txt { background-color: #1f1d1d;}
+
+/* CSS para 2019 */
+.psc-bar { background-color: #FF0000; }
+.erc-bar { background-color: yellow; }
+.junts-bar { background-color: #00C3B2; }
+.comuns-bar { background-color: #6e236e; }
+.encomu-bar { background-color: #6e236e; }
+.cup-bar { background-color: #FFEF01; }
+.vox-bar { background-color: #63BE21; }
+.pp-bar { background-color: #0198CB; }
+.primaries-bar { background-color: #EC4C5E; }
+.cs-bar { background-color: orangered;}
+.txt-bar { background-color: #1f1d1d;}
+
+/* CSS para 2015 */
+.psc { background-color: #FF0000; }
+.erc { background-color: yellow; }
+.ciu { background-color: #18307B; }
+.cup { background-color: #FFEF01; }
+.encomu { background-color: #D00B27; }
+.tec { background-color: #D00B27; }
+.cs { background-color: orangered; }
+.pp { background-color: #0198CB; }
+.pxc { background-color: #045FB4; }
+
+/* CSS para 2011 */
+.psc { background-color: #FF0000; }
+.erc { background-color: yellow; }
+.ciu { background-color: #18307B; }
+.icv { background-color: #67AF23; }
+.cup { background-color: #FFEF01; }
+.cs { background-color: orangered; }
+.pp { background-color: #0198CB; }
+.pxc { background-color: #045FB4; }
+.enblanco { background-color: #000000; }
+.blanco { background-color: #000000; }
+
+/* CSS para 2007 */
+.psc { background-color: #FF0000; }
+.erc { background-color: yellow; }
+.ciu2007 { background-color: #18307B; }
+.cup { background-color: #FFEF01; }
+.icv { background-color: #67AF23; }
+.cs { background-color: orangered; }
+.pp { background-color: #0198CB; }
