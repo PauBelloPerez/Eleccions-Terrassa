@@ -71,10 +71,9 @@ canvas {
 }
 #backButton {
     position: fixed;
-            top: 100px; /* Ajusta esta cantidad según tu preferencia */
-            left: 10px; /* Ajusta esta cantidad según tu preferencia */
-            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
-            padding: 10px 50px;
+            top: 20px;
+    left: 20px;
+    padding: 10px 20px;
             background-color: #B5B5B5; /* Color de fondo del botón */
             color: #000000; /* Color del texto del botón */
             border: none;
