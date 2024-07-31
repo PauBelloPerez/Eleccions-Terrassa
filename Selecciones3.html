@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Electorales</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Asegurar que la tabla tenga un tamaño fijo */
+        #resultsTable {
+            width: 50%;
+            table-layout: fixed; /* Distribución fija de las columnas */
+        }
+
+        /* Celdas de la tabla */
+        #resultsTable th, #resultsTable td {
+            text-align: center; /* Centrar el contenido */
+            vertical-align: middle; /* Centrar verticalmente */
+            border: 1px solid #ddd; /* Agregar borde a las celdas */
+            padding: 8px; /* Espacio alrededor del contenido */
+            overflow: hidden; /* Ocultar desbordamiento */
+            text-overflow: ellipsis; /* Agregar puntos suspensivos si el texto es muy largo */
+        }
+
+        /* Encabezado de la tabla */
+        #resultsTable th {
+            background-color: #f2f2f2; /* Color de fondo del encabezado */
+        }
+
+        /* Celdas del cuerpo de la tabla */
+        #resultsTable td {
+            height: 33px; /* Altura fija para las celdas */
+        }
+        #chartContainer {
+            display: flex;
+            flex-direction: column; /* Coloca los gráficos uno debajo del otro */
+            align-items: center; /* Centra los gráficos horizontalmente */
+            gap: 20px;
+        }
+
+        #resultsChart, #resultsPieChart {
+            width: 500px; /* Ajusta el ancho de los gráficos */
+            height: 100px; /* Ajusta la altura de los gráficos */
+        }
+        .chartCanvas {
+            width: auto; /* Ajusta el ancho del gráfico */
+            height: auto; /* Ajusta la altura del gráfico */
+        }
+    </style>
+</head>
+<body>
+    <h1>Resultados Electorales</h1>
+    <div class="filters">
+        <label for="any">Año:</label>
+        <select id="any">
+            <option value="2023">2023</option>
+            <option value="2019">2019</option>
+            <option value="2015">2015</option>
+            <option value="2011">2011</option>
+            <option value="2007">2007</option>
+        </select>
+
+        <label for="districte">Distrito:</label>
+        <select id="districte">
+            <option value="tots">Tots</option>
+        </select>
+
+        <label for="seccio">Sección:</label>
+        <select id="seccio">
+            <option value="totes">Totes</option>
+        </select>
+    </div>
+    <div class="content">
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Partido</th>
+                    <th>Vots</th>
+                    <th>% Vots</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas serán añadidas por JavaScript -->
+            </tbody>
+        </table>
+
+        <div id="chartContainer">
+            <canvas id="resultsChart" class="chartCanvas"></canvas>
+            <canvas id="resultsPieChart" class="chartCanvas"></canvas>
+        </div>
+    </div>
+    <script src="script4.js"></script>
+</body>
+</html>
