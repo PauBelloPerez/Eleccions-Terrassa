@@ -354,7 +354,7 @@
             return getColorForPercentage(partyName, maxPercentage);
         }
 
-        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzjzvpvh3flw1treztrqlzsx/features?access_token=' + mapboxgl.accessToken)
+        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzk8s96p4lm61vr2uuyvc8jr/features?access_token=' + mapboxgl.accessToken)
             .then(response => response.json())  
             .then(data => {
                 data.features.forEach((feature, index) => {
@@ -521,7 +521,7 @@
 }
 
 function calculateSummaries() {
-    fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzjzvpvh3flw1treztrqlzsx/features?access_token=' + mapboxgl.accessToken)
+    fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzk8s96p4lm61vr2uuyvc8jr/features?access_token=' + mapboxgl.accessToken)
         .then(response => response.json())
         .then(data => {
             const sums = {
