@@ -22,6 +22,7 @@ h1 {
     width: 90%;
     max-width: 1200px; /* Reducir el ancho máximo */
     margin: 0 auto;
+    padding-bottom: 60px; /* Asegura que haya suficiente espacio para el botón y el mapa */
 }
 
 .main-content {
@@ -36,7 +37,8 @@ h1 {
     max-width: 550px; /* Ajusta el ancho máximo para evitar que la tabla sea demasiado pequeña */
     height: 20vw; /* Ajusta la altura de la tabla automáticamente */
     border-collapse: collapse;
-    margin-right: 20px; /* Espacio entre la tabla y los gráficos */
+    margin-right: 20px;
+    margin-bottom: 20px; /* Espacio entre la tabla y los gráficos */
 }
 
 .charts {
@@ -57,34 +59,37 @@ h1 {
     width: 400px; /* Ajusta el ancho del gráfico circular */
     height: 300px; /* Ajusta la altura del gráfico circular */
     margin-top: 10px; /* Espacio entre el gráfico de barras y el gráfico circular */
+    margin-bottom: 20px; /* Espacio debajo del gráfico circular para el botón */
 }
 
+/* Estilo para el botón y el iframe */
 #mapButton {
-    display: block;
-    margin: 20px auto; /* Ajusta el margen superior para reducir el espacio entre el botón y el mapa */
+    display: block; /* Asegura que el botón se comporte como un elemento de bloque */
     padding: 10px 20px;
     background-color: #007bff; /* Color de botón inicial */
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    position: absolute; /* Cambia a posición relativa */
+    margin: 750px auto; /* Centra el botón y agrega margen */
+    z-index: 1000; /* Asegura que el botón esté encima del contenido */
 }
 
 #mapContainer {
     display: none; /* Oculta el iframe por defecto */
     width: 80%; /* Ajusta el ancho del iframe */
-    margin: 10px auto; /* Ajusta el margen superior para reducir el espacio entre el botón y el mapa */
-    position: relative; /* Para posicionar el botón de cerrar dentro del contenedor */
+    margin: 20px auto; /* Espacio automático para centrar el contenedor y espacio adicional debajo del botón */
+    padding-bottom: 20px; /* Espacio debajo del contenedor del mapa para evitar solapamiento con el contenido */
+    position: absolute;
+    margin: 800px auto;
+    z-index: 1000; /* Cambia a posición relativa */
 }
 
 iframe {
     width: 100%;
     height: 600px;
     border: none;
-}
-
-#closeMapButton {
-    display: none; /* Oculta el botón de cerrar ya que se usa el mismo botón para mostrar/ocultar el mapa */
 }
 
 #backButton {
