@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados Electorales</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.1.1/dist/chart.umd.min.js"></script>
@@ -35,20 +35,41 @@
         #resultsTable td {
             height: 33px; /* Altura fija para las celdas */
         }
-        #chartContainer {
+
+        .charts {
             display: flex;
             flex-direction: column; /* Coloca los gráficos uno debajo del otro */
             align-items: center; /* Centra los gráficos horizontalmente */
-            gap: 20px;
         }
 
         #resultsChart, #resultsPieChart {
-            width: 500px; /* Ajusta el ancho de los gráficos */
-            height: 100px; /* Ajusta la altura de los gráficos */
+            width: 300px; /* Ajusta el ancho de los gráficos */
+            height: 250px; /* Ajusta la altura de los gráficos */
         }
-        .chartCanvas {
-            width: auto; /* Ajusta el ancho del gráfico */
-            height: auto; /* Ajusta la altura del gráfico */
+
+        /* Estilo para el botón y el iframe */
+        #mapButton {
+            display: block;
+            margin: 20px auto; /* Ajusta el margen superior para reducir el espacio entre el botón y el mapa */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #mapContainer {
+            display: none; /* Oculta el iframe por defecto */
+            width: 80%; /* Ajusta el ancho del iframe */
+            margin: 10px auto; /* Ajusta el margen superior para reducir el espacio entre el botón y el mapa */
+            position: relative; /* Para posicionar el botón de cerrar dentro del contenedor */
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
         }
     </style>
 </head>
@@ -56,6 +77,14 @@
     <a href="index.html" id="backButton">Inici</a>
     <h1>Resultats Electorals</h1>
     <div class="filters">
+        <label for="elecció">Elecció:</label>
+        <select id="elecció">
+            <option value="Municipals">Municipals</option>
+            <option value="Parlament">Parlament</option>
+            <option value="Generals">Generals</option>
+            <option value="Europees">Europees</option>
+        </select>
+
         <label for="any">Any:</label>
         <select id="any">
             <option value="2023">2023</option>
@@ -76,24 +105,136 @@
         </select>
     </div>
     <div class="content">
-        <table id="resultsTable">
-            <thead>
-                <tr>
-                    <th>Partit</th>
-                    <th>Vots</th>
-                    <th>% Vots</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Las filas serán añadidas por JavaScript -->
-            </tbody>
-        </table>
+        <div class="main-content">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Partit</th>
+                        <th>Vots</th>
+                        <th>% Vots</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas serán añadidas por JavaScript -->
+                </tbody>
+            </table>
 
-        <div id="chartContainer">
-            <canvas id="resultsChart" class="chartCanvas"></canvas>
-            <canvas id="resultsPieChart" class="chartCanvas"></canvas>
+            <div class="charts">
+                <canvas id="resultsChart" class="chartCanvas"></canvas>
+                <canvas id="resultsPieChart" class="chartCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Botón para ver el mapa -->
+        <button id="mapButton">Veure mapa</button>
+
+        <!-- Contenedor para el iframe -->
+        <div id="mapContainer">
+            <iframe id="mapIframe" src=""></iframe>
         </div>
     </div>
+    <script>
+        document.getElementById('elecció').addEventListener('change', function() {
+            const selection = this.value;
+            if (selection === 'Generals') {
+                window.location.href = 'SeleccionesGenerales2.html?eleccio=Generals';
+            } else if (selection === 'Municipals') {
+                window.location.href = 'Selecciones.html?eleccio=Municipals';
+            }
+            // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
+        });
+
+        document.getElementById('any').addEventListener('change', function() {
+            const year = this.value;
+            const iframe = document.getElementById('mapIframe');
+            let src = '';
+
+            switch (year) {
+                case '2023':
+                    src = 'Elecciones Municipales 2023.html';
+                    break;
+                case '2019':
+                    src = 'Municipals2019.html';
+                    break;
+                case '2015':
+                    src = 'Municipals2015.html';
+                    break;
+                case '2011':
+                    src = 'Municipals2011.html';
+                    break;
+                case '2007':
+                    src = 'Municipals2007.html';
+                    break;
+                default:
+                    src = '';
+            }
+
+            iframe.src = src;
+        });
+
+        // Set the selection value based on query parameter
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const eleccio = getQueryParam('eleccio');
+        if (eleccio) {
+            document.getElementById('elecció').value = eleccio;
+        }
+
+        // Mostrar el iframe al hacer clic en el botón
+        document.getElementById('mapButton').addEventListener('click', function() {
+            const mapContainer = document.getElementById('mapContainer');
+            const button = document.getElementById('mapButton');
+            const iframe = document.getElementById('mapIframe');
+
+            // Asegúrate de que el iframe tenga una src válida
+            if (iframe.src) {
+                if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+                    mapContainer.style.display = 'block';
+                    button.textContent = 'Tancar mapa'; // Cambia el texto del botón
+                    button.style.backgroundColor = '#dc3545'; // Cambia el color del botón
+                } else {
+                    mapContainer.style.display = 'none';
+                    button.textContent = 'Veure mapa'; // Cambia el texto del botón
+                    button.style.backgroundColor = '#007bff'; // Cambia el color del botón
+                }
+            } else {
+                alert('El iframe no tiene una fuente válida. Por favor, selecciona un año.');
+            }
+        });
+
+        // Establece la fuente del iframe al cargar la página si se seleccionó un año
+        document.addEventListener('DOMContentLoaded', function() {
+            const year = document.getElementById('any').value;
+            const iframe = document.getElementById('mapIframe');
+
+            let src = '';
+
+            switch (year) {
+                case '2023':
+                    src = 'Elecciones Municipales 2023.html';
+                    break;
+                case '2019':
+                    src = 'Municipals2019.html';
+                    break;
+                case '2015':
+                    src = 'Municipals2015.html';
+                    break;
+                case '2011':
+                    src = 'Municipals2011.html';
+                    break;
+                case '2007':
+                    src = 'Municipals2007.html';
+                    break;
+                default:
+                    src = '';
+            }
+
+            iframe.src = src;
+        });
+    </script>
     <script src="script4.js"></script>
 </body>
 </html>
