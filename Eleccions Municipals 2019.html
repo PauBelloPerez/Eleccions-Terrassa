@@ -39,12 +39,13 @@
         .junts { background-color: #00C3B2; }
         .vox { background-color: #63BE21; }
         .cup { background-color: #FFEF01; }
-        .comuns { background-color: #6e236e; }
-        .ecp { background-color: #6e236e; }
+        .podem { background-color: #6e236e; }
+        .tec { background-color: #D00B27; }
         .cs { background-color: orangered; }
         .pp { background-color: #0198CB; }
         .primaries { background-color: #EC4C5E; }
         .txt { background-color: #1f1d1d;}
+
         .popup-table {
             width: 100%;
             border-collapse: collapse;
@@ -126,7 +127,7 @@
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         z-index: 1000;
-        width: 370px;
+        width: 390px;
         display: none;
     }
     .bar-color-container {
@@ -248,11 +249,11 @@
                 <td id="regidors-primaries"></td>
             </tr>
             <tr>
-                <td><span class="color-circle ecp"></span>Comuns</td>
-                <td id="sum-comuns"></td>
-                <td id="pct-comuns"></td>
-                <td><div class="bar-color-container"><div class="bar-color encomu-bar" id="bar-encomu"></div></div></td>
-                <td id="regidors-ecp"></td>
+                <td><span class="color-circle tec"></span>TeC</td>
+                <td id="sum-tec"></td>
+                <td id="pct-tec"></td>
+                <td><div class="bar-color-container"><div class="bar-color tec-bar" id="bar-tec"></div></div></td>
+                <td id="regidors-tec"></td>
             </tr>
             <tr>
                 <td><span class="color-circle cup"></span>CUP</td>
@@ -274,6 +275,13 @@
                 <td id="pct-vox"></td>
                 <td><div class="bar-color-container"><div class="bar-color vox-bar" id="bar-vox"></div></div></td>
                 <td id="regidors-vox"></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle podem"></span>Podem</td>
+                <td id="sum-podem"></td>
+                <td id="pct-podem"></td>
+                <td><div class="bar-color-container"><div class="bar-color podem-bar" id="bar-podem"></div></div></td>
+                <td id="regidors-podem"></td>
             </tr>
         </tbody>
     </table>
@@ -336,7 +344,7 @@
                 'ERC': { start: '#ffffb2', end: '#FFD700' },
                 'PP': { start: '#d1ecf9', end: '#0198CB' },
                 'CUP': { start: '#ffffc2', end: '#FFEF01' },
-                'Comuns': { start: '#ebc2eb', end: '#6e236e' },
+                'Podem': { start: '#ebc2eb', end: '#6e236e' },
                 'Cs': { start: '#ffdbb2', end: '#FFA500' },
                 'PACMA': { start: '#b2ffda', end: '#00FF7F' },
                 'TxT': { start: '#a0a0a0', end: '#000000' }
@@ -354,7 +362,7 @@
         function determineColorByParty(properties) {
     var partyColors = {
         'PSC': '#FF0000',
-        'CAT-JUNTS+': '#00C3B2'
+        'Junts': '#00C3B2'
         // Puedes añadir más partidos y colores aquí
     }};
     function goBack() {
@@ -379,7 +387,7 @@
             return getColorForPercentage(partyName, maxPercentage);
         }
 
-        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/cly5y8u26ppw81mp85hck17zr/features?access_token=' + mapboxgl.accessToken)
+        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzjysjbs3k7q1tlpn4w2q36m/features?access_token=' + mapboxgl.accessToken)
             .then(response => response.json())  
             .then(data => {
                 data.features.forEach((feature, index) => {
@@ -471,9 +479,14 @@
     <td>${properties['CUP']}</td> <!-- Añadir valor de Vots CUP -->
 </tr>
 <tr>
-    <td><span class="color-circle comuns"></span>Comuns</td>
-    <td><strong>${properties['% ECP']}</strong></td>
-    <td>${properties['ECP']}</td> <!-- Añadir valor de Vots Comuns -->
+    <td><span class="color-circle tec"></span>TeC</td>
+    <td><strong>${properties['% TEC']}</strong></td>
+    <td>${properties['TEC']}</td> <!-- Añadir valor de Vots TeC -->
+</tr>
+<tr>
+    <td><span class="color-circle podem"></span>Podem</td>
+    <td><strong>${properties['% Podem']}</strong></td>
+    <td>${properties['Podem']}</td> <!-- Añadir valor de Vots Podem -->
 </tr>
 <tr>
     <td><span class="color-circle cs"></span>Cs</td>
@@ -551,86 +564,100 @@
 
             })
             function toggleSummaryPopup() {
-            const popup = document.getElementById('summary-popup');
-            if (popup.style.display === 'none') {
-                popup.style.display = 'block';
-                calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
-            } else {
-                popup.style.display = 'none';
+    const popup = document.getElementById('summary-popup');
+    if (popup.style.display === 'none') {
+        popup.style.display = 'block';
+        calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
+    } else {
+        popup.style.display = 'none';
+    }
+}
+
+function calculateSummaries() {
+    fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzjysjbs3k7q1tlpn4w2q36m/features?access_token=' + mapboxgl.accessToken)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data received from API:', data);
+            if (!data.features || data.features.length === 0) {
+                console.error('No features found in the data');
+                return;
             }
-        }
 
-        function calculateSummaries() {
-            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/cly5y8u26ppw81mp85hck17zr/features?access_token=' + mapboxgl.accessToken)
-                .then(response => response.json()) 
-                .then(data => {
-                    const sums = {
-                        PSC: 0, Junts: 0, ERC: 0, PP: 0, TxT: 0, ECP: 0, VOX: 0, Cs: 0, PRIMARIES: 0, CUP: 0
-                    };
+            // Crear objeto para almacenar los totales generales
+            const sums = {
+                PSC: 0, Junts: 0, ERC: 0, PP: 0, TxT: 0, TEC: 0, VOX: 0, Cs: 0, PRIMARIES: 0, CUP: 0, Podem: 0
+            };
 
-                    let totalVotants = 0;
-                    let totalElectors = 0;
-                    let totalVotsBlancs = 0;
+            let totalVotants = 0;
+            let totalElectors = 0;
+            let totalVotsBlancs = 0;
 
-                    data.features.forEach(feature => {
-                        sums.PSC += parseInt(feature.properties.PSC) || 0;
-                        sums.Junts += parseInt(feature.properties.Junts) || 0;
-                        sums.ERC += parseInt(feature.properties.ERC) || 0;
-                        sums.VOX += parseInt(feature.properties.VOX) || 0;
-                        sums.PP += parseInt(feature.properties.PP) || 0;
-                        sums.TxT += parseInt(feature.properties.TxT) || 0;
-                        sums.ECP += parseInt(feature.properties.ECP) || 0;
-                        sums.Cs += parseInt(feature.properties.Cs) || 0;
-                        sums.CUP += parseInt(feature.properties.CUP) || 0;
-                        sums.PRIMARIES += parseInt(feature.properties.PRIMARIES) || 0;
+            data.features.forEach((feature, index) => {
+                const { properties } = feature;
 
-                        // Sumar el total de votantes y votos en blanco
-                        totalVotants += parseInt(feature.properties.NUM_VOTANTS) || 0;
-                        totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
-                        totalElectors += parseInt(feature.properties.NUM_ELECTORS) || 0;
-                    });
+                // Sumar votos de cada partido
+                sums.PSC += parseInt(properties.PSC) || 0;
+                sums.Junts += parseInt(properties.Junts) || 0;
+                sums.ERC += parseInt(properties.ERC) || 0;
+                sums.VOX += parseInt(properties.VOX) || 0;
+                sums.PP += parseInt(properties.PP) || 0;
+                sums.TxT += parseInt(properties.TxT) || 0;
+                sums.Podem += parseInt(properties.Podem) || 0;
+                sums.Cs += parseInt(properties.Cs) || 0;
+                sums.CUP += parseInt(properties.CUP) || 0;
+                sums.PRIMARIES += parseInt(properties.PRIMARIES) || 0;
+                sums.TEC += parseInt(properties.TEC) || 0;
 
-                    const parties = [
-                        { party: 'PSC', votes: sums.PSC, regidors: "7 (-2)" },
-                        { party: 'Junts', votes: sums.Junts, regidors:"2 (-1)" },
-                        { party: 'ERC', votes: sums.ERC, regidors:"5 (+1)" },
-                        { party: 'VOX', votes: sums.VOX, regidors:"0 (=)" },
-                        { party: 'PP', votes: sums.PP, regidors: "0 (-1)" },
-                        { party: 'TxT', votes: sums.TxT, regidors:"10 (+10)" },
-                        { party: 'ECP', votes: sums.ECP, regidors:"0 (-6)" },
-                        { party: 'Cs', votes: sums.Cs, regidors: "3 (=)"},
-                        { party: 'CUP', votes: sums.CUP, regidors:"0 (-1)" },
-                        { party: 'Primaries', votes: sums.PRIMARIES, regidors:"0 (=)"},
-                    ];
+                // Sumar total de votantes y votos en blanco
+                totalVotants += parseInt(properties.NUM_VOTANTS) || 0;
+                totalVotsBlancs += parseInt(properties.VOTS_BLANCS) || 0;
+                totalElectors += parseInt(properties.NUM_ELECTORS) || 0;
 
-                    // Ordenar el array de partidos por votos descendentes
-                    parties.sort((a, b) => b.votes - a.votes);
+                console.log(`After processing feature ${index}:`, sums);
+            });
 
-                    // Limpiar y actualizar la tabla en el popup
-                    const summaryBody = document.getElementById('summary-body');
-                    summaryBody.innerHTML = '';
-                    parties.forEach(({ party, votes, regidors }) => {
-                        const percentage = ((votes / totalVotants) * 100).toFixed(2);
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
-                            <td>${votes.toLocaleString()}</td>
-                            <td>${percentage}%</td>
-                            <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
-                            <td>${regidors}</td>
-                        `;
-                        summaryBody.appendChild(row);
-                    });
+            const parties = [
+                { party: 'PSC', votes: sums.PSC, regidors: "7 (-2)" },
+                { party: 'Junts', votes: sums.Junts, regidors:"2 (-1)"},
+                { party: 'ERC', votes: sums.ERC, regidors:"5 (+1)" },
+                { party: 'VOX', votes: sums.VOX , regidors:"0 (=)"},
+                { party: 'PP', votes: sums.PP, regidors: "0 (-1)" },
+                { party: 'TxT', votes: sums.TxT, regidors:"10 (+10)"},
+                { party: 'TEC', votes: sums.TEC, regidors:"0 (-6)" },
+                { party: 'Cs', votes: sums.Cs , regidors: "3 (=)"},
+                { party: 'CUP', votes: sums.CUP , regidors:"0 (-1)" },
+                { party: 'PRIMARIES', votes: sums.PRIMARIES , regidors:"0 (=)"},
+                { party: 'Podem', votes: sums.Podem, regidors:"0 (=)" },
+            ];
 
-                    const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
-                    document.getElementById('participation').textContent = `Participació: ${participationPercentage}%`;
-                })
-                .catch(error => console.error('Error cargando datos GeoJSON:', error));
-        }
+            // Ordenar el array de partidos por votos descendentes
+            parties.sort((a, b) => b.votes - a.votes);
 
-        document.addEventListener('DOMContentLoaded', function() {
-            calculateSummaries();
-        });
+            // Limpiar y actualizar la tabla en el popup
+            const summaryBody = document.getElementById('summary-body');
+            summaryBody.innerHTML = '';
+            parties.forEach(({ party, votes, regidors }) => {
+                const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                    <td>${votes.toLocaleString()}</td>
+                    <td>${percentage}%</td>
+                    <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                   <td>${regidors}</td> 
+                `;
+                summaryBody.appendChild(row);
+            });
+
+            const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
+            document.getElementById('participation').textContent = `Participació: ${participationPercentage}%`;
+        })
+        .catch(error => console.error('Error cargando datos GeoJSON:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    calculateSummaries();
+});
     </script>
 </body>
 </html>
