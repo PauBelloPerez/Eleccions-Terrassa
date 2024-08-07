@@ -8,7 +8,7 @@ body {
 }
 
 h1 {
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .filters {
@@ -17,70 +17,88 @@ h1 {
 
 .content {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Asegura que todo el contenido esté en una columna */
+    align-items: center; /* Centra el contenido horizontalmente */
     width: 90%;
     max-width: 1200px; /* Reducir el ancho máximo */
     margin: 0 auto;
 }
 
-table {
-    width: 250px; /* Ancho fijo */
-    height: 150px; /* Alto fijo */
+.main-content {
+    display: flex;
+    justify-content: space-between; /* Espacio entre la tabla y los gráficos */
+    width: 100%;
+    margin-bottom: 20px; /* Espacio debajo de los gráficos */
+}
+
+#resultsTable {
+    width: 47vw; /* Ajusta el ancho de la tabla a un poco menos de la mitad de la pantalla */
+    max-width: 550px; /* Ajusta el ancho máximo para evitar que la tabla sea demasiado pequeña */
+    height: 20vw; /* Ajusta la altura de la tabla automáticamente */
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-right: 20px; /* Espacio entre la tabla y los gráficos */
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 4px; /* Reducido para más compacidad */
-    text-align: left;
-    font-size: 14px; /* Reducido para que se ajuste mejor */
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-.chart-container {
-    width: 20%;
-    max-width: 100px; /* Limitar el tamaño máximo de los gráficos */
-}
-
-#chartContainer {
+.charts {
     display: flex;
     flex-direction: column; /* Coloca los gráficos uno debajo del otro */
     align-items: center; /* Centra los gráficos horizontalmente */
+    width: 50vw; /* Ajusta el ancho del contenedor de gráficos */
+    height: 20vw; /* Ajusta la altura del contenedor de gráficos */
 }
 
 #resultsChart {
-    width: 80vw; /* Ajusta el ancho del gráfico de barras */
-    height: 400px; /* Ajusta la altura del gráfico de barras */
+    width: auto; /* Ajusta el ancho del gráfico de barras */
+    height: auto; /* Ajusta la altura del gráfico de barras */
+    max-width: 550px; /* Limita el ancho máximo del gráfico de barras */
 }
 
 #resultsPieChart {
-    width: 80vw; /* Ajusta el ancho del gráfico circular */
-    height: 400px; /* Ajusta la altura del gráfico circular */
+    width: 400px; /* Ajusta el ancho del gráfico circular */
+    height: 300px; /* Ajusta la altura del gráfico circular */
+    margin-top: 10px; /* Espacio entre el gráfico de barras y el gráfico circular */
 }
 
-
-canvas {
-    max-width: 100%;
-    height: 180px; /* Reducir la altura de los gráficos */
-    display: block; /* Asegurar que el canvas ocupe todo el ancho disponible */
-
+#mapButton {
+    display: block;
+    margin: 20px auto; /* Ajusta el margen superior para reducir el espacio entre el botón y el mapa */
+    padding: 10px 20px;
+    background-color: #007bff; /* Color de botón inicial */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
+
+#mapContainer {
+    display: none; /* Oculta el iframe por defecto */
+    width: 80%; /* Ajusta el ancho del iframe */
+    margin: 10px auto; /* Ajusta el margen superior para reducir el espacio entre el botón y el mapa */
+    position: relative; /* Para posicionar el botón de cerrar dentro del contenedor */
+}
+
+iframe {
+    width: 100%;
+    height: 600px;
+    border: none;
+}
+
+#closeMapButton {
+    display: none; /* Oculta el botón de cerrar ya que se usa el mismo botón para mostrar/ocultar el mapa */
+}
+
 #backButton {
-    position: fixed;
-            top: 20px;
+    position: absolute;
+    top: 20px;
     left: 20px;
     padding: 10px 20px;
-            background-color: #B5B5B5; /* Color de fondo del botón */
-            color: #000000; /* Color del texto del botón */
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-    
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
 }
 
 #backButton:hover {
