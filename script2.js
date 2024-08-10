@@ -1,36 +1,39 @@
 // Definir el mapeo de columnas para cada año
 const columnMapping = {
     '2023': {
-        partitColumns: ['Junts', 'Cs', 'CUP', 'ERC', 'PACMA', 'PP', 'PSC', 'Comuns', 'TxT', 'VOX'],
+        partitColumns: ['Junts', 'Cs', 'CUP', 'ERC', 'PACMA', 'PP', 'PSC', 'Comuns', 'TxT', 'VOX', 'Altres'],
         totalVotesColumn: 'Vots',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2019': {
-        partitColumns: ['Cs', 'CUP', 'ERC', 'Junts', 'Podem', 'PP', 'PRIMARIES', 'PSC', 'TEC', 'TxT', 'VOX'],
+        partitColumns: ['Cs', 'CUP', 'ERC', 'Junts', 'Podem', 'PP', 'PRIMARIES', 'PSC', 'TEC', 'TxT', 'VOX', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2015': {
-        partitColumns: ['Cs', 'CiU', 'CUP', 'ERC', 'PP', 'PSC', 'PxC', 'En Comú'],
+        partitColumns: ['Cs', 'CiU', 'CUP', 'ERC', 'PP', 'PSC', 'PxC', 'En Comú', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2011': {
-        partitColumns: ['CUP', 'CiU', 'Cs', 'En Blanco', 'ERC', 'ICV', 'PP', 'PSC', 'PxC'],
+        partitColumns: ['CUP', 'CiU', 'Cs', 'En Blanco', 'ERC', 'ICV', 'PP', 'PSC', 'PxC', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2007': {
-        partitColumns: ['Cs', 'CIU', 'CUP', 'ERC', 'ICV', 'PP', 'PSC'],
+        partitColumns: ['Cs', 'CIU', 'CUP', 'ERC', 'ICV', 'PP', 'PSC', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     }
 };
+
+// Ejemplo de script para "municipals"
+
 
 // Esperar a que el contenido de la página se haya cargado
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,6 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateDistricteOptions();
 });
+
+document.getElementById('yearToggle').addEventListener('change', () => {
+    console.log('Toggle de año cambiado');
+});
+
 
 function aggregateDataByPartit(data, year, districte, seccio) {
     const columns = columnMapping[year];
@@ -87,10 +95,7 @@ function aggregateDataByPartit(data, year, districte, seccio) {
     // Ordenar los partidos por el total de votos en orden descendente
     aggregatedData.sort((a, b) => b.vots - a.vots);
 
-    // Filtrar partidos con menos de 1000 votos solo si Districte es 'tots' y Secció es 'totes'
-    if (districte === 'tots' && seccio === 'totes') {
-        return aggregatedData.filter(data => data.vots >= 1000);
-    }
+    
 
     return aggregatedData;
 }
@@ -139,12 +144,14 @@ function loadData() {
             const aggregatedData = aggregateDataByPartit(filteredData, year, districte, seccio);
             console.log('Datos agregados:', aggregatedData);
             updateTable(aggregatedData);
+            updateParticipacio(filteredData, year, districte, seccio);
         },
         error: function(error) {
             console.error('Error cargando el archivo CSV:', error);
         }
     });
 }
+
 
 
 
@@ -163,8 +170,13 @@ function filterData(data, districte, seccio, year) {
     return filteredData;
 }
 
+document.getElementById('lockToggle').addEventListener('change', function() {
+    console.log('Toggle de bloqueo activado:', this.checked);
+});
+
 function updateDistricteOptions() {
     const year = document.getElementById('any').value;
+    const keepSelections = document.getElementById('yearToggle').checked;
     let fileName = '';
 
     switch (year) {
@@ -199,14 +211,20 @@ function updateDistricteOptions() {
             const data = results.data;
             const districteOptions = getUniqueDistricte(data, year);
             console.log('Opciones de distrito:', districteOptions);
-            updateDistricteSelect(districteOptions);
-            updateSeccions(); // Actualiza las secciones después de actualizar districte
+            // Solo actualizar las opciones de "Districte" y "Secció" si el toggle no está activado
+            if (!keepSelections) {
+                updateDistricteSelect(districteOptions);
+                updateSeccions(); // Actualiza las secciones después de actualizar districte
+            } else {
+                loadData(); // Si no se actualizan las opciones, solo carga los datos con las selecciones actuales
+            }
         },
         error: function(error) {
             console.error('Error cargando el archivo CSV:', error);
         }
     });
 }
+
 
 function getUniqueDistricte(data, year) {
     const columns = columnMapping[year];
@@ -336,17 +354,18 @@ function aggregateDataByPartit(data, year, districte, seccio) {
         percentatge: (vots / totalVotes) * 100
     }));
 
-    // Filtrar partidos con menos de 1000 votos solo si Districte es 'tots' y Secció es 'totes'
-    if (districte === 'tots' && seccio === 'totes') {
-        return aggregatedData.filter(data => data.vots >= 1000);
-    }
+    
 
     return aggregatedData;
 }
 
+
+
 function updateTable(aggregatedData, year) {
     const tableBody = document.querySelector('#resultsTable tbody');
     tableBody.innerHTML = '';
+
+    aggregatedData.sort((a, b) => b.vots - a.vots);
 
     // Datos para el gráfico
     const labels = aggregatedData.map(row => row.partit);
@@ -480,6 +499,117 @@ function renderPieChart(labels, percentages, year) {
     });
 }
 
+function updateParticipacio(data, year, districte, seccio) {
+    const mapping = columnMapping[year];
+
+    let participationPercentage = 0;
+
+    if (districte === 'tots' && seccio === 'totes') {
+        // Cálculo global para todos los distritos y secciones
+        let totalVotsCandidats = 0;
+        let totalVotsBlancs = 0;
+        let totalElectors = 0;
+        let totalVotants = 0;
+        let totalCenso = 0;
+
+        data.forEach(row => {
+            if (year === '2023') {
+                const votants = parseInt(row['Votants'], 10) || 0;
+                const censo = parseInt(row['Censo'], 10) || 0;
+                totalVotants += votants;
+                totalCenso += censo;
+            } else {
+                const votsCandidats = parseInt(row[mapping.totalVotesColumn], 10) || 0;
+                const votsBlancs = parseInt(row['VOTS_BLANCS'], 10) || 0;
+                const electors = parseInt(row['NUM_ELECTORS'], 10) || 0;
+                totalVotsCandidats += votsCandidats;
+                totalVotsBlancs += votsBlancs;
+                totalElectors += electors;
+            }
+        });
+
+        if (year === '2023') {
+            if (totalCenso > 0) {
+                participationPercentage = (totalVotants / totalCenso) * 100;
+            }
+        } else {
+            if (totalElectors > 0) {
+                participationPercentage = ((totalVotsCandidats + totalVotsBlancs) / totalElectors) * 100;
+            }
+        }
+    } else if (districte !== 'tots') {
+        // Cálculo para un distrito específico, con todas las secciones
+        let totalVotsCandidats = 0;
+        let totalVotsBlancs = 0;
+        let totalElectors = 0;
+        let totalVotants = 0;
+        let totalCenso = 0;
+
+        data.forEach(row => {
+            if (row[mapping.districteColumn] === districte) {
+                if (year === '2023') {
+                    const votants = parseInt(row['Votants'], 10) || 0;
+                    const censo = parseInt(row['Censo'], 10) || 0;
+                    totalVotants += votants;
+                    totalCenso += censo;
+                } else {
+                    const votsCandidats = parseInt(row[mapping.totalVotesColumn], 10) || 0;
+                    const votsBlancs = parseInt(row['VOTS_BLANCS'], 10) || 0;
+                    const electors = parseInt(row['NUM_ELECTORS'], 10) || 0;
+                    totalVotsCandidats += votsCandidats;
+                    totalVotsBlancs += votsBlancs;
+                    totalElectors += electors;
+                }
+            }
+        });
+
+        if (year === '2023') {
+            if (totalCenso > 0) {
+                participationPercentage = (totalVotants / totalCenso) * 100;
+            }
+        } else {
+            if (totalElectors > 0) {
+                participationPercentage = ((totalVotsCandidats + totalVotsBlancs) / totalElectors) * 100;
+            }
+        }
+    } else {
+        // Cálculo para un distrito y una sección específica
+        let totalVots = 0;
+        let totalElectors = 0;
+        let totalVotants = 0;
+        let totalCenso = 0;
+
+        data.forEach(row => {
+            if (row[mapping.districteColumn] === districte && row[mapping.seccioColumn] === seccio) {
+                if (year === '2023') {
+                    const votants = parseInt(row['Votants'], 10) || 0;
+                    const censo = parseInt(row['Censo'], 10) || 0;
+                    totalVotants += votants;
+                    totalCenso += censo;
+                } else {
+                    const votsCandidats = parseInt(row[mapping.totalVotesColumn], 10) || 0;
+                    const votsBlancs = parseInt(row['VOTS_BLANCS'], 10) || 0;
+                    const electors = parseInt(row['NUM_ELECTORS'], 10) || 0;
+                    totalVots += (votsCandidats + votsBlancs);
+                    totalElectors += electors;
+                }
+            }
+        });
+
+        if (year === '2023') {
+            if (totalCenso > 0) {
+                participationPercentage = (totalVotants / totalCenso) * 100;
+            }
+        } else {
+            if (totalElectors > 0) {
+                participationPercentage = (totalVots / totalElectors) * 100;
+            }
+        }
+    }
+
+    // Actualizar la celda de participación
+    document.getElementById('participacioValue').textContent = participationPercentage.toFixed(2) + '%';
+}
 
 
 function getPartyColor(party) {
@@ -510,6 +640,7 @@ function getPartyColor(party) {
             'PRIMARIES': '#EC4C5E',
             'Cs': 'orangered',
             'TxT': '#1f1d1d',
+            'Altres': '#676767'
             // Agrega colores para otros partidos según sea necesario
             // ...
         },
