@@ -1,31 +1,31 @@
 // Definir el mapeo de columnas para cada año
 const columnMapping = {
     '2023': {
-        partitColumns: ['Junts', 'CUP', 'ERC', 'PACMA', 'PP', 'PSC', 'Sumar',  'VOX', 'PdeCat'],
+        partitColumns: ['Junts', 'CUP', 'ERC', 'PACMA', 'PP', 'PSC', 'Sumar',  'VOX', 'PdeCat', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2019 10N': {
-        partitColumns: ['Cs', 'CUP', 'ERC', 'Junts', 'ECP', 'PP', 'PACMA', 'PSC','Más País', 'VOX'],
+        partitColumns: ['Cs', 'CUP', 'ERC', 'Junts', 'ECP', 'PP', 'PACMA', 'PSC','Más País', 'VOX', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2019 28A': {
-        partitColumns: ['Cs','ERC', 'Junts', 'PACMA', 'PP', 'Front Republicà', 'PSC', 'ECP', 'VOX'],
+        partitColumns: ['Cs','ERC', 'Junts', 'PACMA', 'PP', 'Front Republicà', 'PSC', 'ECP', 'VOX', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2016': {
-        partitColumns: ['Cs', 'CDC', 'ECP', 'ERC', 'PP', 'PSC', 'PACMA'],
+        partitColumns: ['Cs', 'CDC', 'ECP', 'ERC', 'PP', 'PSC', 'PACMA', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2015': {
-        partitColumns: ['Unió', 'DL', 'Cs', 'En Comú', 'ERC', 'PACMA', 'PP', 'PSC'],
+        partitColumns: ['Unió', 'DL', 'Cs', 'En Comú', 'ERC', 'PACMA', 'PP', 'PSC', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
@@ -53,6 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     updateDistricteOptions();
+});
+
+document.getElementById('yearToggle').addEventListener('change', () => {
+    console.log('Toggle de año cambiado');
 });
 
 function aggregateDataByPartit(data, year, districte, seccio) {
@@ -91,9 +95,7 @@ function aggregateDataByPartit(data, year, districte, seccio) {
     aggregatedData.sort((a, b) => b.vots - a.vots);
 
     // Filtrar partidos con menos de 1000 votos solo si Districte es 'tots' y Secció es 'totes'
-    if (districte === 'Tots' && seccio === 'Totes') {
-        return aggregatedData.filter(data => data.vots >= 250);
-    }
+    
 
     return aggregatedData;
 }
@@ -142,6 +144,7 @@ function loadData() {
             const aggregatedData = aggregateDataByPartit(filteredData, year, districte, seccio);
             console.log('Datos agregados:', aggregatedData);
             updateTable(aggregatedData);
+            updateParticipacio(filteredData, year, districte, seccio);
         },
         error: function(error) {
             console.error('Error cargando el archivo CSV:', error);
@@ -166,8 +169,13 @@ function filterData(data, districte, seccio, year) {
     return filteredData;
 }
 
+document.getElementById('lockToggle').addEventListener('change', function() {
+    console.log('Toggle de bloqueo activado:', this.checked);
+});
+
 function updateDistricteOptions() {
     const year = document.getElementById('any').value;
+    const keepSelections = document.getElementById('yearToggle').checked;
     let fileName = '';
 
     switch (year) {
@@ -202,8 +210,13 @@ function updateDistricteOptions() {
             const data = results.data;
             const districteOptions = getUniqueDistricte(data, year);
             console.log('Opciones de distrito:', districteOptions);
-            updateDistricteSelect(districteOptions);
-            updateSeccions(); // Actualiza las secciones después de actualizar districte
+            // Solo actualizar las opciones de "Districte" y "Secció" si el toggle no está activado
+            if (!keepSelections) {
+                updateDistricteSelect(districteOptions);
+                updateSeccions(); // Actualiza las secciones después de actualizar districte
+            } else {
+                loadData(); // Si no se actualizan las opciones, solo carga los datos con las selecciones actuales
+            }
         },
         error: function(error) {
             console.error('Error cargando el archivo CSV:', error);
@@ -339,10 +352,7 @@ function aggregateDataByPartit(data, year, districte, seccio) {
         percentatge: (vots / totalVotes) * 100
     }));
 
-    // Filtrar partidos con menos de 1000 votos solo si Districte es 'tots' y Secció es 'totes'
-    if (districte === 'tots' && seccio === 'totes') {
-        return aggregatedData.filter(data => data.vots >= 1000);
-    }
+    
 
     return aggregatedData;
 }
@@ -350,6 +360,8 @@ function aggregateDataByPartit(data, year, districte, seccio) {
 function updateTable(aggregatedData, year) {
     const tableBody = document.querySelector('#resultsTable tbody');
     tableBody.innerHTML = '';
+
+    aggregatedData.sort((a, b) => b.vots - a.vots);
 
     // Datos para el gráfico
     const labels = aggregatedData.map(row => row.partit);
