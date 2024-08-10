@@ -37,9 +37,10 @@
         .psc { background-color: #FF0000; }
         .erc { background-color: yellow; }
         .dl { background-color: #292A6B; }
-        .ecp { background-color: #6e236e; }
-        .comú { background-color: #6e236e; }
+        .ecp { background-color: #d81356; }
+        .comú { background-color: #d81356; }
         .unio { background-color: #00008B; }
+        .unió { background-color: #00008B; }
         .pp { background-color: #0198CB; }
         .pacma { background-color: #00FF7F; }
         .cs { background-color: orangered;}
@@ -141,7 +142,7 @@
             position: absolute; /* Posición absoluta para superponer las barras de colores */
             top: 0; /* Alinear en la parte superior */
             left: 0; /* Alinear desde la izquierda */
-            background-color: #01DFD7; /* Color base de la barra */
+            background-color: #00008B; /* Color base de la barra */
             transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
         }
 
@@ -150,11 +151,12 @@
         .dl-bar { background-color: #292A6B; }
         .erc-bar { background-color: yellow; }
         .pp-bar { background-color: #1e4b8f; }
-        .ecp-bar { background-color: #6e236e; }
-        .comú-bar { background-color: #6e236e; }
+        .ecp-bar { background-color: #d81356; }
+        .comú-bar { background-color: #d81356; }
         .vox-bar { background-color: #63BE21; }
         .pacma-bar { background-color: #00FF7F; }
         .cs-bar { background-color: orangered;}
+        .unio-bar { background-color: #00008B;}
         .participation {
     float: right;
     margin-right: 20px;
@@ -242,7 +244,7 @@
                 <td><div class="bar-color-container"><div class="bar-color comú-bar" id="bar-comú"></div></div></td>
             </tr>
             <tr>
-                <td><span class="color-circle unio"></span>Unió</td>
+                <td><span class="color-circle unió"></span>Unió</td>
                 <td id="sum-unio"></td>
                 <td id="pct-unio"></td>
                 <td><div class="bar-color-container"><div class="bar-color unio-bar" id="bar-unio"></div></div></td>
@@ -308,7 +310,7 @@
                 'ERC': { start: '#ffffb2', end: '#FFD700' },
                 'PP': { start: '#d1ecf9', end: '#0198CB' },
                 'CUP': { start: '#ffffc2', end: '#FFEF01' },
-                'En Comú': { start: '#ebc2eb', end: '#6e236e' },
+                'En Comú': { start: '#d3a8d3', end: '#d81356' },
                 'PdeCat': { start: '#ffdbb2', end: '#FFA500' },
                 'PACMA': { start: '#b2ffda', end: '#00FF7F' }
             };
@@ -350,7 +352,7 @@
             return getColorForPercentage(partyName, maxPercentage);
         }
 
-        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clyhsfgxt12pd1mo1ge9djclg/features?access_token=' + mapboxgl.accessToken)
+        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzodld1l5lq81or2iao4qb48/features?access_token=' + mapboxgl.accessToken)
             .then(response => response.json())  
             .then(data => {
                 data.features.forEach((feature, index) => {
@@ -446,6 +448,11 @@
     <td><strong>${properties['% PACMA']}</strong></td>
     <td>${properties['PACMA']}</td> <!-- Añadir valor de Vots PACMA -->
 </tr>
+<tr>
+    <td><span class="color-circle unio"></span>Unió</td>
+    <td><strong>${properties['% Unió']}</strong></td>
+    <td>${properties['Unió']}</td> <!-- Añadir valor de Vots Unió -->
+</tr>
 </table>
                     `;
                     map.setFilter('highlight-layer', ['==', 'id', id]);
@@ -517,11 +524,11 @@
         }
 
         function calculateSummaries() {
-            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clyhsfgxt12pd1mo1ge9djclg/features?access_token=' + mapboxgl.accessToken)
+            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzodld1l5lq81or2iao4qb48/features?access_token=' + mapboxgl.accessToken)
             .then(response => response.json())
                 .then(data => {
                     const sums = {
-                        PSC: 0, DL: 0, ERC: 0, PP: 0, PACMA: 0, 'En Comú': 0, Cs: 0
+                        PSC: 0, DL: 0, ERC: 0, PP: 0, PACMA: 0, 'En Comú': 0, Cs: 0, Unió: 0
                     };
 
                     let totalVotants = 0;
@@ -530,6 +537,7 @@
 
                     data.features.forEach(feature => {
                         sums.PSC += parseInt(feature.properties.PSC) || 0;
+                        sums.Unió += parseInt(feature.properties.Unió) || 0;
                         sums.DL += parseInt(feature.properties.DL) || 0;
                         sums.ERC += parseInt(feature.properties.ERC) || 0;
                         sums.PP += parseInt(feature.properties.PP) || 0;
@@ -545,6 +553,7 @@
 
                     const parties = [
                         { party: 'PSC', votes: sums.PSC },
+                        { party: 'Unió', votes: sums.Unió },
                         { party: 'DL', votes: sums.DL },
                         { party: 'ERC', votes: sums.ERC },
                         { party: 'PP', votes: sums.PP },
