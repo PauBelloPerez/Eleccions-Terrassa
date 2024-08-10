@@ -267,20 +267,74 @@ input:checked + .slider:before {
     </div>
 
     <script>
-        document.getElementById('elecció').addEventListener('change', function() {
-            const selection = this.value;
-            if (selection === 'Generals') {
-                window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
-            } else if (selection === 'Municipals') {
-                window.location.href = 'Selecciones.html?eleccio=Municipals';
-            }
-    // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
-        });
+        // Función para aplicar el modo oscuro si está activado en localStorage
+function applyDarkModePreference() {
+    const darkModePreference = localStorage.getItem('darkMode');
+    if (darkModePreference === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeSwitch.textContent = 'Mode clar';
+    } else {
+        // Asegura que el modo claro esté activado por defecto
+        document.body.classList.remove('dark-mode');
+        darkModeSwitch.textContent = 'Mode fosc';
+    }
+}
 
-        document.getElementById('any').addEventListener('change', function() {
-            const year = this.value;
-            const iframe = document.getElementById('mapIframe');
-            let src = '';
+// Modo oscuro
+const darkModeSwitch = document.getElementById('darkModeSwitch');
+darkModeSwitch.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
+});
+
+// Aplica el modo claro por defecto y la preferencia del modo oscuro al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    applyDarkModePreference();
+
+    // Otros códigos relacionados con la carga inicial de la página...
+    const year = document.getElementById('any').value;
+    const iframe = document.getElementById('mapIframe');
+
+    let src = '';
+    switch (year) {
+        case '2023':
+            src = 'Elecciones Municipales 2023.html';
+            break;
+        case '2019':
+            src = 'Municipals2019.html';
+            break;
+        case '2015':
+            src = 'Municipals2015.html';
+            break;
+        case '2011':
+            src = 'Municipals2011.html';
+            break;
+        case '2007':
+            src = 'Municipals2007.html';
+            break;
+        default:
+            src = '';
+    }
+    iframe.src = src;
+});
+
+document.getElementById('elecció').addEventListener('change', function() {
+    const selection = this.value;
+    if (selection === 'Generals') {
+        window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+    } else if (selection === 'Municipals') {
+        window.location.href = 'Selecciones.html?eleccio=Municipals';
+    }
+    // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
+});
+
+document.getElementById('any').addEventListener('change', function() {
+    const year = this.value;
+    const iframe = document.getElementById('mapIframe');
+    let src = '';
 
     switch (year) {
         case '2023':
@@ -335,49 +389,6 @@ document.getElementById('mapButton').addEventListener('click', function() {
         }
     } else {
         alert('El iframe no tiene una fuente válida. Por favor, selecciona un año.');
-    }
-});
-
-// Establece la fuente del iframe al cargar la página si se seleccionó un año
-document.addEventListener('DOMContentLoaded', function() {
-    const year = document.getElementById('any').value;
-    const iframe = document.getElementById('mapIframe');
-
-    let src = '';
-
-    switch (year) {
-        case '2023':
-            src = 'Elecciones Municipales 2023.html';
-            break;
-        case '2019':
-            src = 'Municipals2019.html';
-            break;
-        case '2015':
-            src = 'Municipals2015.html';
-            break;
-        case '2011':
-            src = 'Municipals2011.html';
-            break;
-        case '2007':
-            src = 'Municipals2007.html';
-            break;
-        default:
-            src = '';
-    }
-    iframe.src = src;
-});
-
-
-// Modo oscuro
-const darkModeSwitch = document.getElementById('darkModeSwitch');
-darkModeSwitch.addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
-    console.log('Modo oscuro activado:', document.body.classList.contains('dark-mode'));
-
-    if (document.body.classList.contains('dark-mode')) {
-        darkModeSwitch.textContent = 'Mode clar';
-    } else {
-        darkModeSwitch.textContent = 'Mode fosc';
     }
 });
 
