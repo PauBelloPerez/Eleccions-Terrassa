@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados Electorales</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles2.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -78,9 +78,124 @@ iframe {
     height: 600px;
     border: none;
 }
+#darkModeSwitch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Modo oscuro */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode #resultsTable th {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode #resultsTable td {
+            border-color: #333;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode #mapButton {
+            background-color: #444;
+            color: white;
+        }
+
+        body.dark-mode #darkModeSwitch {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .switch-container {
+    display: flex;
+    flex-direction: column; /* Coloca el texto y el switch en una columna */
+    align-items: center; /* Centra ambos elementos horizontalmente */
+    margin-bottom: 10px; /* Espacio debajo del contenedor */
+}
+
+.switch-label {
+    margin-bottom: 10px; /* Sin margen inferior para un alineamiento preciso */
+    font-size: 16px; /* Tamaño de fuente para el texto */
+    display:inline-flex;
+    text-align: right; /* Centra el texto encima del toggle switch */
+    line-height: 10px; /* Ajusta la línea de altura para que coincida con la altura del toggle switch */
+}
+
+.switch {
+    font-size: 17px;
+    position: relative;
+    
+    display: inline-block;
+    width: 60px; /* Ancho del toggle switch */
+    height: 30px; /* Altura del toggle switch */
+    margin-top: 0; /* Sin margen superior para alineación precisa */
+    margin-bottom: 5px;
+    vertical-align: middle; /* Ajuste el espacio entre el switch y el siguiente contenido */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 30px; /* Bordes redondeados */
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 1.4em;
+  width: 1.4em;
+  left: 0.2em;
+  bottom: 0.2em;
+  background-color: white;
+  border-radius: inherit;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+
+input:checked + .slider {
+    background-color: #007bff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px); /* Mueve el círculo al otro extremo */
+    bottom: 2px; /* Mantén el círculo en la misma posición inferior */
+    top: auto; /* Asegura que el círculo no se mueva hacia arriba */
+}
+
+.switch input:checked + .slider {
+    box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);
+    border: 2px solid #0974f1;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(30px); /* Ajustado para coincidir con el ancho del toggle switch */
+}
     </style>
 </head>
 <body>
+    <button id="darkModeSwitch">Mode fosc</button>
     <a href="index.html" id="backButton">Inici</a>
     <h1>Resultats Electorals</h1>
     <div class="filters">
@@ -110,6 +225,13 @@ iframe {
         <select id="seccio">
             <option value="totes">Totes</option>
         </select>
+
+        <label class="switch">
+            <input type="checkbox" id="yearToggle">
+            <span class="slider"></span>
+        </label>
+        <span>Bloquejar Districte i Secció</span>
+
     </div>
     <div class="content">
         <div class="main-content">
@@ -146,7 +268,7 @@ iframe {
             if (selection === 'Municipals') {
                 window.location.href ='Selecciones.html?eleccio=Municipals';
             } else if (selection === 'Generals') {
-                window.location.href = 'SeleccionesGenerales2.html?eleccio=Generals';
+                window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
             }
             // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
         });
@@ -164,10 +286,10 @@ iframe {
                     src = 'Generales2019II.html';
                     break;
                 case '2019 28A':
-                    src = 'Generales 2019 Abril.html';
+                    src = 'Generales2019Abril.html';
                     break;
                 case '2016':
-                    src = 'Eleccions Generals 2016.html';
+                    src = 'EleccionsGenerals2016.html';
                     break;
                 case '2015':
                     src = 'Eleccions Generals 2015.html';
@@ -239,7 +361,19 @@ iframe {
 
             iframe.src = src;
         });
+        // Modo oscuro
+const darkModeSwitch = document.getElementById('darkModeSwitch');
+darkModeSwitch.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    console.log('Modo oscuro activado:', document.body.classList.contains('dark-mode')); // Añade esto
+
+    if (document.body.classList.contains('dark-mode')) {
+        darkModeSwitch.textContent = 'Mode clar';
+    } else {
+        darkModeSwitch.textContent = 'Mode fosc';
+    }
+});
     </script>
-    <script src="scriptgenerals2.js"></script>
+    <script src="scriptgenerals.js"></script>
 </body>
 </html>
