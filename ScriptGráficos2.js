@@ -210,14 +210,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Año'
+                                text: 'Any'
                             }
                         },
                         y: {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Porcentaje (%)'
+                                text: 'Percentatge de vot (%)'
                             },
                             ticks: {
                                 callback: function(value) {
