@@ -263,130 +263,150 @@ input:checked + .slider:before {
         <iframe id="mapIframe" src=""></iframe>
     </div>
     <script>
-        // Función para aplicar el modo oscuro si está activado en localStorage
-function applyDarkModePreference() {
-    const darkModePreference = localStorage.getItem('darkMode');
-    if (darkModePreference === 'enabled') {
-        document.body.classList.add('dark-mode');
-        darkModeSwitch.textContent = 'Mode clar';
-    } else {
-        // Asegura que el modo claro esté activado por defecto
-        document.body.classList.remove('dark-mode');
-        darkModeSwitch.textContent = 'Mode fosc';
+        document.getElementById('elecció').addEventListener('change', function() {
+            const selection = this.value;
+            if (selection === 'Municipals') {
+                window.location.href ='Selecciones.html?eleccio=Municipals';
+            } else if (selection === 'Generals') {
+                window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+            } else if(selection === 'Parlament') {
+        window.location.href = 'SeleccionesParlament.html?eleccio=Parlament';
     }
-}
+            // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
+        });
+
+        document.getElementById('any').addEventListener('change', function() {
+            const year = this.value;
+            const iframe = document.getElementById('mapIframe');
+            let src = '';
+
+            switch (year) {
+                case '2023':
+                    src = 'Eleccions Generals 2023.html';
+                    break;
+                case '2019 10N':
+                    src = 'Generales2019II.html';
+                    break;
+                case '2019 28A':
+                    src = 'Generales2019Abril.html';
+                    break;
+                case '2016':
+                    src = 'EleccionsGenerals2016.html';
+                    break;
+                case '2015':
+                    src = 'Eleccions Generals 2015.html';
+                    break;
+                default:
+                    src = '';
+            }
+
+            iframe.src = src;
+        });
+
+// Set the selection value based on query parameter
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const eleccio = getQueryParam('eleccio');
+        if (eleccio) {
+            document.getElementById('elecció').value = eleccio;
+        }
+
+        document.getElementById('mapButton').addEventListener('click', function() {
+            const mapContainer = document.getElementById('mapContainer');
+            const button = document.getElementById('mapButton');
+            const iframe = document.getElementById('mapIframe');
+
+            // Asegúrate de que el iframe tenga una src válida
+            if (iframe.src) {
+                if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+                    mapContainer.style.display = 'block';
+                    button.textContent = 'Tancar mapa'; // Cambia el texto del botón
+                    button.style.backgroundColor = '#dc3545'; // Cambia el color del botón
+                } else {
+                    mapContainer.style.display = 'none';
+                    button.textContent = 'Veure mapa'; // Cambia el texto del botón
+                    button.style.backgroundColor = '#007bff'; // Cambia el color del botón
+                }
+            } else {
+                alert('El iframe no tiene una fuente válida. Por favor, selecciona un año.');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const year = document.getElementById('any').value;
+            const iframe = document.getElementById('mapIframe');
+
+            let src = '';
+
+            switch (year) {
+                case '2023':
+                    src = 'Eleccions Generals 2023.html';
+                    break;
+                case '2019 10N':
+                    src = 'Generales2019II.html';
+                    break;
+                case '2019 28A':
+                    src = 'Generales2019Abril.html';
+                    break;
+                case '2016':
+                    src = 'EleccionsGenerals2016.html';
+                    break;
+                case '2015':
+                    src = 'Eleccions Generals 2015.html';
+                    break;
+                default:
+                    src = '';
+            }
+
+            iframe.src = src;
+        });
+        // Al cargar la página, verificar el estado del modo oscuro en localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const darkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+    if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+    } else {
+        document.getElementById('darkModeSwitch').textContent = 'Mode fosc';
+    }
+});
 
 // Modo oscuro
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 darkModeSwitch.addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+
+    // Guarda el estado actual del modo oscuro en localStorage
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    if (isDarkMode) {
+        darkModeSwitch.textContent = 'Mode clar';
+    } else {
+        darkModeSwitch.textContent = 'Mode fosc';
+    }
+});
+
+// Al cambiar de página, verificar si el modo oscuro está habilitado
+document.getElementById('elecció').addEventListener('change', function() {
+    const selection = this.value;
+
+    // Guarda el estado actual del modo oscuro en localStorage
     const isDarkMode = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
 
-    darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
-});
-
-// Aplica el modo claro por defecto y la preferencia del modo oscuro al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    applyDarkModePreference();
-
-    // Otros códigos relacionados con la carga inicial de la página...
-    const year = document.getElementById('any').value;
-    const iframe = document.getElementById('mapIframe');
-
-    let src = '';
-    switch (year) {
-                case '2023':
-                    src = 'Eleccions Generals 2023.html';
-                    break;
-                case '2019 10N':
-                    src = 'Generales 2019 Noviembre.html';
-                    break;
-                case '2019 28A':
-                    src = 'Generales 2019 Abril.html';
-                    break;
-                case '2016':
-                    src = 'Eleccions Generals 2016.html';
-                    break;
-                case '2015':
-                    src = 'Eleccions Generals 2015.html';
-                    break;
-                default:
-                    src = '';
-            }
-    iframe.src = src;
-});
-
-document.getElementById('elecció').addEventListener('change', function() {
-    const selection = this.value;
     if (selection === 'Municipals') {
         window.location.href = 'Selecciones.html?eleccio=Municipals';
     } else if (selection === 'Generals') {
         window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+    } else if (selection === 'Parlament') {
+        window.location.href = 'SeleccionesParlament.html?eleccio=Parlament';
     }
     // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
 });
 
-document.getElementById('any').addEventListener('change', function() {
-    const year = this.value;
-    const iframe = document.getElementById('mapIframe');
-    let src = '';
-
-    switch (year) {
-                case '2023':
-                    src = 'Eleccions Generals 2023.html';
-                    break;
-                case '2019 10N':
-                    src = 'Generales 2019 Noviembre.html';
-                    break;
-                case '2019 28A':
-                    src = 'Generales 2019 Abril.html';
-                    break;
-                case '2016':
-                    src = 'Eleccions Generals 2016.html';
-                    break;
-                case '2015':
-                    src = 'Eleccions Generals 2015.html';
-                    break;
-                default:
-                    src = '';
-            }
-
-    iframe.src = src;
-});
-
-// Establece la selección del valor basado en el parámetro de la query
-function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
-
-const eleccio = getQueryParam('eleccio');
-if (eleccio) {
-    document.getElementById('elecció').value = eleccio;
-}
-
-// Mostrar el iframe al hacer clic en el botón
-document.getElementById('mapButton').addEventListener('click', function() {
-    const mapContainer = document.getElementById('mapContainer');
-    const button = document.getElementById('mapButton');
-    const iframe = document.getElementById('mapIframe');
-
-    // Asegúrate de que el iframe tenga una src válida
-    if (iframe.src) {
-        if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
-            mapContainer.style.display = 'block';
-            button.textContent = 'Tancar mapa'; // Cambia el texto del botón
-            button.style.backgroundColor = '#dc3545'; // Cambia el color del botón
-        } else {
-            mapContainer.style.display = 'none';
-            button.textContent = 'Veure mapa'; // Cambia el texto del botón
-            button.style.backgroundColor = '#007bff'; // Cambia el color del botón
-        }
-    } else {
-        alert('El iframe no tiene una fuente válida. Por favor, selecciona un año.');
-    }
-});
 
     </script>
     <script src="scriptgenerals.js"></script>
