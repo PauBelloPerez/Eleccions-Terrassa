@@ -150,10 +150,15 @@
         .jxsi-bar { background-color: #01DFD7; }
         .unio-bar { background-color: #00008B; }
         .cup-bar { background-color: #FFEF01; }
-        .cs-bar { background-color: #EB6109; }
+        .cs-bar { background-color: orangered; }
         .pp-bar { background-color: #0198CB; }
         .csqp-bar { background-color: #8904B1; }
         .pacma-bar { background-color: #00FF7F; }
+        .participation {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -200,16 +205,16 @@
                 <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
             </tr>
             <tr>
-                <td><span class="color-circle jxsí"></span>JxSí</td>
-                <td id="sum-jxsi"></td>
-                <td id="pct-jxsi"></td>
-                <td><div class="bar-color-container"><div class="bar-color jxsi-bar" id="bar-jxsi"></div></div></td>
+                <td><span class="color-circle juntscat"></span>JUNTSxCAT</td>
+                <td id="sum-junts"></td>
+                <td id="pct-junts"></td>
+                <td><div class="bar-color-container"><div class="bar-color junts-bar" id="bar-junts"></div></div></td>
             </tr>
             <tr>
-                <td><span class="color-circle unió"></span>Unió</td>
-                <td id="sum-unio"></td>
-                <td id="pct-unio"></td>
-                <td><div class="bar-color-container"><div class="bar-color unio-bar" id="bar-unio"></div></div></td>
+                <td><span class="color-circle erc"></span>ERC</td>
+                <td id="sum-erc"></td>
+                <td id="pct-erc"></td>
+                <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
             </tr>
             <tr>
                 <td><span class="color-circle cs"></span>Cs</td>
@@ -230,10 +235,10 @@
                 <td><div class="bar-color-container"><div class="bar-color pacma-bar" id="bar-pacma"></div></div></td>
             </tr>
             <tr>
-                <td><span class="color-circle csqp"></span>PxC</td>
-                <td id="sum-csqp"></td>
-                <td id="pct-csqp"></td>
-                <td><div class="bar-color-container"><div class="bar-color csqp-bar" id="bar-csqp"></div></div></td>
+                <td><span class="color-circle cecp"></span>CECP</td>
+                <td id="sum-cecp"></td>
+                <td id="pct-cecp"></td>
+                <td><div class="bar-color-container"><div class="bar-color cecp-bar" id="bar-cecp"></div></div></td>
             </tr>
             <tr>
                 <td><span class="color-circle cup"></span>CUP</td>
@@ -243,6 +248,7 @@
             </tr>
         </tbody>
     </table>
+</div>         
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -502,7 +508,6 @@
                         highlightedFeatureId = null;
                     }
                 }
-
             })
             function toggleSummaryPopup() {
             const popup = document.getElementById('summary-popup');
@@ -515,61 +520,71 @@
         }
 
         function calculateSummaries() {
-    fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clyiyifzz0rx51unuo8t9uuu7/features?access_token=' + mapboxgl.accessToken)
-        .then(response => response.json())
-        .then(data => {
-            const sums = {
-                PSC: 0, JxSí: 0, 'UNIO.CAT': 0, Cs: 0, PP: 0, PACMA: 0, CSQP: 0, CUP: 0
-            };
+            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/cm03r8v259emv1sl9hpv3aa49/features?access_token=' + mapboxgl.accessToken)
+                .then(response => response.json())
+                .then(data => {
+                    const sums = {
+                        PSC: 0, JxSí: 0, 'UNIO.CAT': 0, Cs: 0, PP: 0, PACMA: 0, CSQP: 0, CUP: 0
+                    };
 
-            let totalVotants = 0;
+                    let totalVotants = 0;
+                    let totalElectors = 0;
+                    let totalVotsBlancs = 0;
 
-            data.features.forEach(feature => {
-                sums.PSC += parseInt(feature.properties.PSC) || 0;
-                sums.JxSí += parseInt(feature.properties.JxSí) || 0;
-                sums['UNIO.CAT'] += parseInt(feature.properties['UNIO.CAT']) || 0;
-                sums.Cs += parseInt(feature.properties.Cs) || 0;
-                sums.PP += parseInt(feature.properties.PP) || 0;
-                sums.PACMA += parseInt(feature.properties.PACMA) || 0;
-                sums.CSQP += parseInt(feature.properties.CSQP) || 0;
-                sums.CUP += parseInt(feature.properties.CUP) || 0;
-                
+                    data.features.forEach(feature => {
+                        sums.PSC += parseInt(feature.properties.PSC) || 0;
+                        sums.JxSí += parseInt(feature.properties.JxSí) || 0;
+                        sums['UNIO.CAT'] += parseInt(feature.properties['UNIO.CAT']) || 0;
+                        sums.Cs += parseInt(feature.properties.Cs) || 0;
+                        sums.PP += parseInt(feature.properties.PP) || 0;
+                        sums.PACMA += parseInt(feature.properties.PACMA) || 0;
+                        sums.CSQP += parseInt(feature.properties.CSQP) || 0;
+                        sums.CUP += parseInt(feature.properties.CUP) || 0;
 
-                // Sumar el total de votantes sumando votantes y votos en blanco
-                totalVotants += (parseInt(feature.properties.NUM_VOTANTS) || 0) + (parseInt(feature.properties.VOTS_BLANCS) || 0);
-            });
+                        // Sumar el total de votantes y votos en blanco
+                        totalVotants += parseInt(feature.properties.NUM_VOTANTS) || 0;
+                        totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
+                        totalElectors += parseInt(feature.properties.NUM_ELECTORS) || 0;
+                    });
 
-            const parties = [
-                { party: 'PSC', votes: sums.PSC },
-                { party: 'JxSí', votes: sums.JxSí },
-                { party: 'Unió', votes: sums['UNIO.CAT'] },
-                { party: 'Cs', votes: sums.Cs },
-                { party: 'PP', votes: sums.PP },
-                { party: 'PACMA', votes: sums.PACMA },
-                { party: 'CSQP', votes: sums.CSQP },
-                { party: 'CUP', votes: sums.CUP }
-            ];
+                    const parties = [
+                        { party: 'PSC', votes: sums.PSC },
+                        { party: 'JxSí', votes: sums.JxSí },
+                        { party: 'Unió', votes: sums['UNIO.CAT'] },
+                        { party: 'Cs', votes: sums.Cs },
+                        { party: 'PP', votes: sums.PP },
+                        { party: 'PACMA', votes: sums.PACMA },
+                        { party: 'CSQP', votes: sums.CSQP },
+                        { party: 'CUP', votes: sums.CUP }
+                    ];
 
-            // Ordenar el array de partidos por votos descendentes
-            parties.sort((a, b) => b.votes - a.votes);
+                    // Ordenar el array de partidos por votos descendentes
+                    parties.sort((a, b) => b.votes - a.votes);
 
-            // Limpiar y actualizar la tabla en el popup
-            const summaryBody = document.getElementById('summary-body');
-            summaryBody.innerHTML = '';
-            parties.forEach(({ party, votes }) => {
-                const percentage = ((votes / totalVotants) * 100).toFixed(2);
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
-                    <td>${votes.toLocaleString()}</td>
-                    <td>${percentage}%</td>
-                    <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
-                `;
-                summaryBody.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Error cargando datos GeoJSON:', error));
-}
+                    // Limpiar y actualizar la tabla en el popup
+                    const summaryBody = document.getElementById('summary-body');
+                    summaryBody.innerHTML = '';
+                    parties.forEach(({ party, votes }) => {
+                        const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                            <td>${votes.toLocaleString()}</td>
+                            <td>${percentage}%</td>
+                            <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                        `;
+                        summaryBody.appendChild(row);
+                    });
+
+                    const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
+                    document.getElementById('participation').textContent = `Participació: ${participationPercentage}%`;
+                })
+                .catch(error => console.error('Error cargando datos GeoJSON:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSummaries();
+        });
     </script>
 </body>
 </html>
