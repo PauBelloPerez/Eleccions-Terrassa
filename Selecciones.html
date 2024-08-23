@@ -267,74 +267,22 @@ input:checked + .slider:before {
     </div>
 
     <script>
-        // Función para aplicar el modo oscuro si está activado en localStorage
-function applyDarkModePreference() {
-    const darkModePreference = localStorage.getItem('darkMode');
-    if (darkModePreference === 'enabled') {
-        document.body.classList.add('dark-mode');
-        darkModeSwitch.textContent = 'Mode clar';
-    } else {
-        // Asegura que el modo claro esté activado por defecto
-        document.body.classList.remove('dark-mode');
-        darkModeSwitch.textContent = 'Mode fosc';
-    }
-}
-
-// Modo oscuro
-const darkModeSwitch = document.getElementById('darkModeSwitch');
-darkModeSwitch.addEventListener('click', function() {
-    document.body.classList.toggle('dark-mode');
-    const isDarkMode = document.body.classList.contains('dark-mode');
-    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-
-    darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
-});
-
-// Aplica el modo claro por defecto y la preferencia del modo oscuro al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    applyDarkModePreference();
-
-    // Otros códigos relacionados con la carga inicial de la página...
-    const year = document.getElementById('any').value;
-    const iframe = document.getElementById('mapIframe');
-
-    let src = '';
-    switch (year) {
-        case '2023':
-            src = 'Elecciones Municipales 2023.html';
-            break;
-        case '2019':
-            src = 'Municipals2019.html';
-            break;
-        case '2015':
-            src = 'Municipals2015.html';
-            break;
-        case '2011':
-            src = 'Municipals2011.html';
-            break;
-        case '2007':
-            src = 'Municipals2007.html';
-            break;
-        default:
-            src = '';
-    }
-    iframe.src = src;
-});
-
-document.getElementById('elecció').addEventListener('change', function() {
-    const selection = this.value;
-    if (selection === 'Generals') {
-        window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
-    } else if (selection === 'Municipals') {
-        window.location.href = 'Selecciones.html?eleccio=Municipals';
+        document.getElementById('elecció').addEventListener('change', function() {
+            const selection = this.value;
+            if (selection === 'Generals') {
+                window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+            } else if (selection === 'Municipals') {
+                window.location.href = 'Selecciones.html?eleccio=Municipals';
+            } else if(selection === 'Parlament') {
+        window.location.href = 'SeleccionesParlament.html?eleccio=Parlament';
     }
     // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
-});
+        });
 
-document.getElementById('any').addEventListener('change', function() {
-    const year = this.value;
-    const iframe = document.getElementById('mapIframe');
-    let src = '';
+        document.getElementById('any').addEventListener('change', function() {
+            const year = this.value;
+            const iframe = document.getElementById('mapIframe');
+            let src = '';
 
     switch (year) {
         case '2023':
@@ -391,6 +339,82 @@ document.getElementById('mapButton').addEventListener('click', function() {
         alert('El iframe no tiene una fuente válida. Por favor, selecciona un año.');
     }
 });
+
+// Establece la fuente del iframe al cargar la página si se seleccionó un año
+document.addEventListener('DOMContentLoaded', function() {
+    const year = document.getElementById('any').value;
+    const iframe = document.getElementById('mapIframe');
+
+    let src = '';
+
+    switch (year) {
+        case '2023':
+            src = 'Elecciones Municipales 2023.html';
+            break;
+        case '2019':
+            src = 'Municipals2019.html';
+            break;
+        case '2015':
+            src = 'Municipals2015.html';
+            break;
+        case '2011':
+            src = 'Municipals2011.html';
+            break;
+        case '2007':
+            src = 'Municipals2007.html';
+            break;
+        default:
+            src = '';
+    }
+    iframe.src = src;
+});
+
+
+// Modo oscuro
+// Al cargar la página, verificar el estado del modo oscuro en localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const darkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+    if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+    } else {
+        document.getElementById('darkModeSwitch').textContent = 'Mode fosc';
+    }
+});
+
+// Modo oscuro
+const darkModeSwitch = document.getElementById('darkModeSwitch');
+darkModeSwitch.addEventListener('click', function() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+
+    // Guarda el estado actual del modo oscuro en localStorage
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    if (isDarkMode) {
+        darkModeSwitch.textContent = 'Mode clar';
+    } else {
+        darkModeSwitch.textContent = 'Mode fosc';
+    }
+});
+
+// Al cambiar de página, verificar si el modo oscuro está habilitado
+document.getElementById('elecció').addEventListener('change', function() {
+    const selection = this.value;
+
+    // Guarda el estado actual del modo oscuro en localStorage
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    if (selection === 'Municipals') {
+        window.location.href = 'Selecciones.html?eleccio=Municipals';
+    } else if (selection === 'Generals') {
+        window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+    } else if (selection === 'Parlament') {
+        window.location.href = 'SeleccionesParlament.html?eleccio=Parlament';
+    }
+    // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
+});
+
 
     </script>
     <script src="script2.js"></script>
