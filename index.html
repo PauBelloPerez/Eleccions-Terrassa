@@ -9,6 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -61,7 +62,7 @@
         }
         .election-link {
             text-decoration: none;
-            color: #333;
+            color: #000000;
             font-weight: bold;
             padding: 10px;
             transition: background-color 0.3s, color 0.3s;
@@ -69,6 +70,11 @@
         .election-link:hover {
             background-color: #007bff;
             color: #fff;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 32px;
+            color: #000000;
         }
         footer {
             position: fixed;
@@ -83,6 +89,7 @@
     </style>
 </head>
 <body>
+    <h1>Eleccions a Terrassa</h1>
     <div class="container">
         <div class="column">
             <div class="column-title">Mapes</div>
