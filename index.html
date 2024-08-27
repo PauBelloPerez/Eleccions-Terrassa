@@ -86,9 +86,32 @@
             color: #fff;
             font-size: 14px;
         }
+
+        body.dark-mode h1 {
+            color: #fff;
+        }
+
+        #darkModeSwitch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
     </style>
 </head>
 <body>
+    <button id="darkModeSwitch">Mode fosc</button>
     <h1>Eleccions a Terrassa</h1>
     <div class="container">
         <div class="column">
@@ -146,7 +169,7 @@
             <div class="election-box">
                 <div class="flag-container" style="background-image: url('Comparación-modified.png');"></div>
                 <div class="election-info">
-                    <a href="GráficosDistritos.html" class="election-link">Percentatge districte per partit</a>
+                    <a href="Gráficos.html" class="election-link">Evolució del vot</a>
                 </div>
             </div>
             </div>
@@ -155,5 +178,32 @@
     <footer>
         Pau Bello Pérez - 2024
     </footer>
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const darkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+    if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+    } else {
+        document.getElementById('darkModeSwitch').textContent = 'Mode fosc';
+    }
+});
+
+// Modo oscuro
+const darkModeSwitch = document.getElementById('darkModeSwitch');
+darkModeSwitch.addEventListener('click', function() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+
+    // Guarda el estado actual del modo oscuro en localStorage
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    if (isDarkMode) {
+        darkModeSwitch.textContent = 'Mode clar';
+    } else {
+        darkModeSwitch.textContent = 'Mode fosc';
+    }
+});
+   </script> 
 </body>
 </html>
