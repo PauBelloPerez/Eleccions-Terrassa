@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles2.css">
     <title>Mapa Simple</title>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
@@ -134,10 +135,25 @@
             text-align: center;
             flex: 1;
         }
+
+        .back-button {
+            position: fixed;
+            top: 20px; /* Ajusta esta cantidad según tu preferencia */
+            left: 20px; /* Ajusta esta cantidad según tu preferencia */
+            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
+            padding: 10px 50px;
+            background-color: #B5B5B5; /* Color de fondo del botón */
+            color: #000000; /* Color del texto del botón */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
 <body>
+    
     <div id="map"></div>
     <div id="popup-container">
         <div class="popup-header">
@@ -170,6 +186,7 @@
         <div class="popup-separator"></div>
         <div class="popup-value" id="popup-value"></div>
     </div>
+    <a href="index.html" id="backButton">Inici</a>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
