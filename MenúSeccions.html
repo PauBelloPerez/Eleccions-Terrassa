@@ -149,6 +149,7 @@
     <div id="legend">
         <h3>Renda neta mitja</h3>
         <p>(Per habitatge)</p>
+        <div class="legend-separator"></div> <!-- Línea de separación -->
         <div class="legend-item"><div class="legend-color" style="background-color: #8B0000;"></div> <span>&lt; 27.056</span></div>
         <div class="legend-item"><div class="legend-color" style="background-color: #A52A2A;"></div> <span>27.056 - 29.424</span></div>
         <div class="legend-item"><div class="legend-color" style="background-color: #CD5C5C;"></div> <span>29.425 - 31.314</span></div>
@@ -244,6 +245,7 @@
 
                     map.on('mouseleave', 'secciones-censales-layer', function () {
                         map.getCanvas().style.cursor = '';
+                        document.getElementById('hover-popup').style.display = 'none'; // Ocultar popup al salir
                     });
 
                     map.on('click', 'secciones-censales-layer', function (e) {
