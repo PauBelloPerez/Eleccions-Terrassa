@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Simple</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    
+        #popup-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            width: 350px;
+            display: none; /* Inicialmente oculto */
+        }
+    
+        .popup-header {
+            background-color: #374547;
+            color: #fff;
+            padding: 5px 10px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        #hover-popup {
+            position: absolute;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Fondo negro/gris transparente */
+            color: white; /* Texto en blanco */
+            border-radius: 5px;
+            font-size: 14px;
+            pointer-events: none; /* Evitar que interfiera con otros eventos del ratón */
+            z-index: 2;
+            display: none; /* Oculto por defecto */
+        }
+
+        /* Estilo para la línea blanca que separa */
+        .popup-separator {
+            border-bottom: 1px solid white;
+            margin: 5px 0; /* Espacio entre la línea y los textos */
+        }
+
+        /* Contenedor para D y SC */
+        .popup-header-small {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px; /* Tamaño de fuente más grande para D y SC */
+            margin-bottom: 5px; /* Espacio extra debajo de D y SC */
+        }
+
+        /* Añadir más espacio entre D y SC */
+        .popup-header-small span {
+            flex: 1;
+            text-align: left; /* Alinear texto a la izquierda */
+        }
+
+        .popup-header-small span:last-child {
+            text-align: right; /* Alinear SC a la derecha */
+            margin-left: 5px; /* Espacio de 5px entre D y SC */
+        }
+
+        /* Estilo para el valor de la presión fiscal */
+        .popup-value {
+            font-size: 16px; /* Tamaño de fuente más grande para el valor */
+            text-align: center; /* Centrar el valor */
+        }
+    
+        #legend {
+            background: white;
+            border-radius: 5px;
+            bottom: 10px;
+            padding: 5px;
+            font-size: 18px;
+            color: #374547;
+            position: fixed;
+            text-align: center;
+            z-index: 1;
+            right: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            width: 150px;
+        }
+
+        #legend h3 {
+            color: #000000; /* Título en negro */
+            margin: 0;
+        }
+
+        #legend p {
+            font-size: 12px; /* Subtítulo un poco más grande */
+            margin: 5px 0 5px 0; /* Menos separación entre el título y el subtítulo */
+            color: #000000; /* Subtítulo en negro */
+        }
+
+        .legend-separator {
+            height: 1px;
+            background-color: #000000; /* Línea negra */
+            margin: 5px 0; /* Espacio entre la línea y los elementos */
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between; /* Espacio entre las columnas */
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-left: 30px;
+        }
+
+        .legend-item span {
+            text-align: center;
+            flex: 1;
+        }
+
+    </style>
+    
+    
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="popup-container">
+        <div class="popup-header">
+            <h3 id="popup-title"></h3>
+        </div>
+        <div id="popup-content"></div>
+    </div>
+
+    <div id="legend">
+        <h3>Pressió fiscal:</h3>
+        <p>(Tipus efectiu)</p>
+        <div class="legend-separator"></div> <!-- Línea de separación -->
+        <div class="legend-item"><div class="legend-color" style="background-color: #FFCCCC;"></div> <span>&lt; 8</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #FF9999;"></div> <span>8 - 10</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #FF6666;"></div> <span>10 - 12</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #FF3333;"></div> <span>12 - 14</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #FF0000;"></div> <span>14 - 16</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #CC0000;"></div> <span>16 - 18</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #990000;"></div> <span>18 - 20</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #660000;"></div> <span>20 - 22</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #330000;"></div> <span>22 - 24</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #1A0000;"></div> <span>24 - 26</span></div>
+        <div class="legend-item"><div class="legend-color" style="background-color: #0D0000;"></div> <span>26 - 28</span></div>
+    </div>
+
+    <div id="hover-popup">
+        <div class="popup-header-small">
+            <span id="popup-districte"></span>
+            <span id="popup-seccio"></span>
+        </div>
+        <div class="popup-separator"></div>
+        <div class="popup-value" id="popup-value"></div>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
+
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [2.0, 41.5632],
+            zoom: 12
+        });
+
+        var seccionesData = {};
+
+        // Cargar y procesar el archivo CSV
+        Papa.parse('RentasCSV.csv', {
+            download: true,
+            header: true,
+            delimiter: ';',
+            complete: function (results) {
+                results.data.forEach(function (row) {
+                    var key = row.Districte + '-' + row.Secció;
+                    // Asegúrate de convertir Pressió H a número
+                    seccionesData[key] = {
+                        ...row,
+                        'Pressió H': parseFloat(row['Pressió H']) // Convertir a número
+                    };
+
+                    // Depuración: Imprimir los valores de Pressió H
+                    console.log(`Key: ${key}, Pressió H: ${seccionesData[key]['Pressió H']}`);
+                });
+
+                // Después de cargar el CSV, cargar el GeoJSON
+                map.on('load', function() {
+                    map.addSource('secciones-censales', {
+                        type: 'geojson',
+                        data: 'https://api.mapbox.com/datasets/v1/paubelloperez/cm0dx5dne4o5o1vnrtf01d057/features?access_token=' + mapboxgl.accessToken
+                    });
+
+                    // Añadir color basado en la presión fiscal usando una escala monocromática
+                    map.addLayer({
+                        id: 'secciones-censales-layer',
+                        type: 'fill',
+                        source: 'secciones-censales',
+                        paint: {
+                            'fill-color': [
+                                'step',
+                                ['to-number', ['get', 'Pressió H']],
+                                '#FFCCCC', // Rojo muy claro para los valores más bajos
+                                8.0, '#FF9999', // Rojo claro
+                                10.0, '#FF6666', // Rojo medio claro
+                                12.0, '#FF3333', // Rojo medio
+                                14.0, '#FF0000', // Rojo oscuro
+                                16.0, '#CC0000', // Rojo más oscuro
+                                18.0, '#990000', // Rojo intenso
+                                20.0, '#660000', // Rojo más intenso
+                                22.0, '#330000', // Rojo casi negro
+                                24.0, '#1A0000', // Rojo muy oscuro
+                                26.0, '#0D0000', // Rojo más oscuro
+                            ],
+                            'fill-opacity': 0.7
+                        }
+                    });
+
+
+                    map.addLayer({
+                        id: 'secciones-censales-lines',
+                        type: 'line',
+                        source: 'secciones-censales',
+                        paint: {
+                            'line-color': '#000',
+                            'line-width': 0.5
+                        }
+                    });
+
+                    map.on('mouseenter', 'secciones-censales-layer', function () {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+
+                    map.on('mouseleave', 'secciones-censales-layer', function () {
+                        map.getCanvas().style.cursor = '';
+                    });
+
+                    map.on('click', 'secciones-censales-layer', function (e) {
+                        var feature = e.features[0];
+                        var distrito = feature.properties.Districte;
+                        var seccion = feature.properties.Secció;
+                        var key = distrito + '-' + seccion;
+                        var rentaData = seccionesData[key];
+
+                        if (rentaData) {
+                            var popupContent = `
+                                <p><strong>Renta bruta media por hogar:</strong> ${rentaData['Renta bruta media por hogar']}</p>
+                                <p><strong>Renta bruta media por persona:</strong> ${rentaData['Renta bruta media por persona']}</p>
+                                <p><strong>Renta neta media por hogar:</strong> ${rentaData['Renta neta media por hogar']}</p>
+                                <p><strong>Renta neta media por persona:</strong> ${rentaData['Renta neta media por persona ']}</p>
+                                <p><strong>Bruta - Neta Hogar:</strong> ${rentaData['Bruta - Neta Hogar']}</p>
+                                <p><strong>Bruta - Neta Persona:</strong> ${rentaData['Bruta - Neta Persona']}</p>
+                                <p><strong>Presión fiscal Hogar:</strong> ${rentaData['Presión fiscal Hogar']}</p>
+                                <p><strong>Presión fiscal Persona:</strong> ${rentaData['Presión fiscal Persona']}</p>
+                            `;
+
+                            document.getElementById('popup-title').innerHTML = `Districte ${distrito} - Secció ${seccion}`;
+                            document.getElementById('popup-content').innerHTML = popupContent;
+                            document.getElementById('popup-container').style.display = 'block';
+                        } else {
+                            document.getElementById('popup-title').innerHTML = 'Datos no disponibles';
+                            document.getElementById('popup-content').innerHTML = '';
+                            document.getElementById('popup-container').style.display = 'block';
+                        }
+                    });
+
+                    map.on('mousemove', 'secciones-censales-layer', function(e) {
+            var feature = e.features[0];
+            var distrito = feature.properties.Districte;
+            var seccion = feature.properties.Secció;
+            var presionFiscal = feature.properties['Pressió H'];
+
+            // Actualizar los elementos del popup
+            document.getElementById('popup-districte').textContent = 'D:' + distrito;
+            document.getElementById('popup-seccio').textContent = 'SC:' + seccion;
+            document.getElementById('popup-value').textContent = presionFiscal;
+
+            // Posicionar el popup cerca del cursor
+            var hoverPopup = document.getElementById('hover-popup');
+            hoverPopup.style.left = (e.originalEvent.pageX + 10) + 'px'; // Posicionar un poco a la derecha del cursor
+            hoverPopup.style.top = (e.originalEvent.pageY - 30) + 'px'; // Posicionar un poco encima del cursor
+            hoverPopup.style.display = 'block'; // Mostrar el popup
+        });
+
+        // Ocultar el popup cuando el ratón sale de la capa
+        map.on('mouseleave', 'secciones-censales-layer', function() {
+            document.getElementById('hover-popup').style.display = 'none';
+        });
+
+                    map.on('click', function (e) {
+                        var features = map.queryRenderedFeatures(e.point, {
+                            layers: ['secciones-censales-layer']
+                        });
+
+                        if (!features.length) {
+                            document.getElementById('popup-container').style.display = 'none';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
