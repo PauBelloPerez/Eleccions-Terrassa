@@ -134,6 +134,20 @@
             text-align: center;
             flex: 1;
         }
+
+        .back-button {
+            position: fixed;
+            top: 20px; /* Ajusta esta cantidad según tu preferencia */
+            left: 20px; /* Ajusta esta cantidad según tu preferencia */
+            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
+            padding: 10px 50px;
+            background-color: #B5B5B5; /* Color de fondo del botón */
+            color: #000000; /* Color del texto del botón */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -148,7 +162,7 @@
     <div id="legend">
         <h3>Renda bruta mitja</h3>
         <p>(Per habitatge)</p>
-        <div class="legend-separator"></div>
+        <div class="legend-separator"></div> <!-- Línea de separación -->
         <div class="legend-item"><div class="legend-color" style="background-color: #8B0000;"></div> <span>&lt; 30.776</span></div>
         <div class="legend-item"><div class="legend-color" style="background-color: #A52A2A;"></div> <span>30.776 - 34.110</span></div>
         <div class="legend-item"><div class="legend-color" style="background-color: #CD5C5C;"></div> <span>34.111 - 36.827</span></div>
@@ -169,6 +183,8 @@
         <div class="popup-separator"></div>
         <div class="popup-value" id="popup-value"></div>
     </div>
+
+    <button class="back-button" onclick="window.location.href='index.html'">Inici</button>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
