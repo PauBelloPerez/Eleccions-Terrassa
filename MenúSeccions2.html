@@ -245,6 +245,7 @@
 
                     map.on('mouseleave', 'secciones-censales-layer', function () {
                         map.getCanvas().style.cursor = '';
+                        document.getElementById('hover-popup').style.display = 'none'; // Ocultar popup al salir
                     });
 
                     map.on('click', 'secciones-censales-layer', function (e) {
@@ -295,11 +296,11 @@
             hoverPopup.style.display = 'block'; // Mostrar el popup
         });
 
-                    // Cerrar el popup cuando se hace clic fuera de una sección censal
-                    map.on('click', function (e) {
+        map.on('click', function (e) {
                         var features = map.queryRenderedFeatures(e.point, {
                             layers: ['secciones-censales-layer']
                         });
+
                         if (!features.length) {
                             document.getElementById('popup-container').style.display = 'none';
                         }
