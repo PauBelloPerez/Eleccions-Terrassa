@@ -12,14 +12,14 @@
             margin: 0;
             padding: 0;
         }
-    
+
         #map {
             position: absolute;
             top: 0;
             bottom: 0;
             width: 100%;
         }
-    
+
         #popup-container {
             position: fixed;
             bottom: 10px;
@@ -32,7 +32,7 @@
             width: 350px;
             display: none; /* Inicialmente oculto */
         }
-    
+
         .popup-header {
             background-color: #374547;
             color: #fff;
@@ -53,13 +53,11 @@
             display: none; /* Oculto por defecto */
         }
 
-        /* Estilo para la línea blanca que separa */
         .popup-separator {
             border-bottom: 1px solid white;
             margin: 5px 0; /* Espacio entre la línea y los textos */
         }
 
-        /* Contenedor para D y SC */
         .popup-header-small {
             display: flex;
             justify-content: space-between;
@@ -67,7 +65,6 @@
             margin-bottom: 5px; /* Espacio extra debajo de D y SC */
         }
 
-        /* Añadir más espacio entre D y SC */
         .popup-header-small span {
             flex: 1;
             text-align: left; /* Alinear texto a la izquierda */
@@ -78,12 +75,11 @@
             margin-left: 5px; /* Espacio de 5px entre D y SC */
         }
 
-        /* Estilo para el valor de la presión fiscal */
         .popup-value {
             font-size: 16px; /* Tamaño de fuente más grande para el valor */
             text-align: center; /* Centrar el valor */
         }
-    
+
         #legend {
             background: white;
             border-radius: 5px;
@@ -133,12 +129,8 @@
             text-align: center;
             flex: 1;
         }
-
     </style>
-    
-    
 </head>
-
 <body>
     <div id="map"></div>
     <div id="popup-container">
@@ -235,7 +227,6 @@
                         }
                     });
 
-
                     map.addLayer({
                         id: 'secciones-censales-lines',
                         type: 'line',
@@ -252,6 +243,7 @@
 
                     map.on('mouseleave', 'secciones-censales-layer', function () {
                         map.getCanvas().style.cursor = '';
+                        document.getElementById('hover-popup').style.display = 'none'; // Ocultar popup al salir
                     });
 
                     map.on('click', 'secciones-censales-layer', function (e) {
@@ -284,27 +276,22 @@
                     });
 
                     map.on('mousemove', 'secciones-censales-layer', function(e) {
-            var feature = e.features[0];
-            var distrito = feature.properties.Districte;
-            var seccion = feature.properties.Secció;
-            var presionFiscal = feature.properties['Pressió H'];
+                        var feature = e.features[0];
+                        var distrito = feature.properties.Districte;
+                        var seccion = feature.properties.Secció;
+                        var presionFiscal = feature.properties['Pressió H'];
 
-            // Actualizar los elementos del popup
-            document.getElementById('popup-districte').textContent = 'D:' + distrito;
-            document.getElementById('popup-seccio').textContent = 'SC:' + seccion;
-            document.getElementById('popup-value').textContent = presionFiscal;
+                        // Actualizar los elementos del popup
+                        document.getElementById('popup-districte').textContent = 'D:' + distrito;
+                        document.getElementById('popup-seccio').textContent = 'SC:' + seccion;
+                        document.getElementById('popup-value').textContent = presionFiscal;
 
-            // Posicionar el popup cerca del cursor
-            var hoverPopup = document.getElementById('hover-popup');
-            hoverPopup.style.left = (e.originalEvent.pageX + 10) + 'px'; // Posicionar un poco a la derecha del cursor
-            hoverPopup.style.top = (e.originalEvent.pageY - 30) + 'px'; // Posicionar un poco encima del cursor
-            hoverPopup.style.display = 'block'; // Mostrar el popup
-        });
-
-        // Ocultar el popup cuando el ratón sale de la capa
-        map.on('mouseleave', 'secciones-censales-layer', function() {
-            document.getElementById('hover-popup').style.display = 'none';
-        });
+                        // Posicionar el popup cerca del cursor
+                        var hoverPopup = document.getElementById('hover-popup');
+                        hoverPopup.style.left = (e.originalEvent.pageX + 10) + 'px'; // Posicionar un poco a la derecha del cursor
+                        hoverPopup.style.top = (e.originalEvent.pageY - 30) + 'px'; // Posicionar un poco encima del cursor
+                        hoverPopup.style.display = 'block'; // Mostrar el popup
+                    });
 
                     map.on('click', function (e) {
                         var features = map.queryRenderedFeatures(e.point, {
@@ -320,5 +307,4 @@
         });
     </script>
 </body>
-
 </html>
