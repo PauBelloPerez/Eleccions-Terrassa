@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles2.css">
+    
     <title>Mapa Simple</title>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
@@ -186,7 +186,7 @@
         <div class="popup-separator"></div>
         <div class="popup-value" id="popup-value"></div>
     </div>
-    <a href="index.html" id="backButton">Inici</a>
+    <button class="back-button" onclick="window.location.href='index.html'">Inici</button>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
@@ -199,9 +199,6 @@
         });
 
         var seccionesData = {};
-
-
-
 
         // Cargar y procesar el archivo CSV
         Papa.parse('RentasSCCSV.csv', {
