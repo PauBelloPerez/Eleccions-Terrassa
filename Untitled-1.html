@@ -11,8 +11,8 @@
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
         #popup-container {
             position: fixed;
-            bottom: 30px;
-            left: 30px;
+            bottom: 10px;
+            left: 10px;
             background: white;
             padding: 10px;
             border-radius: 5px;
@@ -40,8 +40,8 @@
         .vox { background-color: #63BE21; }
         .podemos { background-color: #9370DB; }
         .comuns { background-color: #a6214b; }
-        .cs { background-color: orange; }
-        .pp { background-color: #0198CB; }
+        .cs { background-color: orangered; }
+        .pp { background-color: #1e4b8f; }
         .pacma { background-color: #00FF7F; }
         .salf { background-color: #804000;}
         .popup-table {
@@ -103,19 +103,65 @@
             font-size: 16px;
             border-radius: 5px;
         }
-        .back-button {
-            position: fixed;
-            top: 100px; /* Ajusta esta cantidad según tu preferencia */
-            left: 10px; /* Ajusta esta cantidad según tu preferencia */
-            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
-            padding: 10px 50px;
-            background-color: #B5B5B5; /* Color de fondo del botón */
-            color: #000000; /* Color del texto del botón */
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
+        .summary-button {
+        position: fixed;
+        top: 150px;
+        left: 10px;
+        z-index: 999;
+        padding: 10px 30px;
+        background-color: #B5B5B5;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    #summary-popup {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        width: 350px;
+    }
+    .bar-color-container {
+            height: 10px; /* Altura de la barra */
+            background-color: #f2f2f2; /* Color de fondo de la barra base */
+            width: 100%; /* Ancho total */
+            position: relative; /* Posición relativa para alinear las barras de colores */
+            border: 1px solid #ccc; /* Borde opcional para la barra base */
+            box-sizing: border-box; /* Incluir el borde en el cálculo del tamaño total */
+            margin-bottom: 10px;
         }
+
+        .bar-color {
+            height: 100%; /* Altura completa de la barra */
+            position: absolute; /* Posición absoluta para superponer las barras de colores */
+            top: 0; /* Alinear en la parte superior */
+            left: 0; /* Alinear desde la izquierda */
+            background-color: #01DFD7; /* Color base de la barra */
+            transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
+        }
+
+        /* Estilos específicos para cada partido */
+        .psc-bar { background-color: #FF0000; }
+        .junts-bar { background-color: #00C3B2; }
+        .erc-bar { background-color: yellow; }
+        .pp-bar { background-color: #1e4b8f; }
+        .podemos-bar { background-color: #9370DB; }
+        .sumar-bar { background-color: #a6214b; }
+        .vox-bar { background-color: #63BE21; }
+        .pacma-bar { background-color: #00FF7F; }
+        .cs-bar { background-color: orangered;}
+        .salf-bar { background-color: #804000;}
+        .participation {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -139,6 +185,84 @@
         </div>
     </div>
     <button class="back-button" onclick="goBack()">Inici</button>
+    <button class="summary-button" onclick="toggleSummaryPopup()">Resultats</button>
+<div id="summary-popup" style="display: none;">
+    <div class="popup-header" style="display: flex; justify-content: space-between;">
+        <span>Resultats</span>
+        <span id="participation-percentage">Participació: 42.67%</span>
+    </div>
+    <table class="popup-table">
+        <thead>
+            <tr>
+                <th>Partit</th>
+                <th>Vots</th>
+                <th>%</th>
+                <th>Percentatge</th>
+            </tr>
+        </thead>
+        <tbody id="summary-body">
+            <tr>
+                <td><span class="color-circle psc"></span>PSC</td>
+                <td id="sum-psc"></td>
+                <td id="pct-psc"></td>
+                <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle junts"></span>Junts</td>
+                <td id="sum-junts"></td>
+                <td id="pct-junts"></td>
+                <td><div class="bar-color-container"><div class="bar-color cat-bar" id="bar-cat"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle erc"></span>ERC</td>
+                <td id="sum-erc"></td>
+                <td id="pct-erc"></td>
+                <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle cs"></span>Cs</td>
+                <td id="sum-cs"></td>
+                <td id="pct-cs"></td>
+                <td><div class="bar-color-container"><div class="bar-color cs-bar" id="bar-cs"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pp"></span>PP</td>
+                <td id="sum-pp"></td>
+                <td id="pct-pp"></td>
+                <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pacma"></span>PACMA</td>
+                <td id="sum-pacma"></td>
+                <td id="pct-pacma"></td>
+                <td><div class="bar-color-container"><div class="bar-color pacma-bar" id="bar-pacma"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle podemos"></span>Podemos</td>
+                <td id="sum-podemos"></td>
+                <td id="pct-podemos"></td>
+                <td><div class="bar-color-container"><div class="bar-color podemos-bar" id="bar-ecp"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle vox"></span>Cs</td>
+                <td id="sum-vox"></td>
+                <td id="pct-vox"></td>
+                <td><div class="bar-color-container"><div class="bar-color vox-bar" id="bar-vox"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle salf" ></span>SALF</td>
+                <td id="sum-salf"></td>
+                <td id="pct-salf"></td>
+                <td><div class="bar-color-container"><div class="bar-color salf-bar" id="bar-salf"></div></div></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle sumar" ></span>Comuns Sumar</td>
+                <td id="sum-sumar"></td>
+                <td id="pct-sumar"></td>
+                <td><div class="bar-color-container"><div class="bar-color sumar-bar" id="bar-sumar"></div></div></td>
+            </tr>
+        </tbody>
+    </table>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
@@ -217,9 +341,11 @@
         'CAT-JUNTS+': '#00C3B2'
         // Puedes añadir más partidos y colores aquí
     }};
-        function goBack() {
+
+    function goBack() {
         window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
     }
+
 
         // Función para determinar el color basado en las propiedades
         function determineColor(properties) {
@@ -410,7 +536,86 @@
                 }
 
             })
-            .catch(error => console.error('Error cargando datos GeoJSON:', error));
+            function toggleSummaryPopup() {
+            const popup = document.getElementById('summary-popup');
+            if (popup.style.display === 'none') {
+                popup.style.display = 'block';
+                calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function calculateSummaries() {
+            fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clxxirc7fdtyr1mlmew2zcm0k/features?access_token=' + mapboxgl.accessToken)
+            .then(response => response.json())
+                .then(data => {
+                    const sums = {
+                        PSC: 0, Junts: 0, ERC: 0, PP: 0, PACMA: 0, Podemos: 0, VOX: 0, Cs: 0, 'Comuns Sumar': 0, SALF: 0
+                    };
+
+                    let totalVotants = 0;
+                    let totalElectors = 0;
+                    let totalVotsBlancs = 0;
+
+                    data.features.forEach(feature => {
+                        sums.PSC += parseInt(feature.properties.PSC) || 0;
+                        sums.Junts += parseInt(feature.properties.Junts) || 0;
+                        sums.ERC += parseInt(feature.properties.ERC) || 0;
+                        sums.VOX += parseInt(feature.properties.VOX) || 0;
+                        sums.PP += parseInt(feature.properties.PP) || 0;
+                        sums.PACMA += parseInt(feature.properties.PACMA) || 0;
+                        sums.Podemos += parseInt(feature.properties.Podemos) || 0;
+                        sums.Cs += parseInt(feature.properties.Cs) || 0;
+                        sums['Comuns Sumar'] += parseInt(feature.properties['Comuns Sumar']) || 0;
+                        sums.SALF += parseInt(feature.properties.SALF) || 0;
+
+                        // Sumar el total de votantes y votos en blanco
+                        totalVotants += parseInt(feature.properties.NUM_VOTANTS) || 0;
+                        totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
+                        totalElectors += parseInt(feature.properties.NUM_ELECTORS) || 0;
+                    });
+
+                    const parties = [
+                        { party: 'PSC', votes: sums.PSC },
+                        { party: 'Junts', votes: sums.Junts },
+                        { party: 'ERC', votes: sums.ERC },
+                        { party: 'VOX', votes: sums.VOX },
+                        { party: 'PP', votes: sums.PP },
+                        { party: 'PACMA', votes: sums.PACMA },
+                        { party: 'Podemos', votes: sums.Podemos },
+                        { party: 'Cs', votes: sums.Cs },
+                        { party: 'Comuns Sumar', votes: sums['Comuns Sumar'] },
+                        { party: 'SALF', votes: sums.SALF },
+                    ];
+
+                    // Ordenar el array de partidos por votos descendentes
+                    parties.sort((a, b) => b.votes - a.votes);
+
+                    // Limpiar y actualizar la tabla en el popup
+                    const summaryBody = document.getElementById('summary-body');
+                    summaryBody.innerHTML = '';
+                    parties.forEach(({ party, votes }) => {
+                        const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                            <td>${votes.toLocaleString()}</td>
+                            <td>${percentage}%</td>
+                            <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                        `;
+                        summaryBody.appendChild(row);
+                    });
+
+                    const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
+                    document.getElementById('participation').textContent = `Participació: ${participationPercentage}%`;
+                })
+                .catch(error => console.error('Error cargando datos GeoJSON:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSummaries();
+        });
     </script>
 </body>
 </html>
