@@ -14,7 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: white;
             position: relative;
         }
         .container {
@@ -69,6 +69,8 @@
         }
         .election-link:hover {
             background-color: #007bff;
+            border-radius: 10px;
+            margin-right: 20px;
             color: #fff;
         }
         h1 {
@@ -83,12 +85,20 @@
             text-align: center;
             padding: 10px;
             background-color: #4d4d4d;
-            color: #fff;
+            color: white;
             font-size: 14px;
         }
 
         body.dark-mode h1 {
-            color: #fff;
+            color: white;
+        }
+
+        body.dark-mode .election-link {
+            color: white;
+        }
+
+        body.dark-mode .election-link:hover {
+            color: white;
         }
 
         #darkModeSwitch {
@@ -106,7 +116,7 @@
 
         body.dark-mode {
             background-color: #121212;
-            color: #e0e0e0;
+            color: white;
         }
     </style>
 </head>
@@ -151,7 +161,7 @@
                 </div>
             </div>
             <div class="election-box">
-                <div class="flag-container" style="background-image: url('Mapa_Sin_Fondo.png');"></div>
+                <div class="flag-container" style="background-image: url('Captura_de_pantalla_2024-08-28_184721-removebg-preview.png');"></div>
                 <div class="election-info">
                     <a href="MenúsSeccions.html" class="election-link">Informació econòmica seccions</a>
                 </div>
