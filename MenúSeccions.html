@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Mapa Simple</title>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
@@ -43,6 +41,77 @@
             border-top-right-radius: 5px;
         }
 
+        .popup-group {
+        border: 1px solid #ddd; /* Bordes ligeros alrededor del grupo */
+        border-radius: 5px; /* Bordes redondeados */
+        padding: 10px; /* Espacio interno */
+        margin-bottom: 10px; /* Espacio entre los grupos */
+        background-color: #f9f9f9; /* Fondo ligeramente gris */
+        }
+
+        .popup-group p {
+            margin: 5px 0; /* Márgenes más pequeños */
+        }
+
+        .popup-group strong {
+            color: #333; /* Texto en un gris más oscuro */
+        }
+
+        .popup-group:last-child {
+            margin-bottom: 0; /* Elimina el margen inferior del último grupo */
+        }
+
+        #popup-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }#popup-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            width: 350px;
+            display: none; /* Initially hidden */
+        }
+
+        .popup-header {
+            background-color: #7b7b7b;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .popup-group {
+            border: 2px solid #ddd; /* Bordes ligeros alrededor del grupo */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 10px; /* Espacio interno */
+            margin-bottom: 10px; /* Espacio entre los grupos */
+            background-color: #f9f9f9; /* Fondo ligeramente gris */
+        }
+
+        .popup-group p {
+            margin: 5px 0; /* Márgenes más pequeños */
+        }
+
+        .popup-group strong {
+            color: #333; /* Texto en un gris más oscuro */
+        }
+
+        .popup-group:last-child {
+            margin-bottom: 0; /* Elimina el margen inferior del último grupo */
+        }
+
+        #popup-title {
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
         #hover-popup {
             position: absolute;
             padding: 5px 10px;
@@ -55,13 +124,11 @@
             display: none; /* Oculto por defecto */
         }
 
-        /* Estilo para la línea blanca que separa */
         .popup-separator {
             border-bottom: 1px solid white;
             margin: 5px 0; /* Espacio entre la línea y los textos */
         }
 
-        /* Contenedor para D y SC */
         .popup-header-small {
             display: flex;
             justify-content: space-between;
@@ -69,7 +136,6 @@
             margin-bottom: 5px; /* Espacio extra debajo de D y SC */
         }
 
-        /* Añadir más espacio entre D y SC */
         .popup-header-small span {
             flex: 1;
             text-align: left; /* Alinear texto a la izquierda */
@@ -80,7 +146,6 @@
             margin-left: 5px; /* Espacio de 5px entre D y SC */
         }
 
-        /* Estilo para el valor de la presión fiscal */
         .popup-value {
             font-size: 16px; /* Tamaño de fuente más grande para el valor */
             text-align: center; /* Centrar el valor */
@@ -151,9 +216,7 @@
         }
     </style>
 </head>
-
-<body>
-    
+<body> 
     <div id="map"></div>
     <div id="popup-container">
         <div class="popup-header">
@@ -164,7 +227,7 @@
 
     <div id="legend">
         <h3>Renda neta mitja</h3>
-        <p>(Per habitatge)</p>
+        <p>(Per llar)</p>
         <div class="legend-separator"></div> <!-- Línea de separación -->
         <div class="legend-item"><div class="legend-color" style="background-color: #8B0000;"></div> <span>&lt; 27.056</span></div>
         <div class="legend-item"><div class="legend-color" style="background-color: #A52A2A;"></div> <span>27.056 - 29.424</span></div>
@@ -198,24 +261,48 @@
             zoom: 12
         });
 
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'setView') {
+                map.setCenter(event.data.center);
+                map.setZoom(event.data.zoom);
+            } else if (event.data.action === 'getView') {
+                const center = map.getCenter();
+                const zoom = map.getZoom();
+                event.source.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, event.origin);
+            }
+        });
+
+        map.on('moveend', function () {
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            window.parent.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, '*');
+        });
+
         var seccionesData = {};
 
         // Cargar y procesar el archivo CSV
-        Papa.parse('RentasSCCSV.csv', {
-            download: true,
-            header: true,
-            delimiter: ';',
-            complete: function (results) {
-                results.data.forEach(function (row) {
-                    var key = row.Districte + '-' + row.Secció;
-                    seccionesData[key] = row;
-                });
+        Papa.parse('RentasCSV.csv', {
+    download: true,
+    header: true,
+    delimiter: ';',
+    complete: function (results) {
+        results.data.forEach(function (row) {
+            var key = row.Districte + '-' + row.Secció;
+            // Asegúrate de convertir Pressió H a número
+            seccionesData[key] = {
+                ...row,
+                'Renta neta media por hogar': parseFloat(row['Renta neta media por hogar']) // Convertir a número
+            };
+
+            // Depuración: Imprimir los valores de Pressió H
+            console.log(`Renta neta media por hogar: ${key}, Renta neta media por hogar: ${seccionesData[key]['Renta neta media por hogar']}`);
+        });
 
                 // Después de cargar el CSV, cargar el GeoJSON
                 map.on('load', function() {
                     map.addSource('secciones-censales', {
                         type: 'geojson',
-                        data: 'https://api.mapbox.com/datasets/v1/paubelloperez/cm0csfmn5af1s1ulpskr97wk2/features?access_token=' + mapboxgl.accessToken
+                        data: 'https://api.mapbox.com/datasets/v1/paubelloperez/cm0dx5dne4o5o1vnrtf01d057/features?access_token=' + mapboxgl.accessToken
                     });
 
                     // Añadir color basado en la renta
@@ -262,41 +349,148 @@
                         document.getElementById('hover-popup').style.display = 'none'; // Ocultar popup al salir
                     });
 
-                    map.on('click', 'secciones-censales-layer', function (e) {
-                        var feature = e.features[0];
-                        var distrito = feature.properties.Districte;
-                        var seccion = feature.properties.Secció;
-                        var key = distrito + '-' + seccion;
-                        var rentaData = seccionesData[key];
-
-                        if (rentaData) {
-                            var popupContent = `
-                                <h3>Distrito ${distrito}, Sección ${seccion}</h3>
-                                <p><strong>Renta bruta media por hogar:</strong> ${rentaData['Renta bruta media por hogar']}</p>
-                                <p><strong>Renta bruta media por persona:</strong> ${rentaData['Renta bruta media por persona']}</p>
-                                <p><strong>Renta neta media por hogar:</strong> ${rentaData['Renta neta media por hogar']}</p>
-                                <p><strong>Renta neta media por persona:</strong> ${rentaData['Renta neta media por persona ']}</p>
-                                <p><strong>Bruta - Neta Hogar:</strong> ${rentaData['Bruta - Neta Hogar']}</p>
-                                <p><strong>Bruta - Neta Persona:</strong> ${rentaData['Bruta - Neta Persona']}</p>
-                                <p><strong>Presión fiscal Hogar:</strong> ${rentaData['Presión fiscal Hogar']}</p>
-                                <p><strong>Presión fiscal Persona:</strong> ${rentaData['Presión fiscal Persona']}</p>
-                            `;
-
-                            document.getElementById('popup-title').innerHTML = `Distrito ${distrito}, Sección ${seccion}`;
-                            document.getElementById('popup-content').innerHTML = popupContent;
-                            document.getElementById('popup-container').style.display = 'block';
-                        } else {
-                            document.getElementById('popup-title').innerHTML = 'Datos no disponibles';
-                            document.getElementById('popup-content').innerHTML = '';
-                            document.getElementById('popup-container').style.display = 'block';
+                        function getColorForRentaNetaLlar(value) {
+                            if (value < 27.056) return '#8B0000';
+                            if (value < 29.424) return '#A52A2A';
+                            if (value < 31.314) return '#CD5C5C';
+                            if (value < 33.527) return '#FF8C00';
+                            if (value < 35.258) return '#FFA500';
+                            if (value < 38.628) return '#FFD700';
+                            if (value < 42.719) return '#ADFF2F';
+                            if (value < 46.923) return '#7FFF00';
+                            if (value < 51.139) return '#32CD32';
+                            return '#006400';
                         }
-                    });
+
+                        function getColorForRentaBrutaLlar(value) {
+                            if (value < 30.776) return '#8B0000';
+                            if (value < 34.110) return '#A52A2A';
+                            if (value < 36.828) return '#CD5C5C';
+                            if (value < 39.692) return '#FF8C00';
+                            if (value < 42.796) return '#FFA500';
+                            if (value < 47.490) return '#FFD700';
+                            if (value < 53.101) return '#ADFF2F';
+                            if (value < 60.170) return '#7FFF00';
+                            if (value < 67.404) return '#32CD32';
+                            return '#006400';
+                        }
+
+                            function getColorForPressioH(value) {
+                            if (value < 8) return '#FFCCCC';
+                            if (value < 10) return '#FF9999';
+                            if (value < 12) return '#FF6666';
+                            if (value < 14) return '#FF3333';
+                            if (value < 16) return '#FF0000';
+                            if (value < 18) return '#CC0000';
+                            if (value < 20) return '#990000';
+                            if (value < 22) return '#660000';
+                            if (value < 24) return '#330000';
+                            if (value < 26) return '#1A0000';
+                            return '#fffffa';
+                        }
+
+                        map.on('click', 'secciones-censales-layer', function (e) {
+                    var feature = e.features[0];
+                    var distrito = feature.properties.Districte;
+                    var seccion = feature.properties.Secció;
+                    var presionFiscal = feature.properties['Pressió H'];
+                    var rentaNetaLlar = feature.properties['Renta neta media por hogar'];
+                    var rentaBrutaLlar = feature.properties['Renta bruta media por hogar'];
+                    var key = distrito + '-' + seccion;
+                    var rentaData = seccionesData[key];
+
+                    // Función para obtener el color según el valor de "Renda neta mitja per llar"
+                    function getColorForRentaNetaLlar(value) {
+                        if (value < 27.056) return '#8B0000';
+                        if (value < 29.424) return '#A52A2A';
+                        if (value < 31.314) return '#CD5C5C';
+                        if (value < 33.527) return '#FF8C00';
+                        if (value < 35.258) return '#FFA500';
+                        if (value < 38.628) return '#FFD700';
+                        if (value < 42.719) return '#ADFF2F';
+                        if (value < 46.923) return '#7FFF00';
+                        if (value < 51.139) return '#32CD32';
+                        return '#006400';
+                    }
+
+                    // Función para obtener el color según el valor de "Renda bruta mitja per llar"
+                    function getColorForRentaBrutaLlar(value) {
+                        if (value < 30.776) return '#8B0000';
+                        if (value < 34.110) return '#A52A2A';
+                        if (value < 36.828) return '#CD5C5C';
+                        if (value < 39.692) return '#FF8C00';
+                        if (value < 42.796) return '#FFA500';
+                        if (value < 47.490) return '#FFD700';
+                        if (value < 53.101) return '#ADFF2F';
+                        if (value < 60.170) return '#7FFF00';
+                        if (value < 67.404) return '#32CD32';
+                        return '#006400';
+                    }
+
+                    // Función para obtener el color según el valor de "Pressió H"
+                    function getColorForPressioH(value) {
+                        if (value < 8) return '#FFCCCC';
+                        if (value < 10) return '#FF9999';
+                        if (value < 12) return '#FF6666';
+                        if (value < 14) return '#FF3333';
+                        if (value < 16) return '#FF0000';
+                        if (value < 18) return '#CC0000';
+                        if (value < 20.0) return '#990000';
+                        if (value < 22.0) return '#660000';
+                        if (value < 24.0) return '#330000';
+                        if (value < 26.0) return '#1A0000';
+                        return '#ff0000';
+                    }
+
+                    // Variable para almacenar el color
+                    var colorPressio = getColorForPressioH(presionFiscal);
+                    var colorRentaNetaLlar = getColorForRentaNetaLlar(rentaNetaLlar);
+                    var colorRentaBrutaLlar = getColorForRentaBrutaLlar(rentaBrutaLlar);
+
+                    if (rentaData) {
+                        var popupContent = `
+                            <div class="popup-group" style="position: relative; display: flex; align-items: center;">
+                                <div style="flex-grow: 1;">
+                                <p><strong>Renda bruta mitja per llar:</strong> ${rentaData['Renta bruta media por hogar']}</p>
+                                <p><strong>Renda bruta mitja per persona:</strong> ${rentaData['Renta bruta media por persona']}</p>
+                                </div>
+                                <div style="width: 45px; height: 45px; background-color: ${colorRentaBrutaLlar}; border: 1px solid #ddd; border-radius: 5px; margin-left: 10px;"></div>
+                            </div>
+                            <div class="popup-group" style="position: relative; display: flex; align-items: center;">
+                                <div style="flex-grow: 1;">
+                                <p><strong>Renda neta mitja per llar:</strong> ${rentaData['Renta neta media por hogar']}</p>
+                                <p><strong>Renda neta mitja per persona:</strong> ${rentaData['Renta neta media por persona ']}</p>
+                                </div>
+                                <div style="width: 45px; height: 45px; background-color: ${colorRentaNetaLlar}; border: 1px solid #ddd; border-radius: 5px; margin-left: 10px;"></div>
+                            </div>
+                            <div class="popup-group" style="position: relative; display: flex; align-items: center;">
+                                <div style="flex-grow: 1;">
+                                    <p><strong>Pressió fiscal llar:</strong> ${rentaData['Presión fiscal Hogar']}</p>
+                                    <p><strong>Pressió fiscal persona:</strong> ${rentaData['Presión fiscal Persona']}</p>
+                                </div>
+                                <div style="width: 45px; height: 45px; background-color: ${colorPressio}; border: 1px solid #ddd; border-radius: 5px; margin-left: 10px;"></div>
+                            </div>
+                            <div class="popup-group">
+                                <p><strong>Bruta - Neta Llar:</strong> ${rentaData['Bruta - Neta Hogar']}</p>
+                                <p><strong>Bruta - Neta Persona:</strong> ${rentaData['Bruta - Neta Persona']}</p>
+                            </div>
+                        `;
+
+                        document.getElementById('popup-title').innerHTML = `Districte ${distrito} - Secció ${seccion}`;
+                        document.getElementById('popup-content').innerHTML = popupContent;
+                        document.getElementById('popup-container').style.display = 'block';
+                    } else {
+                        document.getElementById('popup-title').innerHTML = 'Datos no disponibles';
+                        document.getElementById('popup-content').innerHTML = '';
+                        document.getElementById('popup-container').style.display = 'block';
+                    }
+                });
 
                     map.on('mousemove', 'secciones-censales-layer', function(e) {
             var feature = e.features[0];
             var distrito = feature.properties.Districte;
             var seccion = feature.properties.Secció;
-            var rendaneta = feature.properties['Renta neta media por hogar'];
+            var rendaneta = feature.properties['Renta neta media por hogar'].toFixed(3);
 
             // Actualizar los elementos del popup
             document.getElementById('popup-districte').textContent = 'D:' + distrito;
