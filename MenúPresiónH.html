@@ -30,15 +30,42 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             z-index: 1;
             width: 350px;
-            display: none; /* Inicialmente oculto */
+            display: none; /* Initially hidden */
         }
 
         .popup-header {
-            background-color: #374547;
+            background-color: #7b7b7b;
             color: #fff;
             padding: 5px 10px;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .popup-group {
+            border: 2px solid #ddd; /* Bordes ligeros alrededor del grupo */
+            border-radius: 5px; /* Bordes redondeados */
+            padding: 10px; /* Espacio interno */
+            margin-bottom: 10px; /* Espacio entre los grupos */
+            background-color: #f9f9f9; /* Fondo ligeramente gris */
+        }
+
+        .popup-group p {
+            margin: 5px 0; /* Márgenes más pequeños */
+        }
+
+        .popup-group strong {
+            color: #333; /* Texto en un gris más oscuro */
+        }
+
+        .popup-group:last-child {
+            margin-bottom: 0; /* Elimina el margen inferior del último grupo */
+        }
+
+        #popup-title {
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-align: center;
+            margin-top: 5px;
         }
 
         #hover-popup {
@@ -129,6 +156,20 @@
             text-align: center;
             flex: 1;
         }
+
+        .back-button {
+            position: fixed;
+            top: 20px; /* Ajusta esta cantidad según tu preferencia */
+            left: 20px; /* Ajusta esta cantidad según tu preferencia */
+            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
+            padding: 10px 50px;
+            background-color: #B5B5B5; /* Color de fondo del botón */
+            color: #000000; /* Color del texto del botón */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -165,46 +206,68 @@
         <div class="popup-separator"></div>
         <div class="popup-value" id="popup-value"></div>
     </div>
+    <button class="back-button" onclick="window.location.href='index.html'">Inici</button>
 
-    <a href="index.html" id="backButton">Inici</a>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
 
-        var map = new mapboxgl.Map({
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [2.0, 41.5632],
+    zoom: 12
+});
+
+var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [2.0, 41.5632],
             zoom: 12
         });
 
-        var seccionesData = {};
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'setView') {
+                map.setCenter(event.data.center);
+                map.setZoom(event.data.zoom);
+            } else if (event.data.action === 'getView') {
+                const center = map.getCenter();
+                const zoom = map.getZoom();
+                event.source.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, event.origin);
+            }
+        });
 
-        // Cargar y procesar el archivo CSV
-        Papa.parse('RentasCSV.csv', {
-            download: true,
-            header: true,
-            delimiter: ';',
-            complete: function (results) {
-                results.data.forEach(function (row) {
-                    var key = row.Districte + '-' + row.Secció;
-                    // Asegúrate de convertir Pressió H a número
-                    seccionesData[key] = {
-                        ...row,
-                        'Pressió H': parseFloat(row['Pressió H']) // Convertir a número
-                    };
+        map.on('moveend', function () {
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            window.parent.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, '*');
+        });
 
-                    // Depuración: Imprimir los valores de Pressió H
-                    console.log(`Key: ${key}, Pressió H: ${seccionesData[key]['Pressió H']}`);
-                });
+var seccionesData = {};
 
-                // Después de cargar el CSV, cargar el GeoJSON
+// Cargar y procesar el archivo CSV
+Papa.parse('RentasCSV.csv', {
+    download: true,
+    header: true,
+    delimiter: ';',
+    complete: function (results) {
+        results.data.forEach(function (row) {
+            var key = row.Districte + '-' + row.Secció;
+            // Asegúrate de convertir Pressió H a número
+            seccionesData[key] = {
+                ...row,
+                'Pressió H': parseFloat(row['Pressió H']) // Convertir a número
+            };
+
+            // Depuración: Imprimir los valores de Pressió H
+            console.log(`Key: ${key}, Pressió H: ${seccionesData[key]['Pressió H']}`);
+        });
+    
                 map.on('load', function() {
                     map.addSource('secciones-censales', {
                         type: 'geojson',
                         data: 'https://api.mapbox.com/datasets/v1/paubelloperez/cm0dx5dne4o5o1vnrtf01d057/features?access_token=' + mapboxgl.accessToken
                     });
-
-                    // Añadir color basado en la presión fiscal usando una escala monocromática
+    
                     map.addLayer({
                         id: 'secciones-censales-layer',
                         type: 'fill',
@@ -213,22 +276,22 @@
                             'fill-color': [
                                 'step',
                                 ['to-number', ['get', 'Pressió H']],
-                                '#FFCCCC', // Rojo muy claro para los valores más bajos
-                                8.0, '#FF9999', // Rojo claro
-                                10.0, '#FF6666', // Rojo medio claro
-                                12.0, '#FF3333', // Rojo medio
-                                14.0, '#FF0000', // Rojo oscuro
-                                16.0, '#CC0000', // Rojo más oscuro
-                                18.0, '#990000', // Rojo intenso
-                                20.0, '#660000', // Rojo más intenso
-                                22.0, '#330000', // Rojo casi negro
-                                24.0, '#1A0000', // Rojo muy oscuro
-                                26.0, '#0D0000', // Rojo más oscuro
+                                '#FFCCCC', 
+                                8.0, '#FF9999', 
+                                10.0, '#FF6666', 
+                                12.0, '#FF3333', 
+                                14.0, '#FF0000', 
+                                16.0, '#CC0000', 
+                                18.0, '#990000', 
+                                20.0, '#660000', 
+                                22.0, '#330000', 
+                                24.0, '#1A0000', 
+                                26.0, '#0D0000',
                             ],
                             'fill-opacity': 0.7
                         }
                     });
-
+    
                     map.addLayer({
                         id: 'secciones-censales-lines',
                         type: 'line',
@@ -247,41 +310,149 @@
                         map.getCanvas().style.cursor = '';
                         document.getElementById('hover-popup').style.display = 'none'; // Ocultar popup al salir
                     });
-
-                    map.on('click', 'secciones-censales-layer', function (e) {
-                        var feature = e.features[0];
-                        var distrito = feature.properties.Districte;
-                        var seccion = feature.properties.Secció;
-                        var key = distrito + '-' + seccion;
-                        var rentaData = seccionesData[key];
-
-                        if (rentaData) {
-                            var popupContent = `
-                                <p><strong>Renta bruta media por hogar:</strong> ${rentaData['Renta bruta media por hogar']}</p>
-                                <p><strong>Renta bruta media por persona:</strong> ${rentaData['Renta bruta media por persona']}</p>
-                                <p><strong>Renta neta media por hogar:</strong> ${rentaData['Renta neta media por hogar']}</p>
-                                <p><strong>Renta neta media por persona:</strong> ${rentaData['Renta neta media por persona ']}</p>
-                                <p><strong>Bruta - Neta Hogar:</strong> ${rentaData['Bruta - Neta Hogar']}</p>
-                                <p><strong>Bruta - Neta Persona:</strong> ${rentaData['Bruta - Neta Persona']}</p>
-                                <p><strong>Presión fiscal Hogar:</strong> ${rentaData['Presión fiscal Hogar']}</p>
-                                <p><strong>Presión fiscal Persona:</strong> ${rentaData['Presión fiscal Persona']}</p>
-                            `;
-
-                            document.getElementById('popup-title').innerHTML = `Districte ${distrito} - Secció ${seccion}`;
-                            document.getElementById('popup-content').innerHTML = popupContent;
-                            document.getElementById('popup-container').style.display = 'block';
-                        } else {
-                            document.getElementById('popup-title').innerHTML = 'Datos no disponibles';
-                            document.getElementById('popup-content').innerHTML = '';
-                            document.getElementById('popup-container').style.display = 'block';
+    
+                    function getColorForPressioH(value) {
+                            if (value < 8) return '#FFCCCC';
+                            if (value < 10) return '#FF9999';
+                            if (value < 12) return '#FF6666';
+                            if (value < 14) return '#FF3333';
+                            if (value < 16) return '#FF0000';
+                            if (value < 18) return '#CC0000';
+                            if (value < 20) return '#990000';
+                            if (value < 22) return '#660000';
+                            if (value < 24) return '#330000';
+                            if (value < 26) return '#1A0000';
+                            return '#0D0000';
                         }
-                    });
+
+                        function getColorForRentaNetaLlar(value) {
+                            if (value < 27.056) return '#8B0000';
+                            if (value < 29.424) return '#A52A2A';
+                            if (value < 31.314) return '#CD5C5C';
+                            if (value < 33.527) return '#FF8C00';
+                            if (value < 35.258) return '#FFA500';
+                            if (value < 38.628) return '#FFD700';
+                            if (value < 42.719) return '#ADFF2F';
+                            if (value < 46.923) return '#7FFF00';
+                            if (value < 51.139) return '#32CD32';
+                            return '#006400';
+                        }
+
+                        function getColorForRentaBrutaLlar(value) {
+                            if (value < 30.776) return '#8B0000';
+                            if (value < 34.110) return '#A52A2A';
+                            if (value < 36.828) return '#CD5C5C';
+                            if (value < 39.692) return '#FF8C00';
+                            if (value < 42.796) return '#FFA500';
+                            if (value < 47.490) return '#FFD700';
+                            if (value < 53.101) return '#ADFF2F';
+                            if (value < 60.170) return '#7FFF00';
+                            if (value < 67.404) return '#32CD32';
+                            return '#006400';
+                        }
+
+                        map.on('click', 'secciones-censales-layer', function (e) {
+                    var feature = e.features[0];
+                    var distrito = feature.properties.Districte;
+                    var seccion = feature.properties.Secció;
+                    var presionFiscal = feature.properties['Pressió H'];
+                    var rentaNetaLlar = feature.properties['Renta neta media por hogar'];
+                    var rentaBrutaLlar = feature.properties['Renta bruta media por hogar'];
+                    var key = distrito + '-' + seccion;
+                    var rentaData = seccionesData[key];
+
+                    // Función para obtener el color según el valor de "Pressió H"
+                    function getColorForPressioH(value) {
+                        if (value < 8) return '#FFCCCC';
+                        if (value < 10) return '#FF9999';
+                        if (value < 12) return '#FF6666';
+                        if (value < 14) return '#FF3333';
+                        if (value < 16) return '#FF0000';
+                        if (value < 18) return '#CC0000';
+                        if (value < 20) return '#990000';
+                        if (value < 22) return '#660000';
+                        if (value < 24) return '#330000';
+                        if (value < 26) return '#1A0000';
+                        return '#0D0000';
+                    }
+
+                    // Función para obtener el color según el valor de "Renda neta mitja per llar"
+                    function getColorForRentaNetaLlar(value) {
+                        if (value < 27.056) return '#8B0000';
+                        if (value < 29.424) return '#A52A2A';
+                        if (value < 31.314) return '#CD5C5C';
+                        if (value < 33.527) return '#FF8C00';
+                        if (value < 35.258) return '#FFA500';
+                        if (value < 38.628) return '#FFD700';
+                        if (value < 42.719) return '#ADFF2F';
+                        if (value < 46.923) return '#7FFF00';
+                        if (value < 51.139) return '#32CD32';
+                        return '#006400';
+                    }
+
+                    // Función para obtener el color según el valor de "Renda bruta mitja per llar"
+                    function getColorForRentaBrutaLlar(value) {
+                        if (value < 30.776) return '#8B0000';
+                        if (value < 34.110) return '#A52A2A';
+                        if (value < 36.828) return '#CD5C5C';
+                        if (value < 39.692) return '#FF8C00';
+                        if (value < 42.796) return '#FFA500';
+                        if (value < 47.490) return '#FFD700';
+                        if (value < 53.101) return '#ADFF2F';
+                        if (value < 60.170) return '#7FFF00';
+                        if (value < 67.404) return '#32CD32';
+                        return '#006400';
+                    }
+
+                    // Variable para almacenar el color
+                    var colorPressio = getColorForPressioH(presionFiscal);
+                    var colorRentaNetaLlar = getColorForRentaNetaLlar(rentaNetaLlar);
+                    var colorRentaBrutaLlar = getColorForRentaBrutaLlar(rentaBrutaLlar);
+
+                    if (rentaData) {
+                        var popupContent = `
+                            <div class="popup-group" style="position: relative; display: flex; align-items: center;">
+                                <div style="flex-grow: 1;">
+                                <p><strong>Renda bruta mitja per llar:</strong> ${rentaData['Renta bruta media por hogar']}</p>
+                                <p><strong>Renda bruta mitja per persona:</strong> ${rentaData['Renta bruta media por persona']}</p>
+                                </div>
+                                <div style="width: 45px; height: 45px; background-color: ${colorRentaBrutaLlar}; border: 1px solid #ddd; border-radius: 5px; margin-left: 10px;"></div>
+                            </div>
+                            <div class="popup-group" style="position: relative; display: flex; align-items: center;">
+                                <div style="flex-grow: 1;">
+                                <p><strong>Renda neta mitja per llar:</strong> ${rentaData['Renta neta media por hogar']}</p>
+                                <p><strong>Renda neta mitja per persona:</strong> ${rentaData['Renta neta media por persona ']}</p>
+                                </div>
+                                <div style="width: 45px; height: 45px; background-color: ${colorRentaNetaLlar}; border: 1px solid #ddd; border-radius: 5px; margin-left: 10px;"></div>
+                            </div>
+                            <div class="popup-group" style="position: relative; display: flex; align-items: center;">
+                                <div style="flex-grow: 1;">
+                                    <p><strong>Pressió fiscal llar:</strong> ${rentaData['Presión fiscal Hogar']}</p>
+                                    <p><strong>Pressió fiscal persona:</strong> ${rentaData['Presión fiscal Persona']}</p>
+                                </div>
+                                <div style="width: 45px; height: 45px; background-color: ${colorPressio}; border: 1px solid #ddd; border-radius: 5px; margin-left: 10px;"></div>
+                            </div>
+                            <div class="popup-group">
+                                <p><strong>Bruta - Neta Llar:</strong> ${rentaData['Bruta - Neta Hogar']}</p>
+                                <p><strong>Bruta - Neta Persona:</strong> ${rentaData['Bruta - Neta Persona']}</p>
+                            </div>
+                        `;
+
+                        document.getElementById('popup-title').innerHTML = `Districte ${distrito} - Secció ${seccion}`;
+                        document.getElementById('popup-content').innerHTML = popupContent;
+                        document.getElementById('popup-container').style.display = 'block';
+                    } else {
+                        document.getElementById('popup-title').innerHTML = 'Datos no disponibles';
+                        document.getElementById('popup-content').innerHTML = '';
+                        document.getElementById('popup-container').style.display = 'block';
+                    }
+                });
 
                     map.on('mousemove', 'secciones-censales-layer', function(e) {
                         var feature = e.features[0];
                         var distrito = feature.properties.Districte;
                         var seccion = feature.properties.Secció;
-                        var presionFiscal = feature.properties['Pressió H'];
+                        var presionFiscal = feature.properties['Pressió H'].toFixed(2);
 
                         // Actualizar los elementos del popup
                         document.getElementById('popup-districte').textContent = 'D:' + distrito;
@@ -294,12 +465,12 @@
                         hoverPopup.style.top = (e.originalEvent.pageY - 30) + 'px'; // Posicionar un poco encima del cursor
                         hoverPopup.style.display = 'block'; // Mostrar el popup
                     });
-
+    
                     map.on('click', function (e) {
                         var features = map.queryRenderedFeatures(e.point, {
                             layers: ['secciones-censales-layer']
                         });
-
+    
                         if (!features.length) {
                             document.getElementById('popup-container').style.display = 'none';
                         }
