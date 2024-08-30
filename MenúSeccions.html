@@ -249,7 +249,7 @@
         <div class="popup-separator"></div>
         <div class="popup-value" id="popup-value"></div>
     </div>
-    <button class="back-button" onclick="window.location.href='index.html'">Inici</button>
+    <button class="back-button" onclick="goBack()">Inici</button>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
@@ -279,6 +279,10 @@
         });
 
         var seccionesData = {};
+
+        function goBack() {
+            window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
+        }
 
         // Cargar y procesar el archivo CSV
         Papa.parse('RentasCSV.csv', {
