@@ -206,7 +206,7 @@
         <div class="popup-separator"></div>
         <div class="popup-value" id="popup-value"></div>
     </div>
-    <button class="back-button" onclick="window.location.href='index.html'">Inici</button>
+    <button class="back-button" onclick="goBack()">Inici</button>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
@@ -241,6 +241,10 @@ var map = new mapboxgl.Map({
             const zoom = map.getZoom();
             window.parent.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, '*');
         });
+
+        function goBack() {
+            window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
+        }
 
 var seccionesData = {};
 
