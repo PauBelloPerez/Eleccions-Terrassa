@@ -60,48 +60,36 @@
         .botones-panel button:focus {
             outline: none;
         }
-        .back-button {
-            position: fixed;
-            top: 20px; /* Ajusta esta cantidad según tu preferencia */
-            left: 20px; /* Ajusta esta cantidad según tu preferencia */
-            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
-            padding: 10px 50px;
-            background-color: #B5B5B5; /* Color de fondo del botón */
-            color: #000000; /* Color del texto del botón */
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-        }
+
+        
     </style>
 </head>
 <body>
     <div id="mapa1" class="map-container active">
         <iframe id="iframe1" src="MenúSeccions.html"></iframe>
         <div class="botones-panel">
-            <button class="btn-mapa active" data-mapa="1">Renta Neta Media</button>
-            <button class="btn-mapa" data-mapa="2">Renta Bruta Media</button>
-            <button class="btn-mapa" data-mapa="3">Presión fiscal</button>
+            <button class="btn-mapa active" data-mapa="1">Renda Neta Mitja</button>
+            <button class="btn-mapa" data-mapa="2">Renda Bruta Mitja</button>
+            <button class="btn-mapa" data-mapa="3">Pressió fiscal</button>
         </div>
     </div>
     <div id="mapa2" class="map-container">
         <iframe id="iframe2" src="MenúSeccions2.html"></iframe>
         <div class="botones-panel">
-            <button class="btn-mapa" data-mapa="1">Renta Neta Media</button>
-            <button class="btn-mapa active" data-mapa="2">Renta Bruta Media</button>
-            <button class="btn-mapa" data-mapa="3">Presión fiscal</button>
+            <button class="btn-mapa" data-mapa="1">Renda Neta Mitja</button>
+            <button class="btn-mapa active" data-mapa="2">Renda Bruta Mitja</button>
+            <button class="btn-mapa" data-mapa="3">Pressió fiscal</button>
         </div>
     </div>
     <div id="mapa3" class="map-container">
         <iframe id="iframe3" src="MenúPresiónH.html"></iframe>
         <div class="botones-panel">
-            <button class="btn-mapa" data-mapa="1">Renta Neta Media</button>
-            <button class="btn-mapa" data-mapa="2">Renta Bruta Media</button>
-            <button class="btn-mapa active" data-mapa="3">Presión fiscal</button>
+            <button class="btn-mapa" data-mapa="1">Renda Neta Mitja</button>
+            <button class="btn-mapa" data-mapa="2">Renda Bruta Mitja</button>
+            <button class="btn-mapa active" data-mapa="3">Pressió fiscal</button>
         </div>
     </div>
 
-    <button class="back-button" onclick="window.location.href='index.html'">Inici</button>
 
     <script>
         let lastCenter = null;
