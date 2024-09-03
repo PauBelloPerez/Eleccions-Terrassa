@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evolución de Votos por Partido (2007-2023)</title>
-    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="styles4.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="ScriptGráficos2.js" defer></script>
@@ -72,34 +72,33 @@
             padding: 5px;
             width: 150px;
             box-sizing: border-box;
-            
-
         }
     
-        /* Contenedor para los gráficos */
         .chart-container {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
+            margin-top: 20px;
         }
-    
-        /* Contenedor redimensionable */
+
         .chart-resizable {
             position: relative;
-            width: 80vw; /* Ocupa el 80% del ancho de la ventana del navegador */
-            height: 60vh; /* Ajusta la altura a un porcentaje del viewport */
-            margin: 0 auto;
+            width: 1090px; /* Ancho inicial */
+            height: 545px; /* Altura inicial */
+            min-width: 968px; /* Asegura que no se haga más pequeño */
+            min-height: 484px; /* Asegura que no se haga más pequeño */
+            padding: 10px; /* Espacio adicional */
             border: 1px solid #ddd;
             resize: both;
-            overflow: hidden; /* Evita las barras de desplazamiento */
-            box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho y alto */
+            overflow: hidden;
+            box-sizing: border-box;
         }
-    
+
         .chart-resizable canvas {
-            width: 100%;
-            height: 100%;
             display: block;
+            width: 100% !important; /* Se ajusta al 100% del contenedor */
+            height: 100% !important; /* Se ajusta al 100% del contenedor */
             box-sizing: border-box;
         }
     
@@ -247,19 +246,18 @@
     </style>     
 </head>
 <body>
-    <button id="darkModeSwitch">Modo oscuro</button>
+    <button id="darkModeSwitch">Mode fosc</button>
     <a href="index.html" id="backButton">Inici</a>
     <div class="container">
         <h1>Evolució dades 2007 - 2023</h1>
         <div class="filters">
             <label for="electionType">Elecció:</label>
             <select id="electionType">
-                <option value="Municipals">Municipals</option>
+                <option value="Municipals" selected>Municipals</option>
                 <option value="Parlament">Parlament</option>
                 <option value="Generals">Generals</option>
                 <option value="Europees">Europees</option>
             </select>
-
             <label for="resultType">Informació:</label>
             <select id="resultType">
                 <option value="resultatsPartits">Resultats partits</option>
@@ -287,16 +285,46 @@
     </div>
 
     <script>
-        // Modo oscuro
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
-        darkModeSwitch.addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            console.log('Modo oscuro activado:', document.body.classList.contains('dark-mode'));
+        // Al cargar la página, aplicar el modo oscuro si está activado
+        window.onload = function() {
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeSwitch').textContent = 'Modo claro';
+            }
+        };
 
-            if (document.body.classList.contains('dark-mode')) {
-                darkModeSwitch.textContent = 'Modo claro';
+        // Cambia el estado del modo oscuro cuando se presiona el botón
+        document.getElementById('darkModeSwitch').addEventListener('click', function() {
+            const darkModeEnabled = !document.body.classList.contains('dark-mode');
+            document.body.classList.toggle('dark-mode', darkModeEnabled);
+            localStorage.setItem('darkMode', darkModeEnabled);
+
+            this.textContent = darkModeEnabled ? 'Modo claro' : 'Modo oscuro';
+        });
+
+        // Cambiar la selección de tipo de elección
+        document.getElementById('electionType').addEventListener('change', function() {
+            const selection = this.value;
+            console.log('Selección:', selection);
+
+            // Guardar la selección en localStorage
+            localStorage.setItem('electionType', selection);
+
+            // Recoger el estado del modo oscuro
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            const darkModeQueryParam = darkModeEnabled ? 'darkMode=true' : '';
+
+            if (selection === 'Generals') {
+                window.location.href = `GráficosGenerales.html?${darkModeQueryParam}`;
+            } else if (selection === 'Municipals') {
+                window.location.href = `Gráficos.html?${darkModeQueryParam}`;
+            } else if (selection === 'Europees') {
+                window.location.href = `GráficosEuropeas.html?${darkModeQueryParam}`;
+            } else if (selection === 'Parlament') {
+                window.location.href = `GráficosParlament.html?${darkModeQueryParam}`;
             } else {
-                darkModeSwitch.textContent = 'Modo oscuro';
+                console.warn('Selección no manejada:', selection);
             }
         });
     </script>
