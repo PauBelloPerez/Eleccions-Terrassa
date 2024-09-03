@@ -168,7 +168,7 @@ label {
 <button id="darkModeSwitch">Mode fosc</button>
     <a href="index.html" id="backButton">Inici</a>
     <div class="container">
-        <h1>Resultados de Elecciones</h1>
+        <h1>Resultats Districtes</h1>
         <div class="select-container">
             <label for="electionType">Elecció:</label>
             <select id="electionType">
@@ -189,6 +189,7 @@ label {
             <select id="party">
                 <option value="PSC">PSC</option>
                 <option value="CiU / Junts">CiU / Junts</option>
+                <option value="TxT">TxT</option>
                 <option value="ERC">ERC</option>
                 <option value="PP">PP</option>
                 <option value="ICV / Comuns">ICV / Comuns</option>
@@ -197,7 +198,6 @@ label {
                 <option value="PxC">PxC</option>
                 <option value="En Blanco">En Blanco</option>
                 <option value="PRIMARIES">PRIMARIES</option>
-                <option value="TxT">TxT</option>
                 <option value="VOX">VOX</option>
                 <option value="Podem">Podem</option>
                 <option value="Altres">Altres</option>
@@ -385,16 +385,49 @@ label {
             document.getElementById('party').addEventListener('change', updateChart);
         });
 
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        darkModeSwitch.addEventListener('click', function () {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+            darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
+        });
+
+document.addEventListener('DOMContentLoaded', function () {
+            // Aplicar el modo oscuro si está activado
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('darkModeSwitch').textContent = 'Mode fosc';
+            }
+            
+            // Configurar el gráfico y demás funcionalidad de la página
+
+            // Cambiar el estado del modo oscuro
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            darkModeSwitch.addEventListener('click', function () {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+                darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
+            });
+
+            // Código para inicializar y configurar los gráficos, etc.
+        });
+
+        
+        // Cambiar la selección de tipo de elección
         document.getElementById('electionType').addEventListener('change', function() {
-        const selection = this.value;
-        console.log('Selección:', selection);
+            const selection = this.value;
+            console.log('Selección:', selection);
 
-        // Guardar la selección en localStorage
-        localStorage.setItem('electionType', selection);
+            // Guardar la selección en localStorage
+            localStorage.setItem('electionType', selection);
 
-        // Recoger el estado del modo oscuro
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-        const darkModeQueryParam = darkModeEnabled ? 'darkMode=true' : '';
+            // Recoger el estado del modo oscuro
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            const darkModeQueryParam = darkModeEnabled ? 'darkMode=true' : '';
 
         if (selection === 'Generals') {
             window.location.href = `GráficosDistritosGenerales.html?${darkModeQueryParam}`;
@@ -406,6 +439,8 @@ label {
             console.warn('Selección no manejada:', selection);
         }
     });
+
+    
     </script>
     
 </body>
