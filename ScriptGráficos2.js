@@ -277,3 +277,34 @@ document.addEventListener('DOMContentLoaded', function () {
         document.addEventListener('mouseup', stopResize);
     });
 });
+document.getElementById('electionType').addEventListener('change', function() {
+    const selection = this.value;
+    console.log('Selección:', selection);
+
+    // Guardar la selección en localStorage
+    localStorage.setItem('electionType', selection);
+
+    if (selection === 'Generals') {
+        window.location.href = 'GráficosGenerales.html';
+    } else if (selection === 'Municipals') {
+        window.location.href = 'Gráficos.html';
+    } else {
+        console.warn('Selección no manejada:', selection);
+    }
+});
+
+// Al cargar la página, establecer el valor del select en función de localStorage
+window.onload = function() {
+    // Verifica y aplica el modo oscuro desde localStorage
+    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+    if (darkModeEnabled) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeSwitch').textContent = 'Modo claro';
+    }
+
+    // Resto de tu código onload
+    const savedElectionType = localStorage.getItem('electionType');
+    if (savedElectionType) {
+        document.getElementById('electionType').value = savedElectionType;
+    }
+};
