@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolución de Votos por Partido (2019-2024)</title>
+    <link rel="stylesheet" href="styles4.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="GráficosParlament.js" defer></script>
+    <style>
+        /* Estilo global */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Evita el desplazamiento horizontal */
+            transition: background-color 0.3s, color 0.3s; /* Transición suave para el modo oscuro */
+        }
+    
+        /* Contenedor principal */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0px;
+            box-sizing: border-box;
+            table-layout: fixed;
+        }
+    
+        /* Encabezado */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        /* Contenedor de filtros */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+    
+        /* Alinear etiquetas y cajas de selección */
+        .filters label {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            font-size: 16px; /* Tamaño de fuente para las etiquetas */
+            gap: 0px; /* Espacio entre la etiqueta y la caja de selección */
+        }
+    
+        .filters select {
+            padding: 5px;
+            width: 150px; /* Ajusta el ancho de las cajas de selección */
+            box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho */
+            margin: 0; /* Elimina el margen predeterminado */
+            border: 1px solid #ccc; /* Color de borde en modo claro */
+            background-color: #fff; /* Fondo blanco en modo claro */
+            color: #000; /* Color del texto en modo claro */
+            margin-left: 5px; /* Ajuste de espacio entre la etiqueta y el select */
+        }
+    
+        /* Modo oscuro - ajustar el estilo de las cajas de selección */
+        body.dark-mode .filters select {
+            background-color: #333; /* Fondo oscuro en modo oscuro */
+            color: #e0e0e0; /* Color del texto en modo oscuro */
+            border: 1px solid #555; /* Color del borde en modo oscuro */
+            margin-left: 0px; /* Mantener el mismo espacio en modo oscuro */
+            padding: 5px;
+            width: 150px;
+            box-sizing: border-box;
+            
+
+        }
+    
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .chart-resizable {
+            position: relative;
+            width: 1090px; /* Ancho inicial */
+            height: 545px; /* Altura inicial */
+            min-width: 968px; /* Asegura que no se haga más pequeño */
+            min-height: 484px; /* Asegura que no se haga más pequeño */
+            padding: 10px; /* Espacio adicional */
+            border: 1px solid #ddd;
+            resize: both;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .chart-resizable canvas {
+            display: block;
+            width: 100% !important; /* Se ajusta al 100% del contenedor */
+            height: 100% !important; /* Se ajusta al 100% del contenedor */
+            box-sizing: border-box;
+        }
+    
+        /* Estilo para el botón y el iframe */
+        #mapButton {
+            display: block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 20px auto;
+            z-index: 1000;
+        }
+    
+        /* Contenedor para el mapa */
+        #mapContainer {
+            display: none;
+            width: 80%;
+            margin: 20px auto;
+            padding-bottom: 20px;
+            position: relative;
+            z-index: 1000;
+        }
+    
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+    
+        /* Estilo para el botón de cambio de modo */
+        #darkModeSwitch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+    
+        /* Modo oscuro */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+    
+        body.dark-mode #resultsTable th {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+        }
+    
+        body.dark-mode #resultsTable td {
+            border-color: #333;
+            color: #e0e0e0;
+        }
+    
+        body.dark-mode #mapButton {
+            background-color: #444;
+            color: white;
+        }
+    
+        body.dark-mode #darkModeSwitch {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+    
+        /* Estilo para el switch */
+        .switch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    
+        .switch-label {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+    
+        .switch {
+            font-size: 17px;
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            margin-top: 0;
+            margin-bottom: 5px;
+            vertical-align: middle;
+        }
+    
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+    
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 1.4em;
+            width: 1.4em;
+            left: 0.2em;
+            bottom: 0.2em;
+            background-color: white;
+            border-radius: inherit;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+    
+        input:checked + .slider {
+            background-color: #007bff;
+        }
+    
+        input:checked + .slider:before {
+            transform: translateX(30px);
+            bottom: 2px;
+            top: auto;
+        }
+    
+        .switch input:checked + .slider {
+            box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);
+            border: 2px solid #0974f1;
+        }
+    
+        .switch input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+    </style>     
+</head>
+<body>
+    <button id="darkModeSwitch">Mode fosc</button>
+    <a href="index.html" id="backButton">Inici</a>
+    <div class="container">
+        <h1>Evolució dades 2010 - 2024</h1>
+        <div class="filters">
+            <label for="electionType">Elecció:</label>
+            <select id="electionType">
+                <option value="Municipals">Municipals</option>
+                <option value="Parlament" selected>Parlament</option>
+                <option value="Generals">Generals</option>
+                <option value="Europees">Europees</option>
+            </select>
+
+            <label for="resultType">Informació:</label>
+            <select id="resultType">
+                <option value="resultatsPartits">Resultats partits</option>
+                <option value="participacio">Participació</option>
+            </select>
+
+            <label for="district">Districte:</label>
+            <select id="district">
+                <option value="Tots">Tots</option>
+                <!-- Los distritos se cargarán dinámicamente -->
+            </select>
+
+            <label for="section">Secció:</label>
+            <select id="section">
+                <option value="Totes">Totes</option>
+                <!-- Las secciones se cargarán dinámicamente -->
+            </select>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-resizable">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeSwitch').textContent = 'Modo claro';
+            }
+        };
+
+        // Cambia el estado del modo oscuro cuando se presiona el botón
+        document.getElementById('darkModeSwitch').addEventListener('click', function() {
+            const darkModeEnabled = !document.body.classList.contains('dark-mode');
+            document.body.classList.toggle('dark-mode', darkModeEnabled);
+            localStorage.setItem('darkMode', darkModeEnabled);
+
+            this.textContent = darkModeEnabled ? 'Modo claro' : 'Modo oscuro';
+        });
+
+        // Cambiar la selección de tipo de elección
+        document.getElementById('electionType').addEventListener('change', function() {
+            const selection = this.value;
+            console.log('Selección:', selection);
+
+            // Guardar la selección en localStorage
+            localStorage.setItem('electionType', selection);
+
+            // Recoger el estado del modo oscuro
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+            const darkModeQueryParam = darkModeEnabled ? 'darkMode=true' : '';
+
+            if (selection === 'Municipals') {
+                window.location.href = `Gráficos.html?${darkModeQueryParam}`;
+            } else if (selection === 'Generals') {
+                window.location.href = `GráficosGenerales.html?${darkModeQueryParam}`;
+            } else if (selection === 'Europees') {
+                window.location.href = `GráficosEuropeas.html?${darkModeQueryParam}`;
+            } else if (selection === 'Parlament') {
+                window.location.href = `GráficosParlament.html?${darkModeQueryParam}`;
+            } else {
+                console.warn('Selección no manejada:', selection);
+            }
+        });
+    </script>
+</body>
+</html>

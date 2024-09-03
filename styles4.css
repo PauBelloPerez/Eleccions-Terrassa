@@ -1,0 +1,237 @@
+body {
+    font-family: 'Sabon', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff; /* Fondo blanco por defecto */
+    color: #000000; /* Texto negro por defecto */
+    transition: background-color 0.5s, color 0.5s; /* Transición suave */
+}
+
+body.dark-mode {
+    background-color: #121212; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+/* Estilo general para los elementos select */
+.filters select {
+    font-family: 'Sabon', sans-serif; /* Fuente Sabon */
+    background-color: #ffffff; /* Fondo blanco */
+    color: #000000; /* Texto negro */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 2px 3.33px; /* Espacio interno, ajusta el padding según sea necesario */
+    font-size: 16px;
+    text-align: center; /* Tamaño de fuente */
+    width: 120px; /* Ancho fijo, ajusta según el diseño deseado */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra interna */
+    margin-right: 15px; /* Espacio a la derecha */
+    margin-left: 5px;
+    height: 30px; /* Ajusta esta altura para que coincida con la altura del texto a la izquierda */
+    transition: background-color 0.5s, color 0.5s; /* Transición suave para cambios */
+}
+
+/* Estilo para el borde al estar enfocado */
+.filters select:focus {
+    border-color: #007bff; /* Color de borde azul */
+    background-color: #f0f8ff; /* Fondo azul claro */
+    outline: none; /* Quita el borde predeterminado del enfoque */
+}
+
+/* Estilo para las opciones dentro del select */
+.filters option {
+    background-color: #ffffff; /* Fondo blanco */
+    color: #000000; /* Texto negro */
+}
+
+/* Estilo para el contenedor de filtros */
+.filters {
+    flex-wrap: wrap; /* Permite que los filtros se ajusten en varias líneas */
+    gap: 50px; /* Espacio entre los filtros */
+    margin-bottom: 20px; /* Espacio debajo de los filtros */
+}
+
+/* Estilo para el modo oscuro */
+body.dark-mode .filters select {
+    background-color: #2d2d2d; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+    border: 1px solid #444; /* Borde gris oscuro */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); /* Sombra interna más pronunciada */
+}
+
+/* Estilo para el modo oscuro en las opciones dentro del select */
+body.dark-mode .filters option {
+    background-color: #2d2d2d; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+/* Estilo para el contenedor de filtros en modo oscuro */
+
+
+/* Otros estilos permanecen iguales */
+
+h1 {
+    margin-top: 40px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column; /* Asegura que todo el contenido esté en una columna */
+    align-items: center; /* Centra el contenido horizontalmente */
+    width: 90%;
+    max-width: 1200px; /* Reducir el ancho máximo */
+    margin: 0 auto;
+    padding-bottom: 60px; /* Asegura que haya suficiente espacio para el botón y el mapa */
+}
+
+.main-content {
+    display: flex;
+    justify-content: space-between; /* Espacio entre la tabla y los gráficos */
+    width: 100%;
+    margin-bottom: 20px; /* Espacio debajo de los gráficos */
+}
+
+#resultsTable {
+    width: 47vw; /* Ajusta el ancho de la tabla a un poco menos de la mitad de la pantalla */
+    max-width: 550px; /* Ajusta el ancho máximo para evitar que la tabla sea demasiado pequeña */
+    height: 20vw; /* Ajusta la altura de la tabla automáticamente */
+    border-collapse: collapse;
+    margin-right: 20px;
+    margin-bottom: 20px; /* Espacio entre la tabla y los gráficos */
+    background-color: #f8f9fa; /* Fondo claro por defecto */
+    color: #000000; /* Texto negro */
+    transition: background-color 0.5s, color 0.5s; /* Transición suave */
+}
+
+body.dark-mode #resultsTable {
+    background-color: #1f1f1f; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+.charts {
+    display: flex;
+    flex-direction: column; /* Coloca los gráficos uno debajo del otro */
+    align-items: center; /* Centra los gráficos horizontalmente */
+    width: 50vw; /* Ajusta el ancho del contenedor de gráficos */
+    height: 20vw; /* Ajusta la altura del contenedor de gráficos */
+}
+
+#resultsChart, #resultsPieChart {
+    background-color: #ffffff; /* Fondo claro por defecto */
+    color: #000000; /* Texto negro */
+    transition: background-color 0.5s, color 0.5s; /* Transición suave */
+}
+
+body.dark-mode #resultsChart, body.dark-mode #resultsPieChart {
+    background-color: #2d2d2d; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+#resultsChart {
+    width: auto; /* Ajusta el ancho del gráfico de barras */
+    height: auto; /* Ajusta la altura del gráfico de barras */
+    max-width: 550px; /* Limita el ancho máximo del gráfico de barras */
+}
+
+#resultsPieChart {
+    width: 400px; /* Ajusta el ancho del gráfico circular */
+    height: 300px; /* Ajusta la altura del gráfico circular */
+    margin-top: 10px; /* Espacio entre el gráfico de barras y el gráfico circular */
+    margin-bottom: 20px; /* Espacio debajo del gráfico circular para el botón */
+}
+
+/* Estilo para el botón y el iframe */
+#mapButton {
+    display: block; /* Asegura que el botón se comporte como un elemento de bloque */
+    padding: 10px 20px;
+    background-color: #007bff; /* Color de botón inicial */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    position: absolute; /* Cambia a posición relativa */
+    margin: 750px auto; /* Centra el botón y agrega margen */
+    z-index: 1000; /* Asegura que el botón esté encima del contenido */
+}
+
+#mapContainer {
+    display: none; /* Oculta el iframe por defecto */
+    width: 80%; /* Ajusta el ancho del iframe */
+    margin: 20px auto; /* Espacio automático para centrar el contenedor y espacio adicional debajo del botón */
+    padding-bottom: 20px; /* Espacio debajo del contenedor del mapa para evitar solapamiento con el contenido */
+    position: absolute;
+    margin: 800px auto;
+    z-index: 1000; /* Cambia a posición relativa */
+}
+
+iframe {
+    width: 100%;
+    height: 600px;
+    border: none;
+}
+
+#backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+#backButton:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo original para el botón de modo oscuro */
+#darkModeSwitch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+/* Cambia el fondo del botón cuando el modo oscuro está activado */
+body.dark-mode #darkModeSwitch {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.chart-container {
+    text-align: center;
+}
+
+/* Contenedor redimensionable */
+.chart-resizable {
+    position: relative;
+    width: 100vw; /* Ocupa todo el ancho de la ventana del navegador */
+    height: 60vh; /* Ajusta la altura a un porcentaje del viewport */
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    resize: both;
+    overflow: hidden; /* Evita las barras de desplazamiento */
+    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho y alto */
+}
+
+.chart-resizable canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+
+
+
