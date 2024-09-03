@@ -168,7 +168,7 @@ label {
 <button id="darkModeSwitch">Mode fosc</button>
     <a href="index.html" id="backButton">Inici</a>
     <div class="container">
-        <h1>Resultados de Elecciones</h1>
+        <h1>Resultats Districtes</h1>
         <div class="select-container">
             <label for="electionType">Elecció:</label>
             <select id="electionType">
@@ -381,6 +381,37 @@ label {
             document.getElementById('electionType').addEventListener('change', updateChart);
             document.getElementById('year').addEventListener('change', updateChart);
             document.getElementById('party').addEventListener('change', updateChart);
+        });
+
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        darkModeSwitch.addEventListener('click', function () {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+            darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
+        });
+
+document.addEventListener('DOMContentLoaded', function () {
+            // Aplicar el modo oscuro si está activado
+            const darkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+            if (darkModeEnabled) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('darkModeSwitch').textContent = 'Mode fosc';
+            }
+            
+            // Configurar el gráfico y demás funcionalidad de la página
+
+            // Cambiar el estado del modo oscuro
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            darkModeSwitch.addEventListener('click', function () {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+                darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
+            });
+
+            // Código para inicializar y configurar los gráficos, etc.
         });
 
         document.getElementById('electionType').addEventListener('change', function() {
