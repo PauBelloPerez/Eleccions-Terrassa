@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles2.css">
+    <title>Resultados de Elecciones</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0px;
+    box-sizing: border-box;
+    table-layout: fixed;
+}
+
+select {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+#barChartContainer {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    margin: 20px auto;
+    position: relative;
+}
+
+#barChart {
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+body.dark-mode h1 {
+    color: #fff;
+}
+
+#darkModeSwitch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra agregada */
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode #darkModeSwitch {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.select-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.year-buttons-container {
+    width: 121.5px;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px auto;
+    margin-left: 570px; /* Ajusta este valor para mover el contenedor hacia la derecha */
+}
+
+.year-button {
+    width: 50px;
+    height: 30px;
+    font-size: 24px; /* Ajusta el tamaño del texto dentro del botón */
+    padding: 0; /* Elimina el padding interno para asegurar el tamaño uniforme */
+    margin: 0 1px; /* Elimina los márgenes para mantener el diseño compacto */
+    cursor: pointer;
+    background-color: #585858;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center; /* Centra el texto verticalmente dentro del botón */
+    justify-content: center; /* Centra el texto horizontalmente dentro del botón */
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra agregada */
+}
+
+.year-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+select {
+    font-family: 'Sabon', sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 2px 3.33px;
+    font-size: 16px;
+    text-align: center;
+    width: 120px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 15px;
+    margin-left: 5px;
+    height: 30px;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+label {
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+#backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra agregada */
+}
+
+#backButton:hover {
+    background-color: #0056b3;
+}
+
+
+    </style>
+</head>
+<button id="darkModeSwitch">Mode fosc</button>
+    <a href="index.html" id="backButton">Inici</a>
+    <div class="container">
+        <h1>Resultados de Elecciones</h1>
+        <div class="select-container">
+            <label for="electionType">Elecció:</label>
+            <select id="electionType">
+                <option value="Municipals">Municipals</option>
+                <option value="Parlament">Parlament</option>
+                <option value="Generals" selected>Generals</option>
+                <option value="Europees">Europees</option>
+            </select>
+            <label for="year">Any:</label>
+            <select id="year">
+                <option value="2015">2015</option>
+                <option value="2016">2016</option>
+                <option value="2019I">2019 28A</option>
+                <option value="2019II">2019 10N</option>
+                <option value="2023">2023</option>
+            </select>
+            <label for="party">Partit:</label>
+            <select id="party">
+                <option value="PSC">PSC</option>
+                <option value="Convergència / Junts">CiU / Junts</option>
+                <option value="ERC">ERC</option>
+                <option value="PP">PP</option>
+                <option value="Comuns / Sumar">Comuns / Sumar</option>
+                <option value="Cs">Cs</option>
+                <option value="CUP">CUP</option>
+                <option value="VOX">VOX</option>
+                <option value="PACMA">PACMA</option>
+                <option value="Más País">Más País</option>
+                <option value="Unió">Unió</option>
+                <option value="Front Republicà">Front Republicà</option>
+                <option value="Altres">Altres</option>
+            </select>
+        </div>
+        <div class="year-buttons-container">
+            <button id="decrementYear" class="year-button">-</button>
+            <button id="incrementYear" class="year-button">+</button>
+        </div>
+        <div id="barChartContainer">
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let parsedData = [];
+    
+            const colors = {
+                "PSC": "#FF0000",
+                "Convergència / Junts": "#18307B",
+                "ERC": "yellow",
+                "PP": "#0198CB",
+                "ICV / Comuns": "#67AF23",
+                "Cs": "orangered",
+                "CUP": "#FFEF01",
+                "PxC": "#045FB4",
+                "En Blanco": "#000000",
+                "PRIMARIES": "#EC4C5E",
+                "TxT": "#1f1d1d",
+                "VOX": "#63BE21",
+                "Podem": "#6e236e",
+                "Altres": "#676767",
+                "Front Republicà": "#0A0A0A",
+                "SI": "#000000",
+                "Reagrupament": "#850038",
+                "Aliança": "#064a81",
+                "JxSí": "#01DFD7",
+                "Unió": "#00008B",
+                "PACMA": "#00FF7F",
+                "Comuns / Sumar": "#E51C55",
+                "Más País": "#14DCC5"
+            };
+    
+            // Leer el archivo CSV
+            fetch('Generals2015-2023II.csv')
+                .then(response => response.text())
+                .then(data => {
+                    parsedData = Papa.parse(data, {
+                        header: true,
+                        skipEmptyLines: true,
+                    }).data;
+                    updateChart();
+                })
+                .catch(error => console.error('Error al leer el archivo CSV:', error));
+    
+            function updateChart() {
+                const electionType = document.getElementById('electionType').value;
+                const selectedYear = document.getElementById('year').value;
+                const selectedParty = document.getElementById('party').value;
+    
+                const filteredData = parsedData.filter(item => 
+                    item['Elecció'] === electionType && item['Any'] == selectedYear
+                );
+    
+                const districts = [...new Set(filteredData.map(item => item['Districte']))];
+    
+                const votes = districts.map(district => {
+                    const districtData = filteredData.filter(item => item['Districte'] === district);
+                    const partyVotes = districtData.reduce((sum, item) => {
+                        return sum + (parseFloat(item[selectedParty]) || 0);
+                    }, 0);
+                    const totalVotes = districtData.reduce((sum, item) => {
+                        return sum + (parseFloat(item['VOTS_CANDIDATURES']) || 0);
+                    }, 0);
+                    return totalVotes > 0 ? (partyVotes / totalVotes) * 100 : 0;
+                });
+    
+                const ctx = document.getElementById('barChart').getContext('2d');
+                if (window.myBarChart) {
+                    window.myBarChart.data.labels = districts;
+                    window.myBarChart.data.datasets[0].data = votes;
+                    window.myBarChart.data.datasets[0].backgroundColor = colors[selectedParty];
+                    window.myBarChart.data.datasets[0].label = `Resultat`;
+                    window.myBarChart.update();
+                } else {
+                    window.myBarChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: districts,
+                            datasets: [{
+                                label: `Percentatge`,
+                                data: votes,
+                                backgroundColor: colors[selectedParty],
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    enabled: true,
+                                    custom: function(context) {
+                                        const tooltipModel = context.tooltip;
+                                        if (tooltipModel.body) {
+                                            const dataIndex = tooltipModel.dataPoints[0].dataIndex;
+                                            const district = districts[dataIndex];
+                                            const districtData = filteredData.filter(item => item['Districte'] === district);
+    
+                                            const partyVotes = districtData.reduce((sum, item) => {
+                                                return sum + (parseFloat(item[selectedParty]) || 0);
+                                            }, 0);
+                                            const totalVotes = districtData.reduce((sum, item) => {
+                                                return sum + (parseFloat(item['VOTS_CANDIDATURES']) || 0);
+                                            }, 0);
+                                            const percentage = totalVotes > 0 ? (partyVotes / totalVotes) * 100 : 0;
+    
+                                            return {
+                                                title: [`Distrito: ${district}`],
+                                                body: [
+                                                    `Porcentaje: ${percentage.toFixed(2)}%`,
+                                                    `Votos obtenidos: ${partyVotes.toFixed(0)}`,
+                                                    `Votos totales: ${totalVotes.toFixed(0)}`
+                                                ]
+                                            };
+                                        }
+                                        return null;
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Districte'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Percentatge de vot (%)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+    
+            // Modo oscuro
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            darkModeSwitch.addEventListener('click', function () {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+                darkModeSwitch.textContent = isDarkMode ? 'Mode clar' : 'Mode fosc';
+            });
+    
+            // Botones de incremento y decremento de año
+            const incrementYearBtn = document.getElementById('incrementYear');
+            const decrementYearBtn = document.getElementById('decrementYear');
+            const yearSelect = document.getElementById('year');
+    
+            incrementYearBtn.addEventListener('click', function () {
+                const currentIndex = [...yearSelect.options].findIndex(option => option.value === yearSelect.value);
+                if (currentIndex < yearSelect.options.length - 1) {
+                    yearSelect.value = yearSelect.options[currentIndex + 1].value;
+                    updateChart();
+                }
+            });
+    
+            decrementYearBtn.addEventListener('click', function () {
+                const currentIndex = [...yearSelect.options].findIndex(option => option.value === yearSelect.value);
+                if (currentIndex > 0) {
+                    yearSelect.value = yearSelect.options[currentIndex - 1].value;
+                    updateChart();
+                }
+            });
+    
+            document.getElementById('electionType').addEventListener('change', updateChart);
+            document.getElementById('year').addEventListener('change', updateChart);
+            document.getElementById('party').addEventListener('change', updateChart);
+        });
+
+        document.getElementById('electionType').addEventListener('change', function() {
+        const selection = this.value;
+        console.log('Selección:', selection);
+
+        // Guardar la selección en localStorage
+        localStorage.setItem('electionType', selection);
+
+        // Recoger el estado del modo oscuro
+        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+        const darkModeQueryParam = darkModeEnabled ? 'darkMode=true' : '';
+
+        if (selection === 'Municipals') {
+            window.location.href = `GráficosDistritosMunicipales.html?${darkModeQueryParam}`;
+        } else if (selection === 'Parlament') {
+            window.location.href = `GráficosDistritosParlament2.html?${darkModeQueryParam}`;
+        } else if (selection === 'Europees') {
+            window.location.href = `GráficosDistritosEuropees.html?${darkModeQueryParam}`;
+        } else {
+            console.warn('Selección no manejada:', selection);
+        }
+    });
+    </script>
+    
+</body>
+</html>
