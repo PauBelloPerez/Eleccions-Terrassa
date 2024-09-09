@@ -38,6 +38,7 @@
         .erc { background-color: yellow; }
         .ciu { background-color: #18307B; }
         .enblanc { background-color: #000000; }
+        .blanco { background-color: #000000; }
         .icv { background-color: #67AF23; }
         .pirata { background-color: #464646; }
         .upyd { background-color: #E9008C ; }
@@ -157,6 +158,7 @@
         .icv-bar { background-color: #67AF23; }
         .pacma-bar { background-color: #00FF7F; }
         .pirata-bar { background-color: #464646;}
+        .pirates-bar { background-color: #464646;}
         .pxc-bar { background-color: #045FB4;}
         .altres-bar { background-color: #676767;}
         .participation {
@@ -252,7 +254,7 @@
                 <td><div class="bar-color-container"><div class="bar-color pacma-bar" id="bar-pacma"></div></div></td>
             </tr>
             <tr>
-                <td><span class="color-circle enblanc"></span>En Blanc</td>
+                <td><span class="color-circle blanco"></span>En Blanc</td>
                 <td id="sum-enblanc"></td>
                 <td id="pct-enblanc"></td>
                 <td><div class="bar-color-container"><div class="bar-color enblanc-bar" id="bar-enblanc"></div></div></td>
@@ -475,12 +477,12 @@
     <td>${properties['PACMA']}</td> <!-- Añadir valor de Vots PACMA -->
 </tr>
 <tr>
-    <td><span class="color-circle ecp"></span>En Comú</td>
+    <td><span class="color-circle blanco"></span>En Blanc</td>
     <td><strong>${properties['% En Blanc']}</strong></td>
     <td>${properties['En Blanc']}</td> <!-- Añadir valor de Vots En Blanc -->
 </tr>
 <tr>
-    <td><span class="color-circle pirata"></span>Pirates</td>
+    <td><span class="color-circle pirates"></span>Pirates</td>
     <td><strong>${properties['% Pirata']}</strong></td>
     <td>${properties['Pirata']}</td> <!-- Añadir valor de Vots Pirates -->
 </tr>
