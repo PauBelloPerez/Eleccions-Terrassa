@@ -117,81 +117,81 @@ iframe {
             color: #333;
         }
         .switch-container {
-    display: flex;
-    flex-direction: column; /* Coloca el texto y el switch en una columna */
-    align-items: center; /* Centra ambos elementos horizontalmente */
-    margin-bottom: 10px; /* Espacio debajo del contenedor */
-}
+            display: flex;
+            flex-direction: column; /* Coloca el texto y el switch en una columna */
+            align-items: center; /* Centra ambos elementos horizontalmente */
+            margin-bottom: 10px; /* Espacio debajo del contenedor */
+        }
 
-.switch-label {
-    margin-bottom: 10px; /* Sin margen inferior para un alineamiento preciso */
-    font-size: 16px; /* Tamaño de fuente para el texto */
-    display:inline-flex;
-    text-align: right; /* Centra el texto encima del toggle switch */
-    line-height: 10px; /* Ajusta la línea de altura para que coincida con la altura del toggle switch */
-}
+        .switch-label {
+            margin-bottom: 10px; /* Sin margen inferior para un alineamiento preciso */
+            font-size: 16px; /* Tamaño de fuente para el texto */
+            display:inline-flex;
+            text-align: right; /* Centra el texto encima del toggle switch */
+            line-height: 10px; /* Ajusta la línea de altura para que coincida con la altura del toggle switch */
+        }
 
-.switch {
-    font-size: 17px;
-    position: relative;
-    
-    display: inline-block;
-    width: 60px; /* Ancho del toggle switch */
-    height: 30px; /* Altura del toggle switch */
-    margin-top: 0; /* Sin margen superior para alineación precisa */
-    margin-bottom: 5px;
-    vertical-align: middle; /* Ajuste el espacio entre el switch y el siguiente contenido */
-}
+        .switch {
+            font-size: 17px;
+            position: relative;
+            
+            display: inline-block;
+            width: 60px; /* Ancho del toggle switch */
+            height: 30px; /* Altura del toggle switch */
+            margin-top: 0; /* Sin margen superior para alineación precisa */
+            margin-bottom: 5px;
+            vertical-align: middle; /* Ajuste el espacio entre el switch y el siguiente contenido */
+        }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 30px; /* Bordes redondeados */
-}
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px; /* Bordes redondeados */
+        }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 1.4em;
-  width: 1.4em;
-  left: 0.2em;
-  bottom: 0.2em;
-  background-color: white;
-  border-radius: inherit;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-}
+        .slider:before {
+        position: absolute;
+        content: "";
+        height: 1.4em;
+        width: 1.4em;
+        left: 0.2em;
+        bottom: 0.2em;
+        background-color: white;
+        border-radius: inherit;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        }
 
 
-input:checked + .slider {
-    background-color: #007bff;
-}
+        input:checked + .slider {
+            background-color: #007bff;
+        }
 
-input:checked + .slider:before {
-    transform: translateX(30px); /* Mueve el círculo al otro extremo */
-    bottom: 2px; /* Mantén el círculo en la misma posición inferior */
-    top: auto; /* Asegura que el círculo no se mueva hacia arriba */
-}
+        input:checked + .slider:before {
+            transform: translateX(30px); /* Mueve el círculo al otro extremo */
+            bottom: 2px; /* Mantén el círculo en la misma posición inferior */
+            top: auto; /* Asegura que el círculo no se mueva hacia arriba */
+        }
 
-.switch input:checked + .slider {
-    box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);
-    border: 2px solid #0974f1;
-}
+        .switch input:checked + .slider {
+            box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);
+            border: 2px solid #0974f1;
+        }
 
-.switch input:checked + .slider:before {
-    transform: translateX(30px); /* Ajustado para coincidir con el ancho del toggle switch */
-}
+        .switch input:checked + .slider:before {
+            transform: translateX(30px); /* Ajustado para coincidir con el ancho del toggle switch */
+        }
     </style>
 </head>
 <body>
@@ -214,6 +214,7 @@ input:checked + .slider:before {
             <option value="2019 28A">2019 28A</option>
             <option value="2016">2016</option>
             <option value="2015">2015</option>
+            <option value="2011">2011</option>
         </select>
 
         <label for="districte">Districte:</label>
@@ -296,6 +297,9 @@ input:checked + .slider:before {
                 case '2015':
                     src = 'Eleccions Generals 2015.html';
                     break;
+                case '2011':
+                    src = 'Eleccions Generals 2011.html';
+                    break;
                 default:
                     src = '';
             }
@@ -356,6 +360,9 @@ input:checked + .slider:before {
                     break;
                 case '2015':
                     src = 'Eleccions Generals 2015.html';
+                    break;
+                case '2011':
+                    src = 'Eleccions Generals 2011.html';
                     break;
                 default:
                     src = '';
