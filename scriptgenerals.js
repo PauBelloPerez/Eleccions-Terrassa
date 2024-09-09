@@ -30,6 +30,12 @@ const columnMapping = {
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
+    '2011': {
+        partitColumns: ['CiU', 'ICV', 'Pirata', 'En Blanc', 'ERC', 'PACMA', 'PP', 'PSC', 'PxC','UPYD','Altres'],
+        totalVotesColumn: 'VOTS_CANDIDATURES',
+        districteColumn: 'Districte',
+        seccioColumn: 'Secció'
+    },
 };
 // Ejemplo de script para "generals"
 
@@ -122,6 +128,9 @@ function loadData() {
         case '2015':
             fileName = 'Generals2015CSV.csv';
             break;
+        case '2011':
+            fileName = 'Generals2011CSV.csv';
+            break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -191,9 +200,12 @@ function updateDistricteOptions() {
         case '2016':
             fileName = 'Generals2016CSV.csv';
             break;
-            case '2015':
-                fileName = 'Generals2015CSV.csv';
-                break;
+        case '2015':
+            fileName = 'Generals2015CSV.csv';
+            break;
+        case '2011':
+            fileName = 'Generals2011CSV.csv';
+            break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -223,6 +235,24 @@ function updateDistricteOptions() {
         }
     });
 }
+
+document.getElementById('elecció').addEventListener('change', function() {
+    const selection = this.value;
+
+    // Guarda el estado actual del modo oscuro en localStorage
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    if (selection === 'Municipals') {
+        window.location.href = 'Selecciones.html?eleccio=Municipals';
+    } else if (selection === 'Generals') {
+        window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+    } else if(selection === 'Parlament') {
+        window.location.href = 'SeleccionesParlament.html?eleccio=Parlament';
+    }
+    // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
+});
+
 
 function getUniqueDistricte(data, year) {
     const columns = columnMapping[year];
@@ -269,6 +299,9 @@ function updateSeccions() {
             break;
         case '2015':
             fileName = 'Generals2015CSV.csv';
+            break;
+        case '2011':
+            fileName = 'Generals2011CSV.csv';
             break;
         default:
             console.error('Año no válido seleccionado');
@@ -552,7 +585,10 @@ function getPartyColor(party) {
             'PP': '#0198CB',
             'PxC': '#045FB4',
             'En Blanco': '#000000',
+            'En Blanc': '#000000',
             'Blanco': '#000000',
+            'Pirata': '#464646',
+            'UPYD': '#E9008C'
             // Agrega colores para otros partidos según sea necesario
             // ...
         },
@@ -603,6 +639,10 @@ function getPartyColor(party) {
         'PdeCat': '#0081C2',
         'Front Republicà': '#0A0A0A',
         'Más País': '#14DCC5',
+        'En Blanc': '#000000',
+        'Blanco': '#000000',
+        'Pirata': '#464646',
+        'UPYD': '#E9008C'
 
         // Agrega colores para otros partidos según sea necesario
         // ...
