@@ -37,7 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
         "Unió" : "#0033A9",
         "PACMA": "#00FF7F",
         "Más País": "#14DCC5",
-        "Front Republicà": "#0A0A0A"
+        "Front Republicà": "#0A0A0A",
+        "UPYD": "#E9008C",
+        "Pirata": "#464646",
+        "En Blanc": "#000000"
     };
 
     function getColor(party, year) {
@@ -127,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (resultType === 'resultatsPartits') {
             parties = ['PSC', 'Convergència / Junts', 'ERC', 'PP', 'Comuns / Sumar', 
-                       'Cs', 'VOX', 'Podemos', 'CUP' ,'Más País','PACMA','Unió','Front Republicà','Altres'];
+                       'Cs', 'VOX', 'Podemos', 'CUP' ,'Más País','PACMA','Unió','Front Republicà','Altres', 'En Blanc', 'PxC', 'Pirata', 'UPYD'];
             resultLabel = 'Evolución del Porcentaje de Votos por Partido (2007-2023)';
         } else if (resultType === 'participacio') {
             parties = ['Participació'];
