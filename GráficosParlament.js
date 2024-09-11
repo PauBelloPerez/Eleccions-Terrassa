@@ -322,7 +322,7 @@ window.onload = function() {
     const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
     if (darkModeEnabled) {
         document.body.classList.add('dark-mode');
-        document.getElementById('darkModeSwitch').textContent = 'Modo claro';
+        document.getElementById('darkModeSwitch').textContent = 'Mode clar';
     }
 
     // Resto de tu código onload
