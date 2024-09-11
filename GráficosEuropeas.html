@@ -292,7 +292,7 @@ input:checked + .slider:before {
             const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
             if (darkModeEnabled) {
                 document.body.classList.add('dark-mode');
-                document.getElementById('darkModeSwitch').textContent = 'Modo claro';
+                document.getElementById('darkModeSwitch').textContent = 'Mode clar';
             }
         };
 
@@ -302,7 +302,7 @@ input:checked + .slider:before {
             document.body.classList.toggle('dark-mode', darkModeEnabled);
             localStorage.setItem('darkMode', darkModeEnabled);
 
-            this.textContent = darkModeEnabled ? 'Modo claro' : 'Modo oscuro';
+            this.textContent = darkModeEnabled ? 'Mode clar' : 'Mode fosc';
         });
 
         // Cambiar la selección de tipo de elección
