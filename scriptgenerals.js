@@ -36,6 +36,18 @@ const columnMapping = {
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
+    '2008': {
+        partitColumns: ['CiU', 'ICV', 'PSC', 'ERC','PP', 'Cs','Altres'],
+        totalVotesColumn: 'VOTS_CANDIDATURES',
+        districteColumn: 'Districte',
+        seccioColumn: 'Secció'
+    },
+    '2004': {
+        partitColumns: ['CiU', 'ICV', 'PSC', 'ERC','PP', 'Cs','Verds','Altres'],
+        totalVotesColumn: 'VOTS_CANDIDATURES',
+        districteColumn: 'Districte',
+        seccioColumn: 'Secció'
+    },
 };
 // Ejemplo de script para "generals"
 
@@ -131,6 +143,12 @@ function loadData() {
         case '2011':
             fileName = 'Generals2011CSV.csv';
             break;
+        case '2008':
+            fileName = 'Generals2008CSV.csv';
+            break;
+        case '2004':
+                fileName = 'Generals2004CSV.csv';
+                break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -206,6 +224,12 @@ function updateDistricteOptions() {
         case '2011':
             fileName = 'Generals2011CSV.csv';
             break;
+        case '2008':
+                fileName = 'Generals2008CSV.csv';
+                break;
+        case '2004':
+                fileName = 'Generals2004CSV.csv';
+                break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -302,6 +326,12 @@ function updateSeccions() {
             break;
         case '2011':
             fileName = 'Generals2011CSV.csv';
+            break;
+        case '2008':
+            fileName = 'Generals2008CSV.csv';
+            break;
+        case '2004':
+            fileName = 'Generals2004CSV.csv';
             break;
         default:
             console.error('Año no válido seleccionado');
@@ -642,7 +672,8 @@ function getPartyColor(party) {
         'En Blanc': '#000000',
         'Blanco': '#000000',
         'Pirata': '#464646',
-        'UPYD': '#E9008C'
+        'UPYD': '#E9008C',
+        'Verds': '#009642',
 
         // Agrega colores para otros partidos según sea necesario
         // ...
