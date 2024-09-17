@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Leer el archivo CSV
-    fetch('Municipales2007-2023.csv')
+    fetch('Municipales2007-2023II.csv')
         .then(response => response.text())
         .then(data => {
             parsedData = Papa.parse(data, {
