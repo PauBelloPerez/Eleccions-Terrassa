@@ -81,8 +81,6 @@ body.dark-mode #darkModeSwitch {
     color: #333;
 }
 
-
-
 .select-container {
     display: flex;
     justify-content: center;
@@ -182,21 +180,25 @@ label {
             </select>
             <label for="year">Any:</label>
             <select id="year">
+                <option value="2009">2009</option>
+                <option value="2014">2014</option>
                 <option value="2019">2019</option>
                 <option value="2024" selected>2024</option>
             </select>
             <label for="party">Partit:</label>
             <select id="party">
                 <option value="PSC">PSC</option>
-                <option value="Junts">Junts</option>
+                <option value="CiU / Junts">CiU / Junts</option>
                 <option value="ERC">ERC</option>
                 <option value="PP">PP</option>
-                <option value="Comuns / Sumar">Comuns / Sumar</option>
+                <option value="ICV / Comuns">ICV / Comuns</option>
                 <option value="Cs">Cs</option>
                 <option value="VOX">VOX</option>
                 <option value="SALF">SALF</option>
-                <option value="Podem">Podem</option>
+                <option value="Podemos">Podemos</option>
                 <option value="PACMA">PACMA</option>
+                <option value="UPyD">UPyD</option>
+                <option value="Partido X">Partido X</option>
                 <option value="Altres">Altres</option>
             </select>
         </div>
@@ -215,6 +217,7 @@ label {
             const colors = {
                 "PSC": "#FF0000",
                 "Convergència / Junts": "#18307B",
+                "CiU / Junts": "#18307B",
                 "Junts": "#00C3B2",
                 "ERC": "yellow",
                 "PP": "#0198CB",
@@ -237,7 +240,13 @@ label {
                 "PACMA": "#00FF7F",
                 "Comuns / Sumar": "#E51C55",
                 "Más País": "#14DCC5",
-                "SALF": "#804000"
+                "SALF": "#804000",
+                "Partido X": "#6cb0b3",
+                "ICV / Comuns": "#67AF23",
+                "UPyD": "#E9008C",
+                "Podemos": "#9370DB"
+
+
             };
     
             // Leer el archivo CSV
