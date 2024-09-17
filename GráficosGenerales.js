@@ -40,7 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
         "Front Republicà": "#0A0A0A",
         "UPYD": "#E9008C",
         "Pirata": "#464646",
-        "En Blanc": "#000000"
+        "En Blanc": "#000000",
+        "Convergència / Junts": "#18307B",
+        "Verds": "#009642",
+        "Comuns / Sumar": "#67AF23"
+        
     };
 
     function getColor(party, year) {
@@ -130,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (resultType === 'resultatsPartits') {
             parties = ['PSC', 'Convergència / Junts', 'ERC', 'PP', 'Comuns / Sumar', 
-                       'Cs', 'VOX', 'Podemos', 'CUP' ,'Más País','PACMA','Unió','Front Republicà','Altres', 'En Blanc', 'PxC', 'Pirata', 'UPYD'];
+                       'Cs', 'VOX', 'Podemos', 'CUP' ,'Más País','PACMA','Unió','Front Republicà','Altres', 'En Blanc', 'PxC', 'Pirata', 'UPYD', 'Verds'];
             resultLabel = 'Evolución del Porcentaje de Votos por Partido (2007-2023)';
         } else if (resultType === 'participacio') {
             parties = ['Participació'];
@@ -193,10 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
         }).filter(dataset => dataset !== null);
         
-    
         // Crear o actualizar la gráfica
-        // Crear o actualizar la gráfica
-// Crear o actualizar la gráfica
         const ctx = document.getElementById('lineChart').getContext('2d');
         if (window.myLineChart) {
             window.myLineChart.data.labels = years;
