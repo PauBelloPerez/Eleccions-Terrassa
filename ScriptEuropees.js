@@ -19,7 +19,7 @@ const columnMapping = {
         seccioColumn: 'Secció'
     },
     '2009': {
-        partitColumns: ['CiU', 'Cs', 'ICV', 'ERC','PACMA', 'PP', 'PSC', 'Altres'],
+        partitColumns: ['CiU', 'ICV', 'ERC','PACMA', 'PP', 'PSC', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
