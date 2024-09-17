@@ -203,7 +203,7 @@ iframe {
         <select id="elecció">
             <option value="Municipals">Municipals</option>
             <option value="Parlament">Parlament</option>
-            <option value="Generals">Generals</option>
+            <option value="Generals" selected>Generals</option>
             <option value="Europees">Europees</option>
         </select>
         
@@ -215,6 +215,8 @@ iframe {
             <option value="2016">2016</option>
             <option value="2015">2015</option>
             <option value="2011">2011</option>
+            <option value="2008">2008</option>
+            <option value="2004">2004</option>
         </select>
 
         <label for="districte">Districte:</label>
@@ -300,6 +302,12 @@ iframe {
                 case '2011':
                     src = 'Eleccions Generals 2011.html';
                     break;
+                case '2008':
+                    src = 'Eleccions Generals 2008.html';
+                    break;
+                case '2004':
+                    src = 'Eleccions Generals 2004.html';
+                    break;
                 default:
                     src = '';
             }
@@ -363,6 +371,12 @@ iframe {
                     break;
                 case '2011':
                     src = 'Eleccions Generals 2011.html';
+                    break;
+                case '2008':
+                    src = 'Eleccions Generals 2008.html';
+                    break;
+                case '2004':
+                    src = 'Eleccions Generals 2004.html';
                     break;
                 default:
                     src = '';
