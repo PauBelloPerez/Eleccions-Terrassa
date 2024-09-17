@@ -12,8 +12,8 @@ const columnMapping = {
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
-    '2015': {
-        partitColumns: ['Unió', 'DL', 'Cs', 'En Comú', 'ERC', 'PACMA', 'PP', 'PSC', 'Altres'],
+    '2014': {
+        partitColumns: ['CiU', 'Partido X', 'Cs', 'ICV','UPyD', 'ERC','Podemos' ,'PACMA', 'VOX','PP', 'PSC', 'Altres'],
         totalVotesColumn: 'VOTS_CANDIDATURES',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
@@ -101,6 +101,12 @@ function loadData() {
         case '2019':
             fileName = 'Europees2019CSV.csv';
             break;
+        case '2014':
+            fileName = 'Europees2014CSV.csv';
+            break;
+        case '2009':
+            fileName = 'Europees2009CSV.csv';
+            break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -163,6 +169,12 @@ function updateDistricteOptions() {
             break;
         case '2019':
             fileName = 'Europees2019CSV.csv';
+            break;
+        case '2014':
+            fileName = 'Europees2014CSV.csv';
+            break;
+        case '2009':
+            fileName = 'Europees2009CSV.csv';
             break;
         default:
             console.error('Año no válido seleccionado');
@@ -248,6 +260,12 @@ function updateSeccions() {
             break;
         case '2019':
             fileName = 'Europees2019CSV.csv';
+            break;
+        case '2014':
+            fileName = 'Europees2014CSV.csv';
+            break;
+        case '2009':
+            fileName = 'Europees2009CSV.csv';
             break;
         default:
             console.error('Año no válido seleccionado');
@@ -584,7 +602,11 @@ function getPartyColor(party) {
         'Más País': '#14DCC5',
         'SALF': '#804000',
         'Comuns Sumar': '#E51C55',
-        'Podemos': '#9370DB'
+        'Podemos': '#9370DB',
+        "UPyD": "#E9008C",
+        "ICV / Comuns": "#67AF23",
+        "Partido X": "#6cb0b3",
+        "PACMA": "#00FF7F"
 
         // Agrega colores para otros partidos según sea necesario
         // ...
