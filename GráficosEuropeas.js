@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             "2019": "#00C3B2",
             "2023": "#00C3B2"
         },
+        "CiU / Junts": "#18307B",
         "ERC": "yellow",
         "PP": "#0198CB",
         "Comuns / Sumar": {
@@ -34,7 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
         "Podemos": "#6e236e",
         "Altres": "#676767",
         "Unió" : "#0033A9",
-        "SALF" : "#804000"
+        "SALF" : "#804000",
+        "UPyD": "#E9008C",
+        "ICV / Comuns": "#67AF23",
+        "Partido X": "#6cb0b3",
+        "PACMA": "#00FF7F"
     };
 
     function getColor(party, year) {
@@ -123,12 +128,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let resultLabel = '';
     
         if (resultType === 'resultatsPartits') {
-            parties = ['PSC', 'Junts', 'ERC', 'PP', 'Comuns / Sumar', 
-                       'Cs', 'VOX', 'Podemos', 'PACMA', 'Altres', 'SALF'];
+            parties = ['PSC', 'CiU / Junts', 'ERC', 'PP', 'ICV / Comuns', 
+                       'Cs', 'VOX', 'Podemos', 'PACMA', 'Altres', 'SALF', 'Partido X', 'UPyD'];
             resultLabel = 'Evolución del Porcentaje de Votos por Partido (2019-2024)';
         } else if (resultType === 'participacio') {
             parties = ['Participació'];
-            resultLabel = 'Evolución de la Participación (2019-2024)';
+            resultLabel = 'Evolución de la Participación (2014-2024)';
         }
     
         // Crear los datos para los partidos activos
