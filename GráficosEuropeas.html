@@ -251,7 +251,7 @@ input:checked + .slider:before {
     <button id="darkModeSwitch">Mode fosc</button>
     <a href="index.html" id="backButton">Inici</a>
     <div class="container">
-        <h1>Evolució dades 2019 - 2024</h1>
+        <h1>Evolució dades 2009 - 2024</h1>
         <div class="filters">
             <label for="electionType">Elecció:</label>
             <select id="electionType">
@@ -292,7 +292,7 @@ input:checked + .slider:before {
             const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
             if (darkModeEnabled) {
                 document.body.classList.add('dark-mode');
-                document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+                document.getElementById('darkModeSwitch').textContent = 'Modo claro';
             }
         };
 
@@ -302,7 +302,7 @@ input:checked + .slider:before {
             document.body.classList.toggle('dark-mode', darkModeEnabled);
             localStorage.setItem('darkMode', darkModeEnabled);
 
-            this.textContent = darkModeEnabled ? 'Mode clar' : 'Mode fosc';
+            this.textContent = darkModeEnabled ? 'Modo claro' : 'Modo oscuro';
         });
 
         // Cambiar la selección de tipo de elección
