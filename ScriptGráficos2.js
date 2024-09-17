@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
         "TxT": "#1f1d1d",
         "VOX": "#63BE21",
         "Podem": "#6e236e",
-        "Altres": "#676767"
+        "Altres": "#676767",
+        "PACMA": "#00FF7F"
 
     };
 
@@ -107,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const electionType = document.getElementById('electionType').value;
         const selectedDistrict = document.getElementById('district').value;
         const selectedSection = document.getElementById('section').value;
-
+    
         // Filtrar los datos según el tipo de elección, distrito, y sección
         filteredData = parsedData.filter(item => {
             const isTypeMatch = item['Elecció'] === electionType;
@@ -115,16 +116,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const isSectionMatch = selectedSection === 'Totes' || item['Secció'] === selectedSection;
             return isTypeMatch && isDistrictMatch && isSectionMatch;
         });
-
+    
         const years = [...new Set(filteredData.map(item => item['Any']))];
-
+    
         let parties = [];
         let resultLabel = '';
 
         if (resultType === 'resultatsPartits') {
-            parties = ['% PSC', '% CiU / Junts', '% ERC', '% PP', '% ICV / Comuns', 
-                       '% Cs', '% CUP', '% PxC', '% En Blanco', '% PRIMARIES', 
-                       '% TxT', '% VOX', '% Podem', '% PACMA', '% Altres'];
+            parties = ['PSC', 'CiU / Junts', 'ERC', 'PP', 'ICV / Comuns', 
+                       'Cs', 'CUP', 'PxC', 'En Blanco', 'PRIMARIES', 
+                       'TxT', 'VOX', 'Podem', 'PACMA', 'Altres'];
             resultLabel = 'Evolución del Porcentaje de Votos por Partido (2007-2023)';
         } else if (resultType === 'participacio') {
             parties = ['Participació'];
@@ -135,50 +136,58 @@ document.addEventListener('DOMContentLoaded', function () {
         const partyData = parties.map(party => {
             const data = years.map(year => {
                 const filtered = filteredData.filter(item => item['Any'] == year);
-                
+        
                 if (resultType === 'participacio') {
                     const totalElectors = filtered.reduce((acc, curr) => acc + parseFloat(curr['NUM_ELECTORS'] || 0), 0);
                     const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_CANDIDATURES'] || 0) + parseFloat(curr['VOTS_BLANCS'] || 0), 0);
                     const participation = (totalVotes / totalElectors) * 100;
-                    return totalElectors === 0 ? null : participation.toFixed(2); // Convertir a porcentaje o null si no hay electores
+                    return totalElectors === 0 ? null : participation.toFixed(2);
                 } else {
-                    const value = filtered.reduce((acc, curr) => {
-                        const val = parseFloat(curr[party] || 0);
-                        return isNaN(val) ? acc : acc + val;
-                    }, 0) / filtered.length;
-                    return isNaN(value) || value === 0 ? null : value.toFixed(2); // Convertir a porcentaje o null si no es un número válido
+                    if (selectedDistrict === 'Tots' || selectedSection === 'Totes') {
+                        const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr[party] || 0), 0);
+                        const totalVotants = filtered.reduce((acc, curr) => acc + parseFloat(curr['NUM_VOTANTS'] || 0), 0);
+                        const percentage = totalVotants === 0 ? null : (totalVotes / totalVotants * 100).toFixed(2);
+                        return percentage;
+                    } else {
+                        const sectionData = filtered.find(item => item['Secció'] === selectedSection);
+                        if (sectionData) {
+                            const percentage = parseFloat(sectionData[`% ${party}`]);
+                            return isNaN(percentage) ? null : percentage.toFixed(2);
+                        }
+                        return null;
+                    }
                 }
             });
-
-            // Verificar si el partido tiene datos válidos en al menos un año
+        
             const hasData = data.some(value => value !== null);
-
+        
             if (!hasData) {
-                return null; // Excluir el partido si no tiene datos válidos
+                return null;
             }
-
+        
             return {
-                label: party.replace('% ', ''),
+                label: party,
                 data: data,
-                borderColor: resultType === 'participacio' ? '#FF8C00' : getColor(party.replace('% ', ''), years[0]),
-                backgroundColor: resultType === 'participacio' ? '#FF8C00' : getColor(party.replace('% ', ''), years[0]),
+                borderColor: resultType === 'participacio' ? '#FF8C00' : getColor(party, years[0]),
+                backgroundColor: resultType === 'participacio' ? '#FF8C00' : getColor(party, years[0]),
                 fill: false,
                 pointRadius: function(context) {
-                    // Ocultar puntos cuando no hay valor
                     const value = context.raw;
-                    return value === null ? 0 : 3;
+                    return value === null ? 0 : 3;  // Aumenta el tamaño de los puntos para mayor visibilidad
                 },
+                pointHoverRadius: 7,  // Aumenta el radio al pasar el mouse por encima
+                pointHitRadius: 10,  // Aumenta el área de clic
                 tooltips: {
                     callbacks: {
                         label: function(tooltipItem) {
                             const value = tooltipItem.raw;
-                            return value === null ? '' : value + '%';
+                            return value === null ? '' : value + '%';  // Mostrar el valor con el símbolo de porcentaje
                         }
                     }
                 }
             };
-        }).filter(dataset => dataset !== null); // Filtrar los partidos excluidos
-
+        }).filter(dataset => dataset !== null);
+        
         // Crear o actualizar la gráfica
         const ctx = document.getElementById('lineChart').getContext('2d');
         if (window.myLineChart) {
@@ -199,12 +208,33 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: resultLabel
                     },
                     tooltips: {
-                        mode: 'index',
+                        mode: 'nearest',
                         intersect: false,
+                        animation: false,  // Desactiva la animación del tooltip para que desaparezca más rápido
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                const value = tooltipItem.raw;
+                                return value === null ? '' : value + '%';
+                            }
+                        }
                     },
                     hover: {
                         mode: 'nearest',
-                        intersect: true
+                        intersect: false,
+                        animationDuration: 0  // Elimina la animación de hover para mejorar la respuesta
+                    },
+                    animation: {
+                        duration: 0,  // Elimina la animación general del gráfico para que sea más fluido
+                    },
+                    elements: {
+                        point: {
+                            radius: 5,
+                            hoverRadius: 7,
+                            hitRadius: 10
+                        },
+                        line: {
+                            tension: 0
+                        }
                     },
                     scales: {
                         x: {
@@ -222,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             },
                             ticks: {
                                 callback: function(value) {
-                                    return value + '%'; // Agregar el símbolo de porcentaje
+                                    return value + '%';
                                 }
                             }
                         }
@@ -289,6 +319,10 @@ document.getElementById('electionType').addEventListener('change', function() {
         window.location.href = 'GráficosGenerales.html';
     } else if (selection === 'Municipals') {
         window.location.href = 'Gráficos.html';
+    } else if (selection === 'Europees') {
+        window.location.href = 'GráficosEuropeas.html';
+    } else if (selection === 'Parlament') {
+        window.location.href = 'GráficosParlament.html';
     } else {
         console.warn('Selección no manejada:', selection);
     }
