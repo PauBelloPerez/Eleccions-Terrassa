@@ -352,7 +352,7 @@
             return getColorForPercentage(partyName, maxPercentage);
         }
 
-        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clzodld1l5lq81or2iao4qb48/features?access_token=' + mapboxgl.accessToken)
+        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/clyhsfgxt12pd1mo1ge9djclg/features?access_token=' + mapboxgl.accessToken)
             .then(response => response.json())  
             .then(data => {
                 data.features.forEach((feature, index) => {
