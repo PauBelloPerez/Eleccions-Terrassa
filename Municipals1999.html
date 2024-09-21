@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Ejemplo</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; padding: 0}
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        #popup-container {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1;
+            width: 350px;
+        }
+        .popup-header {
+            background-color: #374547;
+            color: #fff;
+            padding: 5px 10px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .color-circle {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .psc { background-color: #FF0000; }
+        .erc { background-color: yellow; }
+        .ciu { background-color: #18307B; }
+        .cup { background-color: #FFEF01; }
+        .verds { background-color: #009642 ; }
+        .icv { background-color: #67AF23; }
+        .euia { background-color: #DF0101; }
+        .cs { background-color: orangered; }
+        .pp { background-color: #0198CB; }
+        .altres { background-color: #676767; }
+        .popup-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .popup-table th, .popup-table td {
+            text-align: left;
+            padding: 5px;
+        }
+        .popup-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .popup-table td {
+            border-bottom: 1px solid #ddd;
+        }
+        .legend {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+        .legend .legend-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .legend .legend-scale {
+            display: flex;
+            align-items: center;
+        }
+        .legend .legend-scale div {
+            height: 20px;
+            border-right: 1px solid #fff;
+        }
+        .legend .legend-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        .legend .legend-labels span {
+            font-size: 12px;
+        }
+        .back-button {
+            position: fixed;
+            top: 100px; /* Ajusta esta cantidad según tu preferencia */
+            left: 10px; /* Ajusta esta cantidad según tu preferencia */
+            z-index: 999; /* Asegura que el botón esté sobre otros elementos si es necesario */
+            padding: 10px 50px;
+            background-color: #B5B5B5; /* Color de fondo del botón */
+            color: #000000; /* Color del texto del botón */
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .summary-button {
+        position: fixed;
+        top: 150px;
+        left: 10px;
+        z-index: 999;
+        padding: 10px 30px;
+        background-color: #B5B5B5;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+    #summary-popup {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        z-index: 1000;
+        width: 350px;
+        display: none;
+    }
+    .bar-color-container {
+            height: 10px; /* Altura de la barra */
+            background-color: #f2f2f2; /* Color de fondo de la barra base */
+            width: 100%; /* Ancho total */
+            position: relative; /* Posición relativa para alinear las barras de colores */
+            border: 1px solid #ccc; /* Borde opcional para la barra base */
+            box-sizing: border-box; /* Incluir el borde en el cálculo del tamaño total */
+            margin-bottom: 10px;
+        }
+
+        .bar-color {
+            height: 100%; /* Altura completa de la barra */
+            position: absolute; /* Posición absoluta para superponer las barras de colores */
+            top: 0; /* Alinear en la parte superior */
+            left: 0; /* Alinear desde la izquierda */
+            background-color: #000000; /* Color base de la barra */
+            transition: width 0.3s ease; /* Transición suave para el cambio de ancho */
+        }
+
+        /* Estilos específicos para cada partido */
+        .psc-bar { background-color: #FF0000; }
+        .erc-bar { background-color: yellow; }
+        .ciu-bar { background-color: #18307B; }
+        .icv-bar { background-color: #67AF23; }
+        .cup-bar { background-color: #FFEF01; }
+        .pp-bar { background-color: #0198CB; }
+        .cs-bar { background-color: orangered;}
+        .pxc-bar { background-color: #045FB4;}
+        .verds-bar { background-color: #009642; }
+        .euia-bar { background-color: #DF0101; }
+        .altres-bar {background-color: #676767;}
+        .enblanco-bar { background-color: #000000; }
+        .participation {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="popup-container" style="display: none;"></div>
+    <div class="legend">
+        <div class="legend-title">Distribución de los votos</div>
+        <div class="legend-scale">
+            <div style="background: #ffc2c2; width: 70px;"></div>
+            <div style="background: #ff9999; width: 70px"></div>
+            <div style="background: #ff6666; width: 70px"></div>
+            <div style="background: #ff3333; width: 70px"></div>
+            <div style="background: #ff0000; width: 70px"></div>
+        </div>
+        <div class="legend-labels">
+            <span>30%</span>
+            <span>40%</span>
+            <span>50%</span>
+            <span>60%</span>
+            <span>70%</span>
+        </div>
+    </div>
+    <button class="back-button" onclick="goBack()">Inici</button>
+    <button class="summary-button" onclick="toggleSummaryPopup()">Resultats</button>
+<div id="summary-popup" style="display: none;">
+    <div class="popup-header" style="display: flex; justify-content: space-between;">
+        <span>Resultats</span>
+        <span id="participation-percentage">Participació: 49.18%</span>
+    </div>
+    <table class="popup-table">
+        <thead>
+            <tr>
+                <th>Partit</th>
+                <th>Vots</th>
+                <th>%</th>
+                <th>Percentatge</th>
+                <th class="regidors-header">Regidors</th>
+            </tr>
+        </thead>
+        <tbody id="summary-body">
+            <tr>
+                <tr>
+                    <td><span class="color-circle psc"></span>PSC</td>
+                    <td id="sum-psc"></td>
+                    <td id="pct-psc"></td>
+                    <td><div class="bar-color-container"><div class="bar-color psc-bar" id="bar-psc"></div></div></td>
+                    <td id="regidors-psc"></td>
+                </tr>
+            </tr>
+            <tr>
+                <td><span class="color-circle ciu"></span>CiU</td>
+                <td id="sum-ciu"></td>
+                <td id="pct-ciu"></td>
+                <td><div class="bar-color-container"><div class="bar-color ciu-bar" id="bar-ciu"></div></div></td>
+                <td class="regidors-ciu"></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle erc"></span>ERC</td>
+                <td id="sum-erc"></td>
+                <td id="pct-erc"></td>
+                <td><div class="bar-color-container"><div class="bar-color erc-bar" id="bar-erc"></div></div></td>
+                <td id="regidors-erc"></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle pp"></span>PP</td>
+                <td id="sum-pp"></td>
+                <td id="pct-pp"></td>
+                <td><div class="bar-color-container"><div class="bar-color pp-bar" id="bar-pp"></div></div></td>
+                <td id="regidors-pp"></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle icv"></span>ICV</td>
+                <td id="sum-icv"></td>
+                <td id="pct-icv"></td>
+                <td><div class="bar-color-container"><div class="bar-color icv-bar" id="bar-icv"></div></div></td>
+                <td id="regidors-icv"></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle euia"></span>EUiA</td>
+                <td id="sum-euia"></td>
+                <td id="pct-euia"></td>
+                <td><div class="bar-color-container"><div class="bar-color euia-bar" id="bar-euia"></div></div></td>
+                <td id="regidors-euia"></td>
+            </tr>
+            <tr>
+                <td><span class="color-circle verds"></span>Verds</td>
+                <td id="sum-verds"></td>
+                <td id="pct-verds"></td>
+                <td><div class="bar-color-container"><div class="bar-color verds-bar" id="bar-verds"></div></div></td>
+                <td id="regidors-verds"></td>
+            </tr>
+            <tr></tr>
+                <td><span class="color-circle altres"></span>Altres</td>
+                <td id="sum-altres"></td>
+                <td id="pct-altres"></td>
+                <td><div class="bar-color-container"><div class="bar-color altres-bar" id="bar-altres"></div></div></td>
+                <td id="regidors-altres"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoicGF1YmVsbG9wZXJleiIsImEiOiJjbHdtNjhmcXMwY2d6MmlyejNycXRwZzVsIn0.2Wly8_VtO0BfDMgmfYfxNw';
+
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [2.0, 41.5632],
+            zoom: 12
+        });
+
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'setView') {
+                map.setCenter(event.data.center);
+                map.setZoom(event.data.zoom);
+            } else if (event.data.action === 'getView') {
+                const center = map.getCenter();
+                const zoom = map.getZoom();
+                event.source.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, event.origin);
+            }
+        });
+
+        map.on('moveend', function () {
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            window.parent.postMessage({ action: 'viewChanged', center: [center.lng, center.lat], zoom: zoom }, '*');
+        });
+
+        var nav = new mapboxgl.NavigationControl();
+        map.addControl(nav, 'top-right');
+
+        var fullscreen = new mapboxgl.FullscreenControl();
+        map.addControl(fullscreen, 'top-right');
+
+        // Función para convertir hex a RGB
+        function hexToRgb(hex) {
+            var bigint = parseInt(hex.slice(1), 16);
+            return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+        }
+
+        // Función para interpolar colores RGB
+        function interpolateRgb(startRgb, endRgb, factor) {
+            return startRgb.map((start, i) => Math.round(start + factor * (endRgb[i] - start)));
+        }
+
+        // Función para convertir RGB a hex
+        function rgbToHex(rgb) {
+            return '#' + rgb.map(x => x.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Función para obtener color basado en porcentaje
+        function getColorForPercentage(party, percentage) {
+            const colors = {
+                'PSC': { start: '#ffe3e3', end: '#FF0000' },
+                'CiU': { start: '#98B0FB', end: '#18307B' },
+                'VOX': { start: '#d5f5d1', end: '#63BE21' },
+                'ERC': { start: '#ffffb2', end: '#FFD700' },
+                'PP': { start: '#d1ecf9', end: '#0198CB' },
+                'CUP': { start: '#ffffc2', end: '#FFEF01' },
+                'ICV': { start: '#ebc2eb', end: '#6e236e' },
+                'Cs': { start: '#ffdbb2', end: '#FFA500' },
+                'En Blanc': { start: '#b2ffda', end: '#00FF7F' },
+                'Cs': { start: '#a0a0a0', end: '#000000' }
+            };
+
+            const { start, end } = colors[party];
+            const startRgb = hexToRgb(start);
+            const endRgb = hexToRgb(end);
+            
+            const factor = percentage / 78;
+            const interpolatedColor = interpolateRgb(startRgb, endRgb, factor);
+            
+            return rgbToHex(interpolatedColor);
+        }
+        function determineColorByParty(properties) {
+    var partyColors = {
+        'PSC': '#FF0000',
+        'CiU': '#00C3B2'
+        // Puedes añadir más partidos y colores aquí
+    }};
+    function goBack() {
+        window.history.back(); // Esta función de JavaScript hace que el navegador regrese a la página anterior en el historial
+    }
+
+        // Función para determinar el color basado en las propiedades
+        function determineColor(properties) {
+            const parties = ['% PSC', '% ERC', '% PP', '% ICV', '% CiU', '% Altres', '% Verds', '% EUiA'];
+            let winningParty = '';
+            let maxPercentage = 0;
+
+            parties.forEach(party => {
+                const percentage = parseFloat(properties[party]);
+                if (percentage > maxPercentage) {
+                    maxPercentage = percentage;
+                    winningParty = party;
+                }
+            });
+
+            const partyName = winningParty.split(' ').slice(1).join(' ');
+            return getColorForPercentage(partyName, maxPercentage);
+        }
+
+        fetch('https://api.mapbox.com/datasets/v1/paubelloperez/cm1c4yqnr0jor1vp619v39q8q/features?access_token=' + mapboxgl.accessToken)
+            .then(response => response.json())  
+            .then(data => {
+                data.features.forEach((feature, index) => {
+                    feature.id = index;
+                    feature.properties.color = determineColor(feature.properties);
+                });
+
+                map.on('load', function() {
+                    map.addSource('secciones-censales', {
+                        type: 'geojson',
+                        data: data
+                    });
+
+                    map.addLayer({
+                        id: 'secciones-censales-layer',
+                        type: 'fill',
+                        source: 'secciones-censales',
+                        paint: {
+                            'fill-color': ['get', 'color'],
+                            'fill-opacity': 0.7
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'secciones-censales-lines',
+                        type: 'line',
+                        source: 'secciones-censales',
+                        paint: {
+                            'line-color': '#000',
+                            'line-width': 0.5
+                        }
+                    });
+
+                    map.addLayer({
+                        id: 'highlight-layer',
+                        type: 'line',
+                        source: 'secciones-censales',
+                        paint: {
+                            'line-color': '#FFD700',
+                            'line-width': 4
+                        },
+                        filter: ['==', 'id', -1]
+                    });
+                });
+
+                var popupContainer = document.getElementById('popup-container');
+                var popupVisible = false;
+                var highlightedFeatureId = null;
+
+                map.on('mousemove', 'secciones-censales-layer', function (e) {
+                    var properties = e.features[0].properties;
+                    var id = e.features[0].id;
+                    var content = `
+                        <div class="popup-header" style="background-color: ${determineColor(properties)};">
+                            <strong>Districte: ${properties.Districte}</strong><br>
+                            <strong style="float: right;">Participació: ${(properties['Participació'] ).toFixed(2)}%</strong>
+                            <strong>Secció censal: ${properties.Secció}</strong><br>
+                        </div>
+                        <table class="popup-table">
+                            <tr><th>Partit</th><th>Percentatge</th><th>Vots</th></tr>
+<tr>
+    <td><span class="color-circle psc"></span>PSC</td>
+    <td><strong>${properties['% PSC']}</strong></td>
+    <td>${properties['PSC']}</td> <!-- Añadir valor de Vots PSC -->
+</tr>
+<tr>
+    <td><span class="color-circle ciu"></span>CiU</td>
+    <td><strong>${properties['% CiU']}</strong></td>
+    <td>${properties['CiU']}</td> <!-- Añadir valor de Vots CiU -->
+</tr>
+<tr>
+    <td><span class="color-circle erc"></span>ERC</td>
+    <td><strong>${properties['% ERC']}</strong></td>
+    <td>${properties['ERC']}</td> <!-- Añadir valor de Vots ERC -->
+</tr>
+
+<tr>
+    <td><span class="color-circle icv"></span>ICV</td>
+    <td><strong>${properties['% ICV']}</strong></td>
+    <td>${properties['ICV']}</td> <!-- Añadir valor de Vots ICV -->
+</tr>
+<tr>
+    <td><span class="color-circle pp"></span>PP</td>
+    <td><strong>${properties['% PP']}</strong></td>
+    <td>${properties['PP']}</td> <!-- Añadir valor de Vots PP -->
+</tr>
+<tr>
+    <td><span class="color-circle euia"></span>EUiA</td>
+    <td><strong>${properties['% EUiA']}</strong></td>
+    <td>${properties['EUiA']}</td> <!-- Añadir valor de Vots EUiA -->
+</tr>
+<tr>
+    <td><span class="color-circle verds"></span>Verds</td>
+    <td><strong>${properties['% Verds']}</strong></td>
+    <td>${properties['Verds']}</td> <!-- Añadir valor de Vots Verds -->
+</tr>
+<tr>
+    <td><span class="color-circle altres"></span>Altres</td>
+    <td><strong>${properties['% Altres']}</strong></td>
+    <td>${properties['Altres']}</td> <!-- Añadir valor de Vots Altres -->
+</tr>
+</table>
+                    `;
+                    map.setFilter('highlight-layer', ['==', 'id', id]);
+
+// Cambiar el estado del hover de la característica
+                    map.setFeatureState({ source: 'secciones-censales', id: id }, { hover: true });
+
+// Cambiar el ancho de línea de la sección censal a 2.5
+                    map.setPaintProperty('secciones-censales-lines', 'line-width', [
+                     'case',
+                     ['==', ['get', 'id'], id],
+                      2.5,
+                    0.5
+                      ]);                    
+                    popupContainer.innerHTML = content;
+                    popupContainer.style.display = 'block';
+
+                    // Resaltar la sección censal
+                    map.setFilter('highlight-layer', ['==', 'id', e.features[0].id]);
+                    
+                    // Cambiar el estado del popup a visible y fijo
+                    popupVisible = true;
+                });
+
+                // Añadir evento para evitar que el popup se oculte al hacer clic dentro de él
+                popupContainer.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Evitar que el evento de clic se propague al mapa
+                });
+
+                // Añadir evento para ocultar el popup al hacer clic en el mapa si no está fijo
+                map.on('click', function() {
+                    if (!popupVisible) {
+                        popupContainer.style.display = 'none';
+                    }
+                });
+
+                // Añadir evento para ocultar el popup al hacer clic en el mapa si está fijo
+                map.on('click', function() {
+                    if (popupVisible) {
+                        popupVisible = false; // Desactivar el estado fijo
+                    }
+                });
+
+                // Ocultar el contenedor del popup al salir de una sección censal
+                map.on('mouseleave', 'secciones-censales-layer', function () {
+                    restorePreviousHighlight();
+                });
+
+                // Variable global para almacenar la capa resaltada actualmente
+                var highlightedFeatureId = null;
+
+                // Restaurar el line width de la capa previamente resaltada
+                function restorePreviousHighlight() {
+                    if (highlightedFeatureId !== null) {
+                        map.setFeatureState({ source: 'secciones-censales', id: highlightedFeatureId }, { hover: false });
+                        highlightedFeatureId = null;
+                    }
+                }
+
+            })
+            function toggleSummaryPopup() {
+    const popup = document.getElementById('summary-popup');
+    if (popup.style.display === 'none') {
+        popup.style.display = 'block';
+        calculateSummaries(); // Llamar a la función para calcular y mostrar los resúmenes
+    } else {
+        popup.style.display = 'none';
+    }
+}
+
+function calculateSummaries() {
+    fetch('https://api.mapbox.com/datasets/v1/paubelloperez/cm1c50tdh0t9n1umybmnzuhow/features?access_token=' + mapboxgl.accessToken)
+        .then(response => response.json())
+        .then(data => {
+            const sums = {
+                PSC: 0, CiU: 0, ERC: 0, PP: 0, ICV: 0, Altres: 0, EUiA: 0, Verds: 0
+            };
+
+            let totalVotants = 0;
+            let totalElectors = 0;
+            let totalVotsBlancs = 0;
+
+            data.features.forEach(feature => {
+                sums.PSC += parseInt(feature.properties.PSC) || 0;
+                sums.CiU += parseInt(feature.properties.CiU) || 0;
+                sums.ERC += parseInt(feature.properties.ERC) || 0;
+                sums.PP += parseInt(feature.properties.PP) || 0;
+                sums.Altres += parseInt(feature.properties.Altres) || 0;
+                sums.ICV += parseInt(feature.properties.ICV) || 0;
+                sums.Verds += parseInt(feature.properties.Verds) || 0;
+                sums.EUiA += parseInt(feature.properties.EUiA) || 0;
+
+                // Sumar el total de votantes y votos en blanco
+                totalVotants += parseInt(feature.properties.NUM_VOTANTS) || 0;
+                totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
+                totalElectors += parseInt(feature.properties.NUM_ELECTORS) || 0;
+            });
+
+            const parties = [
+                { party: 'PSC', votes: sums.PSC, regidors: "16 (+3)" },
+                { party: 'CiU', votes: sums.CiU, regidors: "5 (-1)" },
+                { party: 'ERC', votes: sums.ERC, regidors: "1 (=)" },
+                { party: 'PP', votes: sums.PP, regidors: "3 (-1)" },
+                { party: 'Altres', votes: sums.Altres, regidors: "-" },
+                { party: 'ICV', votes: sums.ICV, regidors: "2 (-1)" },
+                { party: 'EUiA', votes: sums.EUiA, regidors: "0 (=)" },
+                { party: 'Verds', votes: sums.Verds, regidors: "0 (=)" },
+            ];
+            parties.sort((a, b) => b.votes - a.votes);
+
+            // Limpiar y actualizar la tabla en el popup
+            const summaryBody = document.getElementById('summary-body');
+            summaryBody.innerHTML = '';
+            parties.forEach(({ party, votes, regidors }) => {
+                const percentage = ((votes / totalVotants) * 100).toFixed(2);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="color-circle ${party.toLowerCase()}"></span>${party}</td>
+                    <td>${votes.toLocaleString()}</td>
+                    <td>${percentage}%</td>
+                    <td><div class="bar-color-container"><div class="bar-color ${party.toLowerCase()}-bar" style="width: ${percentage}%"></div></div></td>
+                    <td>${regidors}</td>
+                `;
+                summaryBody.appendChild(row);
+            });
+
+            const participationPercentage = ((totalVotants / totalElectors) * 100).toFixed(2);
+            document.getElementById('participation-percentage').textContent = `Participació: ${participationPercentage}%`;
+        })
+        .catch(error => console.error('Error cargando datos GeoJSON:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    calculateSummaries();
+});
+    </script>
+</body>
+</html>
