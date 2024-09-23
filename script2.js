@@ -114,6 +114,8 @@ function aggregateDataByPartit(data, year, districte, seccio) {
 
 
 
+
+
 function loadData() {
     const year = document.getElementById('any').value;
     let fileName = '';
@@ -134,6 +136,12 @@ function loadData() {
         case '2007':
             fileName = 'Municipales2007CSV.csv';
             break;
+            case '2003':
+                fileName = 'Municipals2003CSV.csv';
+                break;
+            case '1999':
+                fileName = 'Municipals1999CSV.csv';
+                break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -207,6 +215,12 @@ function updateDistricteOptions() {
         case '2007':
             fileName = 'Municipales2007CSV.csv';
             break;
+            case '2003':
+                fileName = 'Municipals2003CSV.csv';
+                break;
+            case '1999':
+                fileName = 'Municipals1999CSV.csv';
+                break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -284,6 +298,12 @@ function updateSeccions() {
         case '2007':
             fileName = 'Municipales2007CSV.csv';
             break;
+        case '2003':
+            fileName = 'Municipals2003CSV.csv';
+            break;
+        case '1999':
+            fileName = 'Municipals1999CSV.csv';
+            break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -308,6 +328,24 @@ function updateSeccions() {
         }
     });
 }
+
+document.getElementById('elecció').addEventListener('change', function() {
+    const selection = this.value;
+
+    // Guarda el estado actual del modo oscuro en localStorage
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+
+    if (selection === 'Municipals') {
+        window.location.href = 'Selecciones.html?eleccio=Municipals';
+    } else if (selection === 'Generals') {
+        window.location.href = 'SeleccionesGenerales.html?eleccio=Generals';
+    } else if(selection === 'Parlament') {
+        window.location.href = 'SeleccionesParlament.html?eleccio=Parlament';
+    }
+    // Agrega más condiciones si tienes más elecciones y páginas HTML correspondientes
+});
+
 
 function getUniqueSeccio(data, districte, year) {
     const columns = columnMapping[year];
@@ -694,6 +732,7 @@ function getPartyColor(party) {
             // Agrega colores para otros partidos según sea necesario
             // ...
         }
+
     };
 
     return colorMap[year][party] || 'gray'; // Color por defecto si el partido no está en el mapa
@@ -723,6 +762,7 @@ function getPartyColor(party) {
         'CiU': '#18307B',
         'ICV': '#67AF23',
         'PRIMARIES': '#EC4C5E',
+        'Altres': '#676767'
 
         // Agrega colores para otros partidos según sea necesario
         // ...
