@@ -609,8 +609,7 @@ function calculateSummaries() {
                 sums.TEC += parseInt(properties.TEC) || 0;
 
                 // Sumar total de votantes y votos en blanco
-                totalVotants += parseInt(properties.NUM_VOTANTS) || 0;
-                totalVotsBlancs += parseInt(properties.VOTS_BLANCS) || 0;
+                totalVotants += (parseInt(feature.properties.VOTS_CANDIDATURES) || 0) + (parseInt(feature.properties.VOTS_BLANCS) || 0);
                 totalElectors += parseInt(properties.NUM_ELECTORS) || 0;
 
                 console.log(`After processing feature ${index}:`, sums);
