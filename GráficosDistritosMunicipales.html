@@ -179,6 +179,8 @@ label {
             </select>
             <label for="year">Any:</label>
             <select id="year">
+                <option value="1999">1999</option>
+                <option value="2003">2003</option>
                 <option value="2007">2007</option>
                 <option value="2011">2011</option>
                 <option value="2015">2015</option>
@@ -200,6 +202,8 @@ label {
                 <option value="PRIMARIES">PRIMARIES</option>
                 <option value="VOX">VOX</option>
                 <option value="Podem">Podem</option>
+                <option value="EUiA">EUiA</option>
+                <option value="Verds">Verds</option>
                 <option value="Altres">Altres</option>
             </select>
         </div>
@@ -239,7 +243,9 @@ label {
                 "Unió": "#00008B",
                 "PACMA": "#00FF7F",
                 "Comuns / Sumar": "#E51C55",
-                "Más País": "#14DCC5"
+                "Más País": "#14DCC5",
+                "EUiA": "#DF0101",
+                "Verds": "#009642"
             };
     
             // Leer el archivo CSV
@@ -271,9 +277,9 @@ label {
                         return sum + (parseFloat(item[selectedParty]) || 0);
                     }, 0);
                     const totalVotes = districtData.reduce((sum, item) => {
-                        return sum + (parseFloat(item['VOTS_CANDIDATURES']) || 0);
+                        return sum + (parseFloat(item['VOTS_VALIDS']) || 0);
                     }, 0);
-                    return totalVotes > 0 ? (partyVotes / totalVotes) * 100 : 0;
+                    return totalVotes > 0 ? ((partyVotes / totalVotes) * 100).toFixed(2) : '0%';
                 });
     
                 const ctx = document.getElementById('barChart').getContext('2d');
@@ -314,14 +320,14 @@ label {
                                                 return sum + (parseFloat(item[selectedParty]) || 0);
                                             }, 0);
                                             const totalVotes = districtData.reduce((sum, item) => {
-                                                return sum + (parseFloat(item['VOTS_CANDIDATURES']) || 0);
+                                                return sum + (parseFloat(item['V']) || 0);
                                             }, 0);
                                             const percentage = totalVotes > 0 ? (partyVotes / totalVotes) * 100 : 0;
     
                                             return {
                                                 title: [`Distrito: ${district}`],
                                                 body: [
-                                                    `Porcentaje: ${percentage.toFixed(2)}%`,
+                                                    `Porcentaje: ${percentage.toFixed(1)}%`,
                                                     `Votos obtenidos: ${partyVotes.toFixed(0)}`,
                                                     `Votos totales: ${totalVotes.toFixed(0)}`
                                                 ]
