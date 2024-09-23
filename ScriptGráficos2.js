@@ -33,7 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
         "VOX": "#63BE21",
         "Podem": "#6e236e",
         "Altres": "#676767",
-        "PACMA": "#00FF7F"
+        "PACMA": "#00FF7F",
+        "EUiA": "#DF0101",
+        "Verds": "#009642",
+        "CiU / Junts": "#18307B",
+        "ICV / Comuns": "#67AF23"
 
     };
 
@@ -125,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (resultType === 'resultatsPartits') {
             parties = ['PSC', 'CiU / Junts', 'ERC', 'PP', 'ICV / Comuns', 
                        'Cs', 'CUP', 'PxC', 'En Blanco', 'PRIMARIES', 
-                       'TxT', 'VOX', 'Podem', 'PACMA', 'Altres'];
+                       'TxT', 'VOX', 'Podem', 'PACMA', 'EUiA', 'Verds','Altres',];
             resultLabel = 'Evolución del Porcentaje de Votos por Partido (2007-2023)';
         } else if (resultType === 'participacio') {
             parties = ['Participació'];
@@ -139,13 +143,13 @@ document.addEventListener('DOMContentLoaded', function () {
         
                 if (resultType === 'participacio') {
                     const totalElectors = filtered.reduce((acc, curr) => acc + parseFloat(curr['NUM_ELECTORS'] || 0), 0);
-                    const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_CANDIDATURES'] || 0) + parseFloat(curr['VOTS_BLANCS'] || 0), 0);
+                    const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_VALIDS'] || 0) + parseFloat(curr['VOTS_BLANCS'] || 0), 0);
                     const participation = (totalVotes / totalElectors) * 100;
                     return totalElectors === 0 ? null : participation.toFixed(2);
                 } else {
                     if (selectedDistrict === 'Tots' || selectedSection === 'Totes') {
                         const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr[party] || 0), 0);
-                        const totalVotants = filtered.reduce((acc, curr) => acc + parseFloat(curr['NUM_VOTANTS'] || 0), 0);
+                        const totalVotants = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_VALIDS'] || 0), 0);
                         const percentage = totalVotants === 0 ? null : (totalVotes / totalVotants * 100).toFixed(2);
                         return percentage;
                     } else {
