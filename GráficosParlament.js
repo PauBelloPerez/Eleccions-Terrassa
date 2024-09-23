@@ -43,7 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
         "SI": "#000000",
         "Reagrupament": "#850038",
         "Aliança": "#064a81",
-        "JxSí": "#01DFD7"
+        "JxSí": "#01DFD7",
+        "Verds": "#009642",
+        "CiU / Junts": "#18307B",
+        "ICV / Comuns": "#67AF23"
     };
 
     function getColor(party, year) {
@@ -133,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (resultType === 'resultatsPartits') {
             parties = ['PSC', 'CiU / Junts', 'ERC', 'PP', 'ICV / Comuns', 
-                       'Cs', 'VOX', 'PxC', 'CUP' ,'Reagrupament',"JxSí",'PACMA','Unió','Aliança','Altres'];
+                       'Cs', 'VOX', 'PxC', 'CUP' ,'Reagrupament',"JxSí",'PACMA','Unió','Aliança','Verds','Altres'];
             resultLabel = 'Evolución del Porcentaje de Votos por Partido (2007-2023)';
         } else if (resultType === 'participacio') {
             parties = ['Participació'];
@@ -147,13 +150,13 @@ document.addEventListener('DOMContentLoaded', function () {
         
                 if (resultType === 'participacio') {
                     const totalElectors = filtered.reduce((acc, curr) => acc + parseFloat(curr['NUM_ELECTORS'] || 0), 0);
-                    const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_CANDIDATURES'] || 0) + parseFloat(curr['VOTS_BLANCS'] || 0), 0);
+                    const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_VALIDS'] || 0) + parseFloat(curr['VOTS_BLANCS'] || 0), 0);
                     const participation = (totalVotes / totalElectors) * 100;
                     return totalElectors === 0 ? null : participation.toFixed(2);
                 } else {
                     if (selectedDistrict === 'Tots' || selectedSection === 'Totes') {
                         const totalVotes = filtered.reduce((acc, curr) => acc + parseFloat(curr[party] || 0), 0);
-                        const totalVotants = filtered.reduce((acc, curr) => acc + parseFloat(curr['NUM_VOTANTS'] || 0), 0);
+                        const totalVotants = filtered.reduce((acc, curr) => acc + parseFloat(curr['VOTS_VALIDS'] || 0), 0);
                         const percentage = totalVotants === 0 ? null : (totalVotes / totalVotants * 100).toFixed(2);
                         return percentage;
                     } else {
@@ -346,7 +349,7 @@ window.onload = function() {
     const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
     if (darkModeEnabled) {
         document.body.classList.add('dark-mode');
-        document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+        document.getElementById('darkModeSwitch').textContent = 'Modo claro';
     }
 
     // Resto de tu código onload
