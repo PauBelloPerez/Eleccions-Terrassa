@@ -762,7 +762,9 @@ function getPartyColor(party) {
         'CiU': '#18307B',
         'ICV': '#67AF23',
         'PRIMARIES': '#EC4C5E',
-        'Altres': '#676767'
+        'Altres': '#676767',
+        'EUiA': "#DF0101",
+        'Verds': "#009642"
 
         // Agrega colores para otros partidos según sea necesario
         // ...
