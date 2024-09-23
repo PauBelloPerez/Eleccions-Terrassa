@@ -766,7 +766,8 @@ function getPartyColor(party) {
         'UNIO.CAT': '#0033A9',
         'SI': '#000000',
         'Verds': '#009642',
-        'Altres': '#676767'
+        'Altres': '#676767',
+        'Reagrupament': '#850038'
 
         // Agrega colores para otros partidos según sea necesario
         // ...
