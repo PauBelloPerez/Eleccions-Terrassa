@@ -556,8 +556,7 @@
                         sums['En Comú'] += parseInt(feature.properties['En Comú']) || 0;
 
                         // Sumar el total de votantes y votos en blanco
-                        totalVotants += parseInt(feature.properties.NUM_VOTANTS) || 0;
-                        totalVotsBlancs += parseInt(feature.properties.VOTS_BLANCS) || 0;
+                        totalVotants += (parseInt(feature.properties.VOTS_CANDIDATURES) || 0) + (parseInt(feature.properties.VOTS_BLANCS) || 0);
                         totalElectors += parseInt(feature.properties.NUM_ELECTORS) || 0;
                     });
 
