@@ -8,25 +8,37 @@ const columnMapping = {
     },
     '2019': {
         partitColumns: ['Cs', 'CUP', 'ERC', 'Junts', 'Podem', 'PP', 'PRIMARIES', 'PSC', 'TEC', 'TxT', 'VOX', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2015': {
         partitColumns: ['Cs', 'CiU', 'CUP', 'ERC', 'PP', 'PSC', 'PxC', 'En Comú', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2011': {
         partitColumns: ['CUP', 'CiU', 'Cs', 'En Blanco', 'ERC', 'ICV', 'PP', 'PSC', 'PxC', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2007': {
         partitColumns: ['Cs', 'CIU', 'CUP', 'ERC', 'ICV', 'PP', 'PSC', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
+        districteColumn: 'Districte',
+        seccioColumn: 'Secció'
+    },
+    '2003': {
+        partitColumns: ['CiU', 'ERC', 'ICV', 'PP', 'PSC', 'Altres'],
+        totalVotesColumn: 'VOTS_VALIDS',
+        districteColumn: 'Districte',
+        seccioColumn: 'Secció'
+    },
+    '1999': {
+        partitColumns: ['Verds', 'CiU', 'EUiA', 'ERC', 'ICV', 'PP', 'PSC', 'Altres'],
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     }
