@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles4.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script src="GráficosParlament.js" defer></script>
+    <script src="GráficosParlament2.js" defer></script>
     <style>
         /* Estilo global */
         body {
@@ -251,7 +251,7 @@
     <button id="darkModeSwitch">Mode fosc</button>
     <a href="index.html" id="backButton">Inici</a>
     <div class="container">
-        <h1>Evolució dades 2010 - 2024</h1>
+        <h1>Evolució dades 2006 - 2024</h1>
         <div class="filters">
             <label for="electionType">Elecció:</label>
             <select id="electionType">
@@ -292,7 +292,7 @@
             const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
             if (darkModeEnabled) {
                 document.body.classList.add('dark-mode');
-                document.getElementById('darkModeSwitch').textContent = 'Mode clar';
+                document.getElementById('darkModeSwitch').textContent = 'Modo claro';
             }
         };
 
@@ -302,7 +302,7 @@
             document.body.classList.toggle('dark-mode', darkModeEnabled);
             localStorage.setItem('darkMode', darkModeEnabled);
 
-            this.textContent = darkModeEnabled ? 'Mode clar' : 'Mode fosc';
+            this.textContent = darkModeEnabled ? 'Modo claro' : 'Modo oscuro';
         });
 
         // Cambiar la selección de tipo de elección
