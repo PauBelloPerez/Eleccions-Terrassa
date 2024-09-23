@@ -202,7 +202,7 @@ input:checked + .slider:before {
         <label for="elecció">Elecció:</label>
         <select id="elecció">
             <option value="Municipals">Municipals</option>
-            <option value="Parlament">Parlament</option>
+            <option value="Parlament" selected>Parlament</option>
             <option value="Generals">Generals</option>
             <option value="Europees">Europees</option>
         </select>
@@ -215,6 +215,7 @@ input:checked + .slider:before {
             <option value="2015">2015</option>
             <option value="2012">2012</option>
             <option value="2010">2010</option>
+            <option value="2006">2006</option>
         </select>
 
         <label for="districte">Districte:</label>
@@ -351,6 +352,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 case '2010':
                     src = 'Eleccions Parlament 2010.html';
                     break;
+                case '2006':
+                    src = 'Eleccions Parlament 2006.html';
+                    break;
                 default:
                     src = '';
             }
@@ -394,6 +398,9 @@ document.getElementById('any').addEventListener('change', function() {
                     break;
                 case '2010':
                     src = 'Eleccions Parlament 2010.html';
+                    break;
+                case '2006':
+                    src = 'Eleccions Parlament 2006.html';
                     break;
                 default:
                     src = '';

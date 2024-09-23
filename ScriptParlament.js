@@ -2,37 +2,43 @@
 const columnMapping = {
     '2024': {
         partitColumns: ['Junts', 'Cs', 'CUP', 'ERC', 'PACMA', 'PP', 'PSC', 'Comuns','Aliança','VOX', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2021': {
         partitColumns: ['Junts', 'Cs', 'CUP', 'ERC', 'PDeCat', 'PP', 'PSC', 'ECP', 'VOX', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2017': {
         partitColumns: ['Cs', 'CUP', 'ERC', 'Junts','PP', 'PACMA', 'PSC', 'CECP', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2015': {
         partitColumns: ['Cs', 'JxSí', 'UNIO.CAT', 'CUP', 'PP', 'PSC', 'PACMA', 'CSQP', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2012': {
         partitColumns: ['CUP', 'CiU', 'Cs', 'PACMA', 'ERC', 'ICV', 'PP', 'PSC', 'PxC', 'Altres'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     },
     '2010': {
-        partitColumns: ['Cs', 'CiU', 'SI', 'ERC', 'ICV', 'PP', 'PSC', 'Altres', 'PxC'],
-        totalVotesColumn: 'VOTS_CANDIDATURES',
+        partitColumns: ['Cs', 'CiU', 'SI', 'ERC', 'ICV', 'PP', 'PSC', 'Altres', 'PxC', 'Reagrupament'],
+        totalVotesColumn: 'VOTS_VALIDS',
+        districteColumn: 'Districte',
+        seccioColumn: 'Secció'
+    },
+    '2006': {
+        partitColumns: ['CiU', 'ERC', 'ICV', 'PP', 'PSC','Cs' ,'Altres', 'Verds'],
+        totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
     }
@@ -131,6 +137,9 @@ function loadData() {
         case '2010':
             fileName = 'Parlament2010CSV.csv';
             break;
+        case '2006':
+            fileName = 'Parlament2006CSV.csv';
+            break;
         default:
             console.error('Año no válido seleccionado');
             return;
@@ -206,6 +215,9 @@ function updateDistricteOptions() {
             break;
         case '2010':
             fileName = 'Parlament2010CSV.csv';
+            break;
+        case '2006':
+            fileName = 'Parlament2006CSV.csv';
             break;
         default:
             console.error('Año no válido seleccionado');
@@ -286,6 +298,9 @@ function updateSeccions() {
             break;
         case '2010':
             fileName = 'Parlament2010CSV.csv';
+            break;
+        case '2006':
+            fileName = 'Parlament2006CSV.csv';
             break;
         default:
             console.error('Año no válido seleccionado');
@@ -748,7 +763,10 @@ function getPartyColor(party) {
         'ICV': '#67AF23',
         'PRIMARIES': '#EC4C5E',
         'JxSí': '#3AB6A5',
-        'UNIO.CAT': '#0033A9'
+        'UNIO.CAT': '#0033A9',
+        'SI': '#000000',
+        'Verds': '#009642',
+        'Altres': '#676767'
 
         // Agrega colores para otros partidos según sea necesario
         // ...
