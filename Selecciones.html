@@ -217,6 +217,8 @@ input:checked + .slider:before {
             <option value="2015">2015</option>
             <option value="2011">2011</option>
             <option value="2007">2007</option>
+            <option value="2003">2003</option>
+            <option value="1999">1999</option>
         </select>
 
         <label for="districte">Districte:</label>
@@ -300,6 +302,12 @@ input:checked + .slider:before {
         case '2007':
             src = 'Municipals2007.html';
             break;
+        case '2003':
+            src = 'Municipals2003.html';
+            break;
+        case '1999':
+            src = 'Municipals1999.html';
+            break;
         default:
             src = '';
     }
@@ -362,6 +370,12 @@ document.addEventListener('DOMContentLoaded', function() {
             break;
         case '2007':
             src = 'Municipals2007.html';
+            break;
+        case '2003':
+            src = 'Municipals2003.html';
+            break;
+        case '1999':
+            src = 'Municipals1999.html';
             break;
         default:
             src = '';
