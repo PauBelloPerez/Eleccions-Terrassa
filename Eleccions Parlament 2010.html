@@ -531,7 +531,7 @@
         .then(response => response.json())
         .then(data => {
             const sums = {
-                PSC: 0, CiU: 0, ERC: 0, ICV: 0, Cs: 0, PP: 0, SI: 0, PxC: 0, RI: 0
+                PSC: 0, CiU: 0, ERC: 0, ICV: 0, Cs: 0, PP: 0, SI: 0, PxC: 0, RI: 0, Altres: 0
             };
 
             let totalVotants = 0;
@@ -546,9 +546,10 @@
                 sums.SI += parseInt(feature.properties.SI) || 0;
                 sums.PxC += parseInt(feature.properties.PxC) || 0;
                 sums.RI += parseInt(feature.properties.RI) || 0;
+                sums.Altres += parseInt(feature.properties.Altres) || 0;
 
                 // Sumar el total de votantes sumando votantes y votos en blanco
-                totalVotants += (parseInt(feature.properties.NUM_VOTANTS) || 0) + (parseInt(feature.properties.VOTS_BLANCS) || 0);
+                totalVotants += (parseInt(feature.properties.VOTS_CANDIDATURES) || 0) + (parseInt(feature.properties.VOTS_BLANCS) || 0);
             });
 
             const parties = [
@@ -560,7 +561,8 @@
                 { party: 'PP', votes: sums.PP },
                 { party: 'SI', votes: sums.SI },
                 { party: 'PxC', votes: sums.PxC },
-                { party: 'RI', votes: sums.RI }
+                { party: 'RI', votes: sums.RI },
+                { party: 'Altres', votes: sums.Altres }
             ];
 
             // Ordenar el array de partidos por votos descendentes
