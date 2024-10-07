@@ -7,7 +7,7 @@ const columnMapping = {
         seccioColumn: 'Secció'
     },
     '2021': {
-        partitColumns: ['Junts', 'Cs', 'CUP', 'ERC', 'PDeCat', 'PP', 'PSC', 'ECP', 'VOX', 'Altres'],
+        partitColumns: ['Junts', 'Cs', 'CUP', 'ERC', 'PdeCat', 'PP', 'PSC', 'ECP', 'VOX', 'Altres'],
         totalVotesColumn: 'VOTS_VALIDS',
         districteColumn: 'Districte',
         seccioColumn: 'Secció'
@@ -129,7 +129,7 @@ function loadData() {
             fileName = 'Parlament2017CSV2.csv';
             break;
         case '2015':
-            fileName = 'Parlament2015CSV.csv';
+            fileName = 'Parlament2015CSV2.csv';
             break;
         case '2012':
             fileName = 'Parlament2012CSV.csv';
@@ -204,11 +204,11 @@ function updateDistricteOptions() {
         case '2021':
             fileName = 'Parlament2021CSV.csv';
             break;
-            case '2017':
+        case '2017':
             fileName = 'Parlament2017CSV2.csv';
             break;
         case '2015':
-            fileName = 'Parlament2015CSV.csv';
+            fileName = 'Parlament2015CSV2.csv';
             break;
         case '2012':
             fileName = 'Parlament2012CSV.csv';
@@ -291,7 +291,7 @@ function updateSeccions() {
             fileName = 'Parlament2017CSV2.csv';
             break;
         case '2015':
-            fileName = 'Parlament2015CSV.csv';
+            fileName = 'Parlament2015CSV2.csv';
             break;
         case '2012':
             fileName = 'Parlament2012CSV.csv';
@@ -767,7 +767,9 @@ function getPartyColor(party) {
         'SI': '#000000',
         'Verds': '#009642',
         'Altres': '#676767',
-        'Reagrupament': '#850038'
+        'Reagrupament': '#850038',
+        'PdeCat': '#0081C2',
+        'PDecat': '#0081C2'
 
         // Agrega colores para otros partidos según sea necesario
         // ...
